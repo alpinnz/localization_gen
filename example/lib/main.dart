@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -43,42 +44,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the localization instance
-    final l10n = AppLocalizations.of(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(l10n.settings.title),
+        title: Text(AppLocalizations.of(context).settings.title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
             // Common translations
-            _SectionHeader(l10n.common.hello),
+            _SectionHeader(AppLocalizations.of(context).common.hello),
             Card(
               child: ListTile(
                 leading: const Icon(Icons.language),
-                title: Text(l10n.home.welcome),
-                subtitle: Text(l10n.home.welcomeUser(_userName)),
+                title: Text(AppLocalizations.of(context).home.welcome),
+                subtitle: Text(
+                  AppLocalizations.of(context).home.welcomeUser(_userName),
+                ),
               ),
             ),
             const SizedBox(height: 16),
 
             // Auth - Login section (nested)
-            _SectionHeader(l10n.auth.login.title),
+            _SectionHeader(AppLocalizations.of(context).auth.login.title),
             Card(
               child: Column(
                 children: [
                   ListTile(
                     leading: const Icon(Icons.email),
-                    title: Text(l10n.auth.login.email),
+                    title: Text(AppLocalizations.of(context).auth.login.email),
                     subtitle: const Text('user@example.com'),
                   ),
                   ListTile(
                     leading: const Icon(Icons.lock),
-                    title: Text(l10n.auth.login.password),
+                    title: Text(
+                      AppLocalizations.of(context).auth.login.password,
+                    ),
                     subtitle: const Text('••••••••'),
                   ),
                   Padding(
@@ -88,11 +90,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         ElevatedButton(
                           onPressed: () {},
-                          child: Text(l10n.auth.login.button),
+                          child: Text(
+                            AppLocalizations.of(context).auth.login.button,
+                          ),
                         ),
                         TextButton(
                           onPressed: () {},
-                          child: Text(l10n.auth.login.forgotPassword),
+                          child: Text(
+                            AppLocalizations.of(
+                              context,
+                            ).auth.login.forgotPassword,
+                          ),
                         ),
                       ],
                     ),
@@ -103,12 +111,14 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 16),
 
             // Auth - Register section (nested)
-            _SectionHeader(l10n.auth.register.title),
+            _SectionHeader(AppLocalizations.of(context).auth.register.title),
             Card(
               child: ListTile(
                 leading: const Icon(Icons.person_add),
-                title: Text(l10n.auth.register.button),
-                subtitle: Text(l10n.auth.register.termsAccept),
+                title: Text(AppLocalizations.of(context).auth.register.button),
+                subtitle: Text(
+                  AppLocalizations.of(context).auth.register.termsAccept,
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -120,15 +130,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   ListTile(
                     leading: const Icon(Icons.error_outline, color: Colors.red),
-                    title: Text(l10n.auth.errors.invalidEmail),
+                    title: Text(
+                      AppLocalizations.of(context).auth.errors.invalidEmail,
+                    ),
                   ),
                   ListTile(
                     leading: const Icon(Icons.error_outline, color: Colors.red),
-                    title: Text(l10n.auth.errors.weakPassword),
+                    title: Text(
+                      AppLocalizations.of(context).auth.errors.weakPassword,
+                    ),
                   ),
                   ListTile(
                     leading: const Icon(Icons.error_outline, color: Colors.red),
-                    title: Text(l10n.auth.errors.userNotFound),
+                    title: Text(
+                      AppLocalizations.of(context).auth.errors.userNotFound,
+                    ),
                   ),
                 ],
               ),
@@ -136,17 +152,23 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 16),
 
             // Settings - Profile section (deeply nested)
-            _SectionHeader(l10n.settings.profile.title),
+            _SectionHeader(AppLocalizations.of(context).settings.profile.title),
             Card(
               child: Column(
                 children: [
                   ListTile(
                     leading: const Icon(Icons.edit),
-                    title: Text(l10n.settings.profile.editProfile),
+                    title: Text(
+                      AppLocalizations.of(context).settings.profile.editProfile,
+                    ),
                   ),
                   ListTile(
                     leading: const Icon(Icons.vpn_key),
-                    title: Text(l10n.settings.profile.changePassword),
+                    title: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).settings.profile.changePassword,
+                    ),
                   ),
                 ],
               ),
@@ -154,23 +176,35 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 16),
 
             // Settings - Preferences section (deeply nested)
-            _SectionHeader(l10n.settings.preferences.title),
+            _SectionHeader(
+              AppLocalizations.of(context).settings.preferences.title,
+            ),
             Card(
               child: Column(
                 children: [
                   ListTile(
                     leading: const Icon(Icons.language),
-                    title: Text(l10n.settings.preferences.language),
+                    title: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).settings.preferences.language,
+                    ),
                     trailing: const Text('English'),
                   ),
                   ListTile(
                     leading: const Icon(Icons.palette),
-                    title: Text(l10n.settings.preferences.theme),
+                    title: Text(
+                      AppLocalizations.of(context).settings.preferences.theme,
+                    ),
                     trailing: const Text('Light'),
                   ),
                   ListTile(
                     leading: const Icon(Icons.notifications),
-                    title: Text(l10n.settings.preferences.notifications),
+                    title: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).settings.preferences.notifications,
+                    ),
                     trailing: Switch(value: true, onChanged: (_) {}),
                   ),
                 ],
@@ -182,7 +216,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.inventory),
-                title: Text(l10n.home.itemCount('$_itemCount')),
+                title: Text(
+                  AppLocalizations.of(context).home.itemCount('$_itemCount'),
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -215,12 +251,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.save),
-                  label: Text(l10n.common.save),
+                  label: Text(AppLocalizations.of(context).common.save),
                 ),
                 OutlinedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.cancel),
-                  label: Text(l10n.common.cancel),
+                  label: Text(AppLocalizations.of(context).common.cancel),
                 ),
               ],
             ),
@@ -232,11 +268,11 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text(l10n.common.yes),
+                  child: Text(AppLocalizations.of(context).common.yes),
                 ),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text(l10n.common.no),
+                  child: Text(AppLocalizations.of(context).common.no),
                 ),
               ],
             ),
