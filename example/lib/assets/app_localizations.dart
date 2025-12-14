@@ -166,7 +166,7 @@ class _Auth_Login {
   }
 
 
-  String get forgotPassword {
+  String get forgot_password {
     switch (locale.languageCode) {
       case 'en': return 'Forgot Password?';
       case 'id': return 'Lupa Kata Sandi?';
@@ -204,7 +204,7 @@ class _Auth_Register {
   }
 
 
-  String get termsAccept {
+  String get terms_accept {
     switch (locale.languageCode) {
       case 'en': return 'I accept the terms and conditions';
       case 'id': return 'Saya menerima syarat dan ketentuan';
@@ -222,7 +222,7 @@ class _Auth_Errors {
 
   final Locale locale;
 
-  String get invalidEmail {
+  String get invalid_email {
     switch (locale.languageCode) {
       case 'en': return 'Invalid email address';
       case 'id': return 'Alamat email tidak valid';
@@ -232,7 +232,7 @@ class _Auth_Errors {
   }
 
 
-  String get weakPassword {
+  String get weak_password {
     switch (locale.languageCode) {
       case 'en': return 'Password is too weak';
       case 'id': return 'Kata sandi terlalu lemah';
@@ -242,7 +242,7 @@ class _Auth_Errors {
   }
 
 
-  String get userNotFound {
+  String get user_not_found {
     switch (locale.languageCode) {
       case 'en': return 'User not found';
       case 'id': return 'Pengguna tidak ditemukan';
@@ -270,7 +270,7 @@ class _Home {
   }
 
 
-  String welcomeUser(String name) {
+  String welcome_user(String name) {
     switch (locale.languageCode) {
       case 'en': return 'Welcome, $name!';
       case 'id': return 'Selamat datang, $name!';
@@ -280,12 +280,22 @@ class _Home {
   }
 
 
-  String itemCount(String count) {
+  String item_count(String count) {
     switch (locale.languageCode) {
       case 'en': return 'You have $count items';
       case 'id': return 'Anda memiliki $count item';
       case 'es': return 'Tienes $count artículos';
       default: return 'You have $count items';
+    }
+  }
+
+
+  String discount(String value) {
+    switch (locale.languageCode) {
+      case 'en': return 'Discount $value%';
+      case 'id': return 'Diskon $value%';
+      case 'es': return 'Descuento $value%';
+      default: return 'Discount $value%';
     }
   }
 
@@ -332,7 +342,7 @@ class _Settings_Profile {
   }
 
 
-  String get editProfile {
+  String get edit_profile {
     switch (locale.languageCode) {
       case 'en': return 'Edit Profile';
       case 'id': return 'Edit Profil';
@@ -342,7 +352,7 @@ class _Settings_Profile {
   }
 
 
-  String get changePassword {
+  String get change_password {
     switch (locale.languageCode) {
       case 'en': return 'Change Password';
       case 'id': return 'Ubah Kata Sandi';

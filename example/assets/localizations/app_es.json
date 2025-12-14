@@ -14,30 +14,31 @@
       "email": "Correo Electrónico",
       "password": "Contraseña",
       "button": "Entrar",
-      "forgotPassword": "¿Olvidaste tu contraseña?"
+      "forgot_password": "¿Olvidaste tu contraseña?"
     },
     "register": {
       "title": "Registrarse",
       "button": "Crear Cuenta",
-      "termsAccept": "Acepto los términos y condiciones"
+      "terms_accept": "Acepto los términos y condiciones"
     },
     "errors": {
-      "invalidEmail": "Correo electrónico inválido",
-      "weakPassword": "La contraseña es muy débil",
-      "userNotFound": "Usuario no encontrado"
+      "invalid_email": "Correo electrónico inválido",
+      "weak_password": "La contraseña es muy débil",
+      "user_not_found": "Usuario no encontrado"
     }
   },
   "home": {
     "welcome": "¡Bienvenido a Localization Gen!",
-    "welcomeUser": "¡Bienvenido, {name}!",
-    "itemCount": "Tienes {count} artículos"
+    "welcome_user": "¡Bienvenido, {name}!",
+    "item_count": "Tienes {count} artículos",
+    "discount": "Descuento {value}%"
   },
   "settings": {
     "title": "Configuración",
     "profile": {
       "title": "Perfil",
-      "editProfile": "Editar Perfil",
-      "changePassword": "Cambiar Contraseña"
+      "edit_profile": "Editar Perfil",
+      "change_password": "Cambiar Contraseña"
     },
     "preferences": {
       "title": "Preferencias",

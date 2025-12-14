@@ -14,30 +14,31 @@
       "email": "Email",
       "password": "Password",
       "button": "Sign In",
-      "forgotPassword": "Forgot Password?"
+      "forgot_password": "Forgot Password?"
     },
     "register": {
       "title": "Register",
       "button": "Sign Up",
-      "termsAccept": "I accept the terms and conditions"
+      "terms_accept": "I accept the terms and conditions"
     },
     "errors": {
-      "invalidEmail": "Invalid email address",
-      "weakPassword": "Password is too weak",
-      "userNotFound": "User not found"
+      "invalid_email": "Invalid email address",
+      "weak_password": "Password is too weak",
+      "user_not_found": "User not found"
     }
   },
   "home": {
     "welcome": "Welcome to Localization Gen!",
-    "welcomeUser": "Welcome, {name}!",
-    "itemCount": "You have {count} items"
+    "welcome_user": "Welcome, {name}!",
+    "item_count": "You have {count} items",
+    "discount": "Discount {value}%"
   },
   "settings": {
     "title": "Settings",
     "profile": {
       "title": "Profile",
-      "editProfile": "Edit Profile",
-      "changePassword": "Change Password"
+      "edit_profile": "Edit Profile",
+      "change_password": "Change Password"
     },
     "preferences": {
       "title": "Preferences",

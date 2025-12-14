@@ -14,30 +14,31 @@
       "email": "Email",
       "password": "Kata Sandi",
       "button": "Masuk",
-      "forgotPassword": "Lupa Kata Sandi?"
+      "forgot_password": "Lupa Kata Sandi?"
     },
     "register": {
       "title": "Daftar",
       "button": "Buat Akun",
-      "termsAccept": "Saya menerima syarat dan ketentuan"
+      "terms_accept": "Saya menerima syarat dan ketentuan"
     },
     "errors": {
-      "invalidEmail": "Alamat email tidak valid",
-      "weakPassword": "Kata sandi terlalu lemah",
-      "userNotFound": "Pengguna tidak ditemukan"
+      "invalid_email": "Alamat email tidak valid",
+      "weak_password": "Kata sandi terlalu lemah",
+      "user_not_found": "Pengguna tidak ditemukan"
     }
   },
   "home": {
     "welcome": "Selamat datang di Localization Gen!",
-    "welcomeUser": "Selamat datang, {name}!",
-    "itemCount": "Anda memiliki {count} item"
+    "welcome_user": "Selamat datang, {name}!",
+    "item_count": "Anda memiliki {count} item",
+    "discount": "Diskon {value}%"
   },
   "settings": {
     "title": "Pengaturan",
     "profile": {
       "title": "Profil",
-      "editProfile": "Edit Profil",
-      "changePassword": "Ubah Kata Sandi"
+      "edit_profile": "Edit Profil",
+      "change_password": "Ubah Kata Sandi"
     },
     "preferences": {
       "title": "Preferensi",

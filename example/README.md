@@ -1,30 +1,57 @@
 # Localization Gen Example
 
-This example demonstrates how to use the `localization_gen` package with nested JSON structure.
+This example demonstrates how to use the `localization_gen` package with nested JSON structure and **runtime language switching**.
 
 ## Features Demonstrated
 
-- Nested translation structure (`auth.login.title`, `settings.profile.editProfile`)
-- Multiple locales (English, Spanish, Indonesian)
-- String interpolation with parameters (`{name}`, `{count}`)
-- Type-safe access to translations  
+- ✅ **Runtime Language Switching** - Switch between English, Indonesian, and Spanish on the fly
+- ✅ Nested translation structure (`auth.login.title`, `settings.profile.edit_profile`)
+- ✅ Multiple locales (English, Spanish, Indonesian)
+- ✅ String interpolation with parameters (`{name}`, `{count}`, `{value}`)
+- ✅ Type-safe access to translations
+- ✅ Snake_case naming convention for keys
+- ✅ Interactive UI with language selector
+
+## How to Try the Demo
+
+### Quick Start
+```bash
+cd example
+flutter run
+```
+
+### Try Language Switching
+1. **Launch the app** - Default language is English 🇺🇸
+2. **Click the language icon** (🌐) in the AppBar
+3. **Select a language:**
+   - 🇺🇸 English
+   - 🇮🇩 Indonesia
+   - 🇪🇸 Español
+4. **Watch the UI update** instantly with new translations!
+
+### Or Use the Language Chips
+- At the top of the screen, you'll see colorful language chips
+- Click any chip to switch language immediately
+- The selected language is highlighted
 
 ## Project Structure
 
 ```
 example/
 ├── assets/localizations/
-│   ├── app_en.json    # English translations
-│   ├── app_es.json    # Spanish translations
-│   └── app_id.json    # Indonesian translations
+│   ├── app_en.json    # 🇺🇸 English translations
+│   ├── app_id.json    # 🇮🇩 Indonesian translations
+│   └── app_es.json    # 🇪🇸 Spanish translations
 ├── lib/
-│   └── main.dart      # Example app
+│   ├── main.dart      # Example app with language switcher
+│   └── assets/
+│       └── app_localizations.dart  # Generated code
 └── pubspec.yaml       # Configuration
 ```
 
 ## JSON Translation Files
 
-The example uses nested JSON for better organization:
+The example uses nested JSON with **snake_case** keys for better organization:
 
 ```json
 {
@@ -36,13 +63,36 @@ The example uses nested JSON for better organization:
   "auth": {
     "login": {
       "title": "Login",
-      "email": "Email"
+      "email": "Email",
+      "forgot_password": "Forgot Password?"
     }
   },
   "home": {
-    "welcomeUser": "Welcome, {name}!"
+    "welcome_user": "Welcome, {name}!",
+    "item_count": "You have {count} items",
+    "discount": "Discount {value}%"
   }
 }
+```
+
+## Demo Features in the App
+
+### 1. Language Selector Card
+- Shows current language with flag emoji
+- Interactive chips to switch languages
+- Updates entire app instantly
+
+### 2. Parameterized Strings
+- `welcome_user("John Doe")` → "Welcome, John Doe!" / "Selamat datang, John Doe!"
+- `item_count("5")` → "You have 5 items" / "Anda memiliki 5 item"
+- `discount("20")` → "Discount 20%" / "Diskon 20%"
+
+### 3. Nested Translations
+Access nested keys naturally:
+```dart
+AppLocalizations.of(context).auth.login.forgot_password
+AppLocalizations.of(context).settings.profile.edit_profile
+AppLocalizations.of(context).home.welcome_user("John")
 ```
 
 ## Running the Example
@@ -75,9 +125,9 @@ l10n.home.welcomeUser('John')  // "Welcome, John!"
 
 ## Supported Locales
 
-- 🇬🇧 English (`en`)
-- 🇪🇸 Spanish (`es`)
-- 🇮🇩 Indonesian (`id`)
+- English (`en`)
+- Spanish (`es`)
+- Indonesian (`id`)
 
 ## Configuration
 
