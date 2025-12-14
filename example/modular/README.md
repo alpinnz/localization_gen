@@ -59,7 +59,7 @@ Note: Unlike nested structure, modular approach has flat access within each modu
 
 ```bash
 # Navigate to the example directory
-cd examples/modular
+cd example/modular
 
 # Get dependencies
 flutter pub get

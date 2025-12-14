@@ -211,17 +211,17 @@ This package includes three comprehensive examples:
 
 ### Default Example
 Traditional nested JSON approach. Best for small to medium apps.
-- [View Example](examples/default/)
+- [View Example](example/default/)
 - 12 tests, all passing
 
 ### Modular Example
 Feature-based file organization. Best for large apps with multiple teams.
-- [View Example](examples/modular/)
+- [View Example](example/modular/)
 - 19 tests, all passing
 
 ### Monorepo Example
 Multi-package architecture. Best for enterprise applications.
-- [View Example](examples/monorepo/)
+- [View Example](example/monorepo/)
 - 28 tests, all passing
 
 See [EXAMPLES.md](EXAMPLES.md) for detailed comparison and usage.
@@ -294,10 +294,10 @@ Run tests for all examples:
 
 Or test individually:
 ```bash
-cd examples/default && flutter test
-cd examples/modular && flutter test
-cd examples/monorepo/app && flutter test
-cd examples/monorepo/core && flutter test
+cd example/default && flutter test
+cd example/modular && flutter test
+cd example/monorepo/app && flutter test
+cd example/monorepo/core && flutter test
 ```
 
 ## CI/CD Integration
