@@ -6,6 +6,10 @@ repository: https://github.com/alpinnz/localization_gen
 issue_tracker: https://github.com/alpinnz/localization_gen/issues
 documentation: https://github.com/alpinnz/localization_gen#readme
 
+# Package metadata
+authors:
+  - Alpinnz <alpinnz@gmail.com>
+
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
