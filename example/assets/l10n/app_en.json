@@ -1,0 +1,50 @@
+{
+  "@@locale": "en",
+  "common": {
+    "hello": "Hello",
+    "goodbye": "Goodbye",
+    "yes": "Yes",
+    "no": "No",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "button": "Sign In",
+      "forgotPassword": "Forgot Password?"
+    },
+    "register": {
+      "title": "Register",
+      "button": "Sign Up",
+      "termsAccept": "I accept the terms and conditions"
+    },
+    "errors": {
+      "invalidEmail": "Invalid email address",
+      "weakPassword": "Password is too weak",
+      "userNotFound": "User not found"
+    }
+  },
+  "home": {
+    "welcome": "Welcome to Localization Gen!",
+    "welcomeUser": "Welcome, {name}!",
+    "itemCount": "You have {count} items"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": {
+      "title": "Profile",
+      "editProfile": "Edit Profile",
+      "changePassword": "Change Password"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "language": "Language",
+      "theme": "Theme",
+      "notifications": "Notifications"
+    }
+  }
+}
+

@@ -1,39 +1,215 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Localization Generator
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A powerful and type-safe localization generator for Flutter applications using JSON files.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Generate type-safe localization classes from JSON files
+- Support for multiple languages
+- Simple JSON format
+- Customizable configuration
+- Context-aware usage in Flutter widgets
 
-## Getting started
+## Why Nested JSON?
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Traditional flat key-value translation files can become messy in large projects. This package uses **nested JSON** for better organization:
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```json
+{
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email"
+    }
+  }
+}
 ```
 
-## Additional information
+This generates clean, hierarchical code:
+```dart
+final l10n = AppLocalizations.of(context);
+l10n.auth.login.title  // "Login"
+l10n.auth.login.email  // "Email"
+```
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+## Getting Started
+
+### 1. Add to `pubspec.yaml`
+
+```yaml
+dev_dependencies:
+  localization_gen: ^1.0.0
+
+localization_gen:
+  input_dir: assets/l10n
+  output_dir: .dart_tool/localization_gen
+  class_name: AppLocalizations
+```
+
+### 2. Create JSON translation files
+
+Create files in `assets/l10n/`:
+
+**app_en.json:**
+```json
+{
+  "@@locale": "en",
+  "common": {
+    "hello": "Hello",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "button": "Sign In"
+    }
+  },
+  "home": {
+    "welcomeUser": "Welcome, {name}!"
+  }
+}
+```
+
+**app_es.json:**
+```json
+{
+  "@@locale": "es",
+  "common": {
+    "hello": "Hola",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "button": "Entrar"
+    }
+  },
+  "home": {
+    "welcomeUser": "¡Bienvenido, {name}!"
+  }
+}
+```
+
+### 3. Generate code
+
+```bash
+dart run localization_gen:localization_gen
+```
+
+### 4. Setup in your app
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import '.dart_tool/localization_gen/app_localizations.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      localizationsDelegates: [
+        AppLocalizationsExtension.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: HomePage(),
+    );
+  }
+}
+```
+
+### 5. Use in your widgets
+
+```dart
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.auth.login.title),
+      ),
+      body: Column(
+        children: [
+          Text(l10n.common.hello),
+          Text(l10n.home.welcomeUser('John')),
+          ElevatedButton(
+            onPressed: () {},
+            child: Text(l10n.common.save),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+## Usage Examples
+
+### Simple translations
+```dart
+final l10n = AppLocalizations.of(context);
+print(l10n.common.hello);  // "Hello" or "Hola" based on locale
+```
+
+### With parameters
+```dart
+print(l10n.home.welcomeUser('Alice'));  // "Welcome, Alice!"
+```
+
+### Nested structure
+```dart
+l10n.auth.login.title       // "Login"
+l10n.auth.login.email       // "Email"
+l10n.auth.register.button   // "Sign Up"
+l10n.settings.profile.title // "Profile"
+```
+
+## Configuration
+
+All configuration is in `pubspec.yaml`:
+
+```yaml
+localization_gen:
+  input_dir: assets/localizations  # Where JSON files are located
+  output_dir: lib/assets           # Where to generate code
+  class_name: AppLocalizations     # Name of generated class
+  use_context: true                # Generate of(context) method
+  nullable: false                  # Make of() return nullable type
+```
+
+## JSON File Format
+
+- **File naming**: `app_{locale}.json` (e.g., `app_en.json`, `app_es.json`)
+- **Locale marker**: Include `"@@locale": "en"` at the root
+- **Nesting**: Use objects for organization
+- **Parameters**: Use `{paramName}` syntax for string interpolation
+
+```json
+{
+  "@@locale": "en",
+  "section": {
+    "subsection": {
+      "key": "Value",
+      "withParam": "Hello {name}!"
+    }
+  }
+}
+```
+
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

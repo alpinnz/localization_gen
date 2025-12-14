@@ -1,0 +1,50 @@
+{
+  "@@locale": "id",
+  "common": {
+    "hello": "Halo",
+    "goodbye": "Selamat tinggal",
+    "yes": "Ya",
+    "no": "Tidak",
+    "save": "Simpan",
+    "cancel": "Batal"
+  },
+  "auth": {
+    "login": {
+      "title": "Masuk",
+      "email": "Email",
+      "password": "Kata Sandi",
+      "button": "Masuk",
+      "forgotPassword": "Lupa Kata Sandi?"
+    },
+    "register": {
+      "title": "Daftar",
+      "button": "Buat Akun",
+      "termsAccept": "Saya menerima syarat dan ketentuan"
+    },
+    "errors": {
+      "invalidEmail": "Alamat email tidak valid",
+      "weakPassword": "Kata sandi terlalu lemah",
+      "userNotFound": "Pengguna tidak ditemukan"
+    }
+  },
+  "home": {
+    "welcome": "Selamat datang di Localization Gen!",
+    "welcomeUser": "Selamat datang, {name}!",
+    "itemCount": "Anda memiliki {count} item"
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "profile": {
+      "title": "Profil",
+      "editProfile": "Edit Profil",
+      "changePassword": "Ubah Kata Sandi"
+    },
+    "preferences": {
+      "title": "Preferensi",
+      "language": "Bahasa",
+      "theme": "Tema",
+      "notifications": "Notifikasi"
+    }
+  }
+}
+

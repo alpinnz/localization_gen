@@ -1,20 +1,29 @@
 name: localization_gen
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: A powerful localization generator for Flutter applications using nested JSON
+version: 0.0.2
+homepage: https://github.com/yourusername/localization_gen
 
 environment:
-  sdk: ^3.10.3
-  flutter: ">=1.17.0"
+  sdk: ^3.6.0
 
 dependencies:
-  flutter:
-    sdk: flutter
+  args: ^2.5.0
+  yaml: ^3.1.2
+  path: ^1.9.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
+  test: ^1.25.0
+  lints: ^5.0.0
+
+executables:
+  localization_gen: localization_gen
+
+localization_gen:
+  input_dir: assets/localizations
+  output_dir: lib/assets
+  class_name: AppLocalizations
+  use_context: true
+  nullable: false
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
