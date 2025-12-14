@@ -107,6 +107,6 @@ localization_gen:
 ## Learn More
 
 - See the main [README](https://github.com/alpinnz/localization_gen#readme) for library documentation
-- Check [EXAMPLES.md](https://github.com/alpinnz/localization_gen/blob/main/EXAMPLES.md) for other example types
-- Read [QUICKSTART.md](https://github.com/alpinnz/localization_gen/blob/main/QUICKSTART.md) for quick setup guide
+- Check [EXAMPLES.md](https://github.com/alpinnz/localization_gen/blob/master/EXAMPLES.md) for other example types
+- Read [QUICKSTART.md](https://github.com/alpinnz/localization_gen/blob/master/QUICKSTART.md) for quick setup guide
 

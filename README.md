@@ -3,7 +3,7 @@
 A powerful and type-safe localization generator for Flutter applications using JSON files.
 
 [![Pub Version](https://img.shields.io/pub/v/localization_gen)](https://pub.dev/packages/localization_gen)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/alpinnz/localization_gen/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/alpinnz/localization_gen/blob/master/LICENSE)
 
 ## Features
 
@@ -211,20 +211,20 @@ This package includes three comprehensive examples:
 
 ### Default Example
 Traditional nested JSON approach. Best for small to medium apps.
-- [View Example](https://github.com/alpinnz/localization_gen/tree/main/example/default)
+- [View Example](https://github.com/alpinnz/localization_gen/tree/master/example/default)
 - 12 tests, all passing
 
 ### Modular Example
 Feature-based file organization. Best for large apps with multiple teams.
-- [View Example](https://github.com/alpinnz/localization_gen/tree/main/example/modular)
+- [View Example](https://github.com/alpinnz/localization_gen/tree/master/example/modular)
 - 19 tests, all passing
 
 ### Monorepo Example
 Multi-package architecture. Best for enterprise applications.
-- [View Example](https://github.com/alpinnz/localization_gen/tree/main/example/monorepo)
+- [View Example](https://github.com/alpinnz/localization_gen/tree/master/example/monorepo)
 - 28 tests, all passing
 
-See [EXAMPLES.md](https://github.com/alpinnz/localization_gen/blob/main/EXAMPLES.md) for detailed comparison and usage.
+See [EXAMPLES.md](https://github.com/alpinnz/localization_gen/blob/master/EXAMPLES.md) for detailed comparison and usage.
 
 ## Advanced Usage
 
@@ -389,14 +389,14 @@ Contributions are welcome! Please:
 
 ## License
 
-MIT License - see [LICENSE](https://github.com/alpinnz/localization_gen/blob/main/LICENSE) file for details.
+MIT License - see [LICENSE](https://github.com/alpinnz/localization_gen/blob/master/LICENSE) file for details.
 
 ## Support
 
 - [Documentation](https://github.com/alpinnz/localization_gen#readme)
-- [Quick Start Guide](https://github.com/alpinnz/localization_gen/blob/main/QUICKSTART.md)
-- [Examples](https://github.com/alpinnz/localization_gen/blob/main/EXAMPLES.md)
-- [Changelog](https://github.com/alpinnz/localization_gen/blob/main/CHANGELOG.md)
+- [Quick Start Guide](https://github.com/alpinnz/localization_gen/blob/master/QUICKSTART.md)
+- [Examples](https://github.com/alpinnz/localization_gen/blob/master/EXAMPLES.md)
+- [Changelog](https://github.com/alpinnz/localization_gen/blob/master/CHANGELOG.md)
 - [Issues](https://github.com/alpinnz/localization_gen/issues)
 
 ## Acknowledgments

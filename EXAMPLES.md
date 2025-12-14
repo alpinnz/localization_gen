@@ -24,7 +24,7 @@ This directory contains three complete example applications demonstrating differ
 
 **Languages:** English, Indonesian
 
-[View Default Example README](https://github.com/alpinnz/localization_gen/blob/main/example/default/README.md)
+[View Default Example README](https://github.com/alpinnz/localization_gen/blob/master/example/default/README.md)
 
 ---
 
@@ -54,7 +54,7 @@ This directory contains three complete example applications demonstrating differ
 
 **Languages:** English, Indonesian
 
-[View Modular Example README](https://github.com/alpinnz/localization_gen/blob/main/example/modular/README.md)
+[View Modular Example README](https://github.com/alpinnz/localization_gen/blob/master/example/modular/README.md)
 
 ---
 
@@ -82,7 +82,7 @@ This directory contains three complete example applications demonstrating differ
 
 **Languages:** English, Indonesian
 
-[View Monorepo Example README](https://github.com/alpinnz/localization_gen/blob/main/example/monorepo/README.md)
+[View Monorepo Example README](https://github.com/alpinnz/localization_gen/blob/master/example/monorepo/README.md)
 
 ---
 
@@ -231,8 +231,8 @@ localization_gen:
 ## Learn More
 
 - [Main README](https://github.com/alpinnz/localization_gen#readme) - Library documentation
-- [QUICKSTART](https://github.com/alpinnz/localization_gen/blob/main/QUICKSTART.md) - Quick setup guide
-- [CHANGELOG](https://github.com/alpinnz/localization_gen/blob/main/CHANGELOG.md) - Version history
+- [QUICKSTART](https://github.com/alpinnz/localization_gen/blob/master/QUICKSTART.md) - Quick setup guide
+- [CHANGELOG](https://github.com/alpinnz/localization_gen/blob/master/CHANGELOG.md) - Version history
 - Individual example READMEs for detailed information
 
 ---
