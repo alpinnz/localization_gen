@@ -1,0 +1,34 @@
+name: default_example
+description: Default localization example using standard monolithic files
+publish_to: none
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  localization_gen:
+    path: ../../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+# Standard Localization Configuration
+localization_gen:
+  input_dir: assets/localizations
+  output_dir: lib/assets
+  class_name: AppLocalizations
+  use_context: true
+  nullable: false
+
+flutter:
+  uses-material-design: true
+

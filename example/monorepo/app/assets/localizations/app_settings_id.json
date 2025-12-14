@@ -1,0 +1,17 @@
+{
+  "@@locale": "id",
+  "@@module": "settings",
+  "title": "Pengaturan",
+  "profile": {
+    "title": "Profil",
+    "edit_profile": "Edit Profil",
+    "change_password": "Ubah Kata Sandi"
+  },
+  "preferences": {
+    "title": "Preferensi",
+    "language": "Bahasa",
+    "theme": "Tema",
+    "notifications": "Notifikasi"
+  }
+}
+

@@ -29,3 +29,42 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 /build/
 /coverage/
+
+# Development and build files
+.packages
+build/
+.flutter-plugins
+
+# IDE files
+.vscode/
+.run/
+
+# Test coverage
+coverage/
+
+# Scripts
+run_all_tests.sh
+run_all_tests.py
+
+
+# Example app build outputs
+example/**/build/
+example/**/.dart_tool/
+example/**/.flutter-plugins
+example/**/.flutter-plugins-dependencies
+example/**/android/
+example/**/ios/
+example/**/linux/
+example/**/macos/
+example/**/web/
+example/**/windows/
+
+# Git files
+.git/
+.gitignore
+
+# Backup files
+*~
+*.bak
+
+

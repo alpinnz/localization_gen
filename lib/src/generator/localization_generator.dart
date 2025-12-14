@@ -23,11 +23,21 @@ class LocalizationGenerator {
       print('Config:');
       print('   Input:  ${config.inputDir}');
       print('   Output: ${config.outputDir}');
-      print('   Class:  ${config.className}\n');
+      print('   Class:  ${config.className}');
+      print('   Modular: ${config.modular}');
+      if (config.modular) {
+        print('   Pattern: ${config.filePattern}');
+        print('   Prefix:  ${config.filePrefix}');
+      }
+      print('');
 
       // Step 2: Parse JSON files
       print('Scanning JSON localization files...');
-      final locales = JsonLocalizationParser.parseDirectory(config.inputDir);
+      final locales = JsonLocalizationParser.parseDirectory(
+        config.inputDir,
+        modular: config.modular,
+        filePrefix: config.filePrefix,
+      );
       print('Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
 
       if (locales.isEmpty) {

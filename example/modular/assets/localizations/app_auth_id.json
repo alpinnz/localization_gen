@@ -1,0 +1,21 @@
+{
+  "@@locale": "id",
+  "@@module": "auth",
+  "login": {
+    "title": "Masuk",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "button": "Masuk",
+    "forgot_password": "Lupa Kata Sandi?"
+  },
+  "register": {
+    "title": "Daftar",
+    "button": "Buat Akun",
+    "terms_accept": "Saya menerima syarat dan ketentuan"
+  },
+  "errors": {
+    "invalid_email": "Alamat email tidak valid",
+    "weak_password": "Kata sandi terlalu lemah",
+    "user_not_found": "Pengguna tidak ditemukan"
+  }
+}

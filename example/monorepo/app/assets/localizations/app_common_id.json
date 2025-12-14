@@ -1,0 +1,10 @@
+{
+  "@@locale": "id",
+  "@@module": "common",
+  "hello": "Halo",
+  "goodbye": "Selamat tinggal",
+  "yes": "Ya",
+  "no": "Tidak",
+  "save": "Simpan",
+  "cancel": "Batal"
+}

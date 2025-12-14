@@ -1,0 +1,10 @@
+{
+  "@@locale": "en",
+  "@@module": "common",
+  "hello": "Hello",
+  "goodbye": "Goodbye",
+  "yes": "Yes",
+  "no": "No",
+  "save": "Save",
+  "cancel": "Cancel"
+}

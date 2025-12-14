@@ -1,6 +1,6 @@
-# Quick Start Guide - Localization Gen
+# Quick Start Guide
 
-Get started with type-safe, nested localization in 5 minutes!
+Get started with localization_gen in 5 minutes.
 
 ## Installation
 
@@ -8,119 +8,129 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  localization_gen:
-    path: ../  # Or use pub.dev version when published
+  localization_gen: ^1.0.0
+```
 
+Then run:
+```bash
+flutter pub get
+```
+
+## Basic Setup
+
+### 1. Configure
+
+Add configuration to `pubspec.yaml`:
+
+```yaml
 localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: AppLocalizations
 ```
 
-## Step 1: Create JSON Files
+### 2. Create Translation Files
 
 Create `assets/localizations/app_en.json`:
 
 ```json
 {
   "@@locale": "en",
-  "app": {
-    "title": "My App"
+  "common": {
+    "hello": "Hello",
+    "save": "Save",
+    "cancel": "Cancel"
   },
-  "auth": {
-    "login": "Login",
-    "logout": "Logout"
-  },
-  "greeting": "Hello, {name}!"
+  "home": {
+    "title": "Home",
+    "welcome": "Welcome, {name}!"
+  }
 }
 ```
 
-Create `assets/localizations/app_es.json`:
+Create `assets/localizations/app_id.json`:
 
 ```json
 {
-  "@@locale": "es",
-  "app": {
-    "title": "Mi Aplicación"
+  "@@locale": "id",
+  "common": {
+    "hello": "Halo",
+    "save": "Simpan",
+    "cancel": "Batal"
   },
-  "auth": {
-    "login": "Iniciar sesión",
-    "logout": "Cerrar sesión"
-  },
-  "greeting": "¡Hola, {name}!"
+  "home": {
+    "title": "Beranda",
+    "welcome": "Selamat datang, {name}!"
+  }
 }
 ```
 
-## Step 2: Generate Code
+### 3. Generate Code
+
+Run the generator:
 
 ```bash
 dart run localization_gen:localization_gen
 ```
 
-You should see:
-```
-Starting localization generation...
-Found 2 locale(s): en, es
-Done! Generated X translations.
-```
+This creates `lib/assets/app_localizations.dart`.
 
-## Step 3: Setup Flutter App
+### 4. Setup Flutter App
 
-Add to your `pubspec.yaml` dependencies:
-
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-```
-
-Update your `main.dart`:
+Update your `MaterialApp`:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'assets/app_localizations.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Add these 3 lines:
-      localizationsDelegates: [
+      title: 'My App',
+      localizationsDelegates: const [
         AppLocalizationsExtension.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
 ```
 
-## Step 4: Use Translations
+### 5. Use in Widgets
+
+Access translations in your widgets:
 
 ```dart
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.app.title),  // Type-safe nested access!
+        title: Text(l10n.home.title),
       ),
       body: Column(
         children: [
-          Text(l10n.greeting('Alice')),  // With parameters
+          Text(l10n.common.hello),
+          Text(l10n.home.welcome('John')),
           ElevatedButton(
             onPressed: () {},
-            child: Text(l10n.auth.login),
+            child: Text(l10n.common.save),
           ),
         ],
       ),
@@ -131,63 +141,55 @@ class HomePage extends StatelessWidget {
 
 ## That's It!
 
-You now have:
-- Type-safe translations
-- Full IDE autocomplete
-- Nested organization
-- Multiple language support
-- Compile-time checking
+You now have type-safe, nested localization working in your app.
 
-## Advanced: Deep Nesting
+## Next Steps
 
-You can nest as deep as you want:
+- **Add More Languages:** Create more JSON files (e.g., `app_es.json`)
+- **Organize Better:** Use nested structures for complex features
+- **Try Modular:** Check out the modular example for large apps
+- **Read Examples:** See [EXAMPLES.md](EXAMPLES.md) for advanced patterns
 
-```json
-{
-  "settings": {
-    "profile": {
-      "personal": {
-        "name": "Name",
-        "email": "Email"
-      },
-      "security": {
-        "password": "Password",
-        "twoFactor": "Two-Factor Auth"
-      }
-    }
-  }
-}
+## Common Configuration Options
+
+```yaml
+localization_gen:
+  input_dir: assets/localizations    # Where JSON files are located
+  output_dir: lib/assets              # Where to generate code
+  class_name: AppLocalizations        # Name of generated class
+  use_context: true                   # Enable context-aware access
+  nullable: false                     # Make fields non-nullable
+  modular: false                      # Use modular file organization
+  file_prefix: app                    # Prefix for JSON files
 ```
 
-Access with:
-```dart
-l10n.settings.profile.personal.name
-l10n.settings.profile.security.password
-```
+## Troubleshooting
 
-## Workflow
+**Generated file not found?**
+- Check `output_dir` path in configuration
+- Ensure you ran the generator
+- Verify the file is created in correct location
 
-Every time you update translations:
+**Translations not updating?**
+- Run the generator after JSON changes
+- Restart hot reload (full restart)
+- Check for syntax errors in JSON
 
-1. Edit JSON files
-2. Run: `dart run localization_gen:localization_gen`
-3. Code is automatically updated!
+**Type errors?**
+- Ensure all JSON files have same structure
+- Check for typos in key names
+- Regenerate after JSON changes
 
-## More Examples
+## Learn More
 
-See the [example](example/) folder for a complete working app with:
-- Multiple locales (English, Spanish, Indonesian)
-- Deep nesting (3+ levels)
-- Parameter interpolation
-- Real-world UI examples
+- [Full Documentation](README.md)
+- [Examples](EXAMPLES.md)
+- [Changelog](CHANGELOG.md)
 
-## Need Help?
+## Support
 
-- Read the [full README](README.md)
-- Check the [real-world examples](EXAMPLES.md)
-- See the [example app](example/) for complete code
-
----
-
-**Happy coding!**
+Found an issue? Have a question?
+- Check the examples directory
+- Read the full README
+- Look at test files for usage patterns
 

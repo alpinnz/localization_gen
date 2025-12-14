@@ -62,7 +62,7 @@ class JsonLocalizationParser {
   }
 
   /// Parse all JSON files in a directory
-  static List<LocaleData> parseDirectory(String dirPath) {
+  static List<LocaleData> parseDirectory(String dirPath, {bool modular = false, String filePrefix = 'app'}) {
     final dir = Directory(dirPath);
     if (!dir.existsSync()) {
       throw Exception('Directory not found: $dirPath');
@@ -78,10 +78,74 @@ class JsonLocalizationParser {
       throw Exception('No .json files found in: $dirPath');
     }
 
-    return jsonFiles.map((file) {
-      print('Parsing: ${file.path}');
-      return parse(file);
+    if (modular) {
+      return _parseModularFiles(jsonFiles, filePrefix);
+    } else {
+      return jsonFiles.map((file) {
+        print('Parsing: ${file.path}');
+        return parse(file);
+      }).toList();
+    }
+  }
+
+  /// Parse modular localization files and merge by locale
+  /// Example: app_auth_en.json + app_home_en.json -> merged en locale
+  static List<LocaleData> _parseModularFiles(List<File> jsonFiles, String filePrefix) {
+    final localeMap = <String, Map<String, LocalizationItem>>{};
+
+    for (final file in jsonFiles) {
+      final filename = file.path.split('/').last;
+
+      // Skip files that don't match the pattern
+      if (!filename.startsWith(filePrefix)) continue;
+
+      print('Parsing modular file: ${file.path}');
+
+      final content = file.readAsStringSync();
+      final json = jsonDecode(content) as Map<String, dynamic>;
+
+      // Extract locale from @@locale or filename
+      String locale = json['@@locale'] as String? ?? _extractLocaleFromModularFilename(filename, filePrefix);
+      String? module = json['@@module'] as String?;
+
+      if (module != null) {
+        print('  Module: $module, Locale: $locale');
+      }
+
+      // Initialize locale map if not exists
+      if (!localeMap.containsKey(locale)) {
+        localeMap[locale] = <String, LocalizationItem>{};
+      }
+
+      // Flatten and add to locale map
+      final items = <String, LocalizationItem>{};
+      _flattenJson(json, items);
+
+      // Merge items into locale map
+      localeMap[locale]!.addAll(items);
+    }
+
+    // Convert to LocaleData list
+    return localeMap.entries.map((entry) {
+      print('Merged locale "${entry.key}" with ${entry.value.length} translations');
+      return LocaleData(
+        locale: entry.key,
+        items: entry.value,
+      );
     }).toList();
+  }
+
+  /// Extract locale from modular filename like "app_auth_en.json" -> "en"
+  /// or "core_common_id.json" -> "id"
+  static String _extractLocaleFromModularFilename(String filename, String filePrefix) {
+    final parts = filename.replaceAll('.json', '').split('_');
+    // Pattern: {prefix}_{module}_{locale}.json
+    // Example: app_auth_en.json -> ["app", "auth", "en"]
+    if (parts.length >= 3) {
+      return parts.last; // Return last part as locale
+    }
+    // Fallback: try to extract locale from standard pattern
+    return parts.length > 1 ? parts.last : 'en';
   }
 
   /// Extract parameters from string like "Welcome {name}" -> ["name"]

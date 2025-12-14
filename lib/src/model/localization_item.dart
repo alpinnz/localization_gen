@@ -27,6 +27,9 @@ class LocalizationConfig {
   final String className;
   final bool useContext;
   final bool nullable;
+  final bool modular;
+  final String filePattern;
+  final String filePrefix;
 
   LocalizationConfig({
     this.inputDir = 'assets/localizations',
@@ -34,6 +37,9 @@ class LocalizationConfig {
     this.className = 'AppLocalizations',
     this.useContext = true,
     this.nullable = false,
+    this.modular = false,
+    this.filePattern = 'app_{module}_{locale}.json',
+    this.filePrefix = 'app',
   });
 
   factory LocalizationConfig.fromMap(Map<String, dynamic>? map) {
@@ -45,6 +51,9 @@ class LocalizationConfig {
       className: map['class_name'] as String? ?? 'AppLocalizations',
       useContext: map['use_context'] as bool? ?? true,
       nullable: map['nullable'] as bool? ?? false,
+      modular: map['modular'] as bool? ?? false,
+      filePattern: map['file_pattern'] as String? ?? 'app_{module}_{locale}.json',
+      filePrefix: map['file_prefix'] as String? ?? 'app',
     );
   }
 }
@@ -52,10 +61,12 @@ class LocalizationConfig {
 /// Parsed locale data
 class LocaleData {
   final String locale;
+  final String? module;
   final Map<String, LocalizationItem> items;
 
   LocaleData({
     required this.locale,
+    this.module,
     required this.items,
   });
 }

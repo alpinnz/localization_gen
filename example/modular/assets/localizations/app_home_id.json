@@ -1,0 +1,8 @@
+{
+  "@@locale": "id",
+  "@@module": "home",
+  "welcome": "Selamat datang di Localization Gen!",
+  "welcome_user": "Selamat datang, {name}!",
+  "item_count": "Anda memiliki {count} item",
+  "discount": "Diskon {value}%"
+}

@@ -1,12 +1,47 @@
-# Files to exclude from pub.dev publication
+# Development and build files
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
 
-# Internal checklists (not needed by users)
-RELEASE_CHECKLIST.md
-PRE_PUBLISH_CHECKLIST.md
-*CHECKLIST.md
-
-# Development files
-.DS_Store
+# IDE files
 .idea/
+.vscode/
 *.iml
+.run/
+
+# Test coverage
+coverage/
+
+# Scripts
+run_all_tests.sh
+run_all_tests.py
+
+# Documentation that's not needed in package
+RELEASE_CHECKLIST.md
+
+# Example app build outputs
+example/**/build/
+example/**/.dart_tool/
+example/**/.flutter-plugins
+example/**/.flutter-plugins-dependencies
+example/**/android/
+example/**/ios/
+example/**/linux/
+example/**/macos/
+example/**/web/
+example/**/windows/
+
+# Git files
+.git/
+.gitignore
+
+# macOS
+.DS_Store
+
+# Backup files
+*~
+*.swp
+*.bak
 
