@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2024-12-14
+
+### Fixed
+- Updated GitHub repository branch references from 'main' to 'master' in documentation
+  - Fixed links in README.md, EXAMPLES.md, and QUICKSTART.md
+  - Updated example README files (default, modular, monorepo)
+  - Ensures all documentation links point to correct repository branch
+
+### Documentation
+- Corrected branch references across all documentation files for accurate navigation
+
 ## [1.0.2] - 2024-12-14
 
 ### Fixed
