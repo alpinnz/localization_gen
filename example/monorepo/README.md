@@ -74,7 +74,7 @@ Chip(label: Text(coreL10n.save)) // Shared from Core
 ### Run the App:
 ```bash
 # Navigate to the app package
-cd examples/monorepo/app
+cd example/monorepo/app
 
 # Get dependencies
 flutter pub get
@@ -86,11 +86,11 @@ flutter run
 ### Run Tests:
 ```bash
 # Test the app package
-cd examples/monorepo/app
+cd example/monorepo/app
 flutter test
 
 # Test the core package
-cd examples/monorepo/core
+cd example/monorepo/core
 flutter test
 ```
 
@@ -185,19 +185,19 @@ Contains shared components:
 
 1. **Generate Core Localizations:**
    ```bash
-   cd examples/monorepo/core
+   cd example/monorepo/core
    dart run localization_gen:localization_gen
    ```
 
 2. **Generate App Localizations:**
    ```bash
-   cd examples/monorepo/app
+   cd example/monorepo/app
    dart run localization_gen:localization_gen
    ```
 
 3. **Run the App:**
    ```bash
-   cd examples/monorepo/app
+   cd example/monorepo/app
    flutter run
    ```
 

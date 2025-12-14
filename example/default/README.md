@@ -53,7 +53,7 @@ l10n.home.welcome          // "Welcome!"
 
 ```bash
 # Navigate to the example directory
-cd examples/default
+cd example/default
 
 # Get dependencies
 flutter pub get

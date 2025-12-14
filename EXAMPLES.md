@@ -30,7 +30,7 @@ This directory contains three complete example applications demonstrating differ
 
 ### 2. Modular Example
 
-**Location:** `examples/modular/`
+**Location:** `example/modular/`
 
 **Description:** Modular organization with separate JSON files per feature module.
 
@@ -60,7 +60,7 @@ This directory contains three complete example applications demonstrating differ
 
 ### 3. Monorepo Example
 
-**Location:** `examples/monorepo/`
+**Location:** `example/monorepo/`
 
 **Description:** Multi-package architecture with independent localization per package.
 
@@ -107,7 +107,7 @@ This directory contains three complete example applications demonstrating differ
 
 ```bash
 # Navigate to any example
-cd examples/default  # or modular, or monorepo/app
+cd example/default  # or modular, or monorepo/app
 
 # Get dependencies
 flutter pub get
@@ -126,10 +126,10 @@ flutter test
 dart run localization_gen:localization_gen
 
 # For Monorepo (run in each package)
-cd examples/monorepo/core
+cd example/monorepo/core
 dart run localization_gen:localization_gen
 
-cd examples/monorepo/app
+cd example/monorepo/app
 dart run localization_gen:localization_gen
 ```
 
