@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2024-12-14
+
+### Added
+- Support for modular localization files with flexible naming patterns
+  - Optional per-module organization: `app_{module}_en.json`, `core_{feature}_en.json`
+  - Maintains backward compatibility with standard `app_en.json` pattern
+- Enhanced examples structure with three distinct use cases
+  - Renamed `example` to `examples` directory
+  - Added comprehensive unit tests for all example projects
+  - Updated examples with multi-language support (English, Spanish, Indonesian)
+
+### Changed
+- Improved key naming convention: all generated keys now use `snake_case` format
+- Removed emoji icons from all documentation files for cleaner presentation
+- Enhanced documentation with per-module localization examples
+- Refactored example projects:
+  - `1_default`: Basic single-module setup
+  - `2_modular`: Feature-based modular organization
+  - `3_monorepo`: Multi-package monorepo architecture with app and core packages
+- Updated all GitHub links to use `alpinnz` username
+- Fixed broken documentation links for pub.dev compatibility
+
+### Fixed
+- Corrected parameter interpolation output format: `discount(value: "20")` for `{"discount": "Diskon {value}%"}`
+- Fixed hyperlinks in documentation that were not compatible with pub.dev rendering
+- Improved example test coverage and reliability
+
+### Documentation
+- All markdown files updated without emoji icons for professional appearance
+- Enhanced modular localization pattern documentation
+- Added clear examples for optional per-module file organization
+- Updated READMEs for each example project with specific use case documentation
+
 ## [1.0.0] - 2024-12-14
 
 ### Added
