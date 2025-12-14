@@ -61,7 +61,6 @@ example/**/windows/
 
 # Git files
 .git/
-.gitignore
 
 # Backup files
 *~
