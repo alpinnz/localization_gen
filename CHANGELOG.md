@@ -98,5 +98,5 @@ Planned for future releases:
 
 ---
 
-For detailed information about each version, see the [Releases](https://github.com/yourusername/localization_gen/releases) page.
+For detailed information about each version, see the [Releases](https://github.com/alpinnz/localization_gen/releases) page.
 

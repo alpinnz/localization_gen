@@ -148,7 +148,7 @@ You now have type-safe, nested localization working in your app.
 - **Add More Languages:** Create more JSON files (e.g., `app_es.json`)
 - **Organize Better:** Use nested structures for complex features
 - **Try Modular:** Check out the modular example for large apps
-- **Read Examples:** See [EXAMPLES.md](EXAMPLES.md) for advanced patterns
+- **Read Examples:** See [EXAMPLES.md](https://github.com/alpinnz/localization_gen/blob/main/EXAMPLES.md) for advanced patterns
 
 ## Common Configuration Options
 
@@ -182,9 +182,9 @@ localization_gen:
 
 ## Learn More
 
-- [Full Documentation](README.md)
-- [Examples](EXAMPLES.md)
-- [Changelog](CHANGELOG.md)
+- [Full Documentation](https://github.com/alpinnz/localization_gen#readme)
+- [Examples](https://github.com/alpinnz/localization_gen/blob/main/EXAMPLES.md)
+- [Changelog](https://github.com/alpinnz/localization_gen/blob/main/CHANGELOG.md)
 
 ## Support
 

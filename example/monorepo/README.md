@@ -203,7 +203,7 @@ Contains shared components:
 
 ## Learn More
 
-- See the main [README](../../README.md) for library documentation
-- Check [EXAMPLES.md](../../EXAMPLES.md) for other example types
-- Compare with [Modular Example](../modular/) for single-package modular approach
+- See the main [README](https://github.com/alpinnz/localization_gen#readme) for library documentation
+- Check [EXAMPLES.md](https://github.com/alpinnz/localization_gen/blob/main/EXAMPLES.md) for other example types
+- Compare with [Modular Example](https://github.com/alpinnz/localization_gen/tree/main/example/modular) for single-package modular approach
 

@@ -146,7 +146,7 @@ Key setting: `modular: true` enables modular file parsing.
 
 ## Learn More
 
-- See the main [README](../../README.md) for library documentation
-- Check [EXAMPLES.md](../../EXAMPLES.md) for other example types
-- Compare with [Default Example](../default/) for traditional approach
+- See the main [README](https://github.com/alpinnz/localization_gen#readme) for library documentation
+- Check [EXAMPLES.md](https://github.com/alpinnz/localization_gen/blob/main/EXAMPLES.md) for other example types
+- Compare with [Default Example](https://github.com/alpinnz/localization_gen/tree/main/example/default) for traditional approach
 
