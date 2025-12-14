@@ -4,10 +4,10 @@ This example demonstrates how to use the `localization_gen` package with nested 
 
 ## Features Demonstrated
 
-✅ Nested translation structure (`auth.login.title`, `settings.profile.editProfile`)  
-✅ Multiple locales (English, Spanish, Indonesian)  
-✅ String interpolation with parameters (`{name}`, `{count}`)  
-✅ Type-safe access to translations  
+- Nested translation structure (`auth.login.title`, `settings.profile.editProfile`)
+- Multiple locales (English, Spanish, Indonesian)
+- String interpolation with parameters (`{name}`, `{count}`)
+- Type-safe access to translations  
 
 ## Project Structure
 
@@ -85,8 +85,8 @@ See `pubspec.yaml` for configuration:
 
 ```yaml
 localization_gen:
-  input_dir: assets/l10n
-  output_dir: .dart_tool/localization_gen
+  input_dir: assets/localizations
+  output_dir: lib/assets
   class_name: AppLocalizations
   use_context: true
   nullable: false

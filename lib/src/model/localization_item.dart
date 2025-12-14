@@ -29,8 +29,8 @@ class LocalizationConfig {
   final bool nullable;
 
   LocalizationConfig({
-    this.inputDir = 'assets/l10n',
-    this.outputDir = '.dart_tool/localization_gen',
+    this.inputDir = 'assets/localizations',
+    this.outputDir = 'lib/assets',
     this.className = 'AppLocalizations',
     this.useContext = true,
     this.nullable = false,
@@ -40,8 +40,8 @@ class LocalizationConfig {
     if (map == null) return LocalizationConfig();
 
     return LocalizationConfig(
-      inputDir: map['input_dir'] as String? ?? 'assets/l10n',
-      outputDir: map['output_dir'] as String? ?? '.dart_tool/localization_gen',
+      inputDir: map['input_dir'] as String? ?? 'assets/localizations',
+      outputDir: map['output_dir'] as String? ?? 'lib/assets',
       className: map['class_name'] as String? ?? 'AppLocalizations',
       useContext: map['use_context'] as bool? ?? true,
       nullable: map['nullable'] as bool? ?? false,

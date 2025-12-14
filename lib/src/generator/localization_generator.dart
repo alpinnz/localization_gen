@@ -16,27 +16,27 @@ class LocalizationGenerator {
   /// Run the generation process
   void generate() {
     try {
-      print('🚀 Starting localization generation...\n');
+      print('Starting localization generation...\n');
 
       // Step 1: Read config
       final config = ConfigReader.read(configPath ?? 'pubspec.yaml');
-      print('📝 Config:');
+      print('Config:');
       print('   Input:  ${config.inputDir}');
       print('   Output: ${config.outputDir}');
       print('   Class:  ${config.className}\n');
 
       // Step 2: Parse JSON files
-      print('📂 Scanning JSON localization files...');
+      print('Scanning JSON localization files...');
       final locales = JsonLocalizationParser.parseDirectory(config.inputDir);
-      print('✅ Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
+      print('Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
 
       if (locales.isEmpty) {
-        print('❌ No locales found!');
+        print('No locales found!');
         return;
       }
 
       // Step 3: Generate Dart code
-      print('⚙️  Generating Dart code...');
+      print('Generating Dart code...');
       final writer = DartWriter(
         className: config.className,
         useContext: config.useContext,
@@ -54,16 +54,16 @@ class LocalizationGenerator {
       final outputFile = File('${config.outputDir}/${_toSnakeCase(config.className)}.dart');
       outputFile.writeAsStringSync(dartCode);
 
-      print('✅ Generated: ${outputFile.path}');
-      print('\n🎉 Done! Generated ${locales.first.items.length} translations.');
-      print('\n📌 Add this to your MaterialApp:');
+      print('Generated: ${outputFile.path}');
+      print('\nDone! Generated ${locales.first.items.length} translations.');
+      print('\nAdd this to your MaterialApp:');
       print('   localizationsDelegates: [');
       print('     ${config.className}Extension.delegate,');
       print('     GlobalMaterialLocalizations.delegate,');
       print('   ],');
       print('   supportedLocales: ${config.className}.supportedLocales,');
     } catch (e, stack) {
-      print('❌ Error: $e');
+      print('Error: $e');
       if (watch) {
         print('Stack trace: $stack');
       }

@@ -43,13 +43,13 @@ class GenerateCommand {
         print('\n👀 Watch mode not implemented yet');
       }
     } catch (e) {
-      print('❌ Error parsing arguments: $e\n');
+      print('Error parsing arguments: $e\n');
       _printUsage(parser);
     }
   }
 
   void _printUsage(ArgParser parser) {
-    print('🌍 localization_gen - Strongly-typed localization generator\n');
+    print('localization_gen - Strongly-typed localization generator\n');
     print('Usage: dart run localization_gen [options]\n');
     print('Options:');
     print(parser.usage);

@@ -1,0 +1,12 @@
+# Files to exclude from pub.dev publication
+
+# Internal checklists (not needed by users)
+RELEASE_CHECKLIST.md
+PRE_PUBLISH_CHECKLIST.md
+*CHECKLIST.md
+
+# Development files
+.DS_Store
+.idea/
+*.iml
+

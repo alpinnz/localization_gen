@@ -79,7 +79,7 @@ class JsonLocalizationParser {
     }
 
     return jsonFiles.map((file) {
-      print('📄 Parsing: ${file.path}');
+      print('Parsing: ${file.path}');
       return parse(file);
     }).toList();
   }

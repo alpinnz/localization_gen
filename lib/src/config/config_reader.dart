@@ -8,7 +8,7 @@ class ConfigReader {
     try {
       final file = File(pubspecPath);
       if (!file.existsSync()) {
-        print('⚠️  pubspec.yaml not found, using default config');
+        print('Warning: pubspec.yaml not found, using default config');
         return LocalizationConfig();
       }
 
@@ -17,7 +17,7 @@ class ConfigReader {
 
       final config = yaml['localization_gen'] as YamlMap?;
       if (config == null) {
-        print('⚠️  No localization_gen config found in pubspec.yaml');
+        print('Warning: No localization_gen config found in pubspec.yaml');
         return LocalizationConfig();
       }
 
@@ -25,7 +25,7 @@ class ConfigReader {
         Map<String, dynamic>.from(config),
       );
     } catch (e) {
-      print('❌ Error reading config: $e');
+      print('Error reading config: $e');
       return LocalizationConfig();
     }
   }

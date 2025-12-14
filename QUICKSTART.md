@@ -12,14 +12,14 @@ dev_dependencies:
     path: ../  # Or use pub.dev version when published
 
 localization_gen:
-  input_dir: assets/l10n
-  output_dir: lib/generated
+  input_dir: assets/localizations
+  output_dir: lib/assets
   class_name: AppLocalizations
 ```
 
 ## Step 1: Create JSON Files
 
-Create `assets/l10n/app_en.json`:
+Create `assets/localizations/app_en.json`:
 
 ```json
 {
@@ -35,7 +35,7 @@ Create `assets/l10n/app_en.json`:
 }
 ```
 
-Create `assets/l10n/app_es.json`:
+Create `assets/localizations/app_es.json`:
 
 ```json
 {

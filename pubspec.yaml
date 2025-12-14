@@ -1,7 +1,7 @@
 name: localization_gen
 description: A powerful localization generator for Flutter applications using nested JSON
 version: 0.0.2
-homepage: https://github.com/yourusername/localization_gen
+repository: https://github.com/alpinnz/localization_gen
 
 environment:
   sdk: ^3.6.0

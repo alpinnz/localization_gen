@@ -41,14 +41,14 @@ dev_dependencies:
   localization_gen: ^1.0.0
 
 localization_gen:
-  input_dir: assets/l10n
-  output_dir: .dart_tool/localization_gen
+  input_dir: assets/localizations
+  output_dir: lib/assets
   class_name: AppLocalizations
 ```
 
 ### 2. Create JSON translation files
 
-Create files in `assets/l10n/`:
+Create files in `assets/localizations/`:
 
 **app_en.json:**
 ```json
