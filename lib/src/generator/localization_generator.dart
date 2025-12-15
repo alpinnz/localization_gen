@@ -5,15 +5,45 @@ import '../writer/dart_writer.dart';
 
 /// Main generator that orchestrates the entire process
 class LocalizationGenerator {
+  /// Whether to run in watch mode (reserved for future use)
   final bool watch;
+
+  /// Optional path to the pubspec.yaml configuration file
   final String? configPath;
 
+  /// Creates a new LocalizationGenerator instance
+  ///
+  /// The [watch] parameter is reserved for future watch mode functionality.
+  /// The [configPath] parameter specifies a custom path to pubspec.yaml.
+  ///
+  /// Example:
+  /// ```dart
+  /// final generator = LocalizationGenerator(
+  ///   watch: false,
+  ///   configPath: 'pubspec.yaml',
+  /// );
+  /// generator.generate();
+  /// ```
   LocalizationGenerator({
     this.watch = false,
     this.configPath,
   });
 
-  /// Run the generation process
+  /// Runs the localization generation process
+  ///
+  /// This method performs the following steps:
+  /// 1. Reads configuration from pubspec.yaml
+  /// 2. Parses JSON localization files
+  /// 3. Generates type-safe Dart code
+  /// 4. Writes the output to the specified directory
+  ///
+  /// Throws an [Exception] if generation fails.
+  ///
+  /// Example:
+  /// ```dart
+  /// final generator = LocalizationGenerator();
+  /// generator.generate();
+  /// ```
   void generate() {
     try {
       print('Starting localization generation...\n');
@@ -38,7 +68,8 @@ class LocalizationGenerator {
         modular: config.modular,
         filePrefix: config.filePrefix,
       );
-      print('Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
+      print(
+          'Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
 
       if (locales.isEmpty) {
         print('No locales found!');
@@ -61,7 +92,8 @@ class LocalizationGenerator {
         outputDir.createSync(recursive: true);
       }
 
-      final outputFile = File('${config.outputDir}/${_toSnakeCase(config.className)}.dart');
+      final outputFile =
+          File('${config.outputDir}/${_toSnakeCase(config.className)}.dart');
       outputFile.writeAsStringSync(dartCode);
 
       print('Generated: ${outputFile.path}');
@@ -91,4 +123,3 @@ class LocalizationGenerator {
         .substring(1); // Remove leading underscore
   }
 }
-

@@ -103,7 +103,11 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
               title: AppLocalizations.of(context).home.welcome,
               icon: Icons.home,
               children: [
-                Text(AppLocalizations.of(context).home.welcome_user(name: 'John Doe')),
+                Text(
+                  AppLocalizations.of(
+                    context,
+                  ).home.welcome_user(name: 'John Doe'),
+                ),
                 const SizedBox(height: 8),
                 Text(AppLocalizations.of(context).home.discount(value: '20')),
               ],
@@ -116,7 +120,11 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
               title: 'Item Counter',
               icon: Icons.inventory,
               children: [
-                Text(AppLocalizations.of(context).home.item_count(count: '$_itemCount')),
+                Text(
+                  AppLocalizations.of(
+                    context,
+                  ).home.item_count(count: '$_itemCount'),
+                ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
@@ -166,7 +174,9 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                 ),
                 TextButton(
                   onPressed: () {},
-                  child: Text(AppLocalizations.of(context).auth.login.forgot_password),
+                  child: Text(
+                    AppLocalizations.of(context).auth.login.forgot_password,
+                  ),
                 ),
               ],
             ),
@@ -182,11 +192,15 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    Chip(label: Text(AppLocalizations.of(context).common.hello)),
+                    Chip(
+                      label: Text(AppLocalizations.of(context).common.hello),
+                    ),
                     Chip(label: Text(AppLocalizations.of(context).common.yes)),
                     Chip(label: Text(AppLocalizations.of(context).common.no)),
                     Chip(label: Text(AppLocalizations.of(context).common.save)),
-                    Chip(label: Text(AppLocalizations.of(context).common.cancel)),
+                    Chip(
+                      label: Text(AppLocalizations.of(context).common.cancel),
+                    ),
                   ],
                 ),
               ],
@@ -272,8 +286,8 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -299,4 +313,3 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
     }
   }
 }
-

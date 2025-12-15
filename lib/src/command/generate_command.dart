@@ -59,4 +59,3 @@ class GenerateCommand {
     print('  dart run localization_gen --config=my_pubspec.yaml');
   }
 }
-

@@ -36,7 +36,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify language changed to Indonesian
-      expect(find.text('Pengaturan'), findsOneWidget); // "Settings" in Indonesian
+      expect(
+        find.text('Pengaturan'),
+        findsOneWidget,
+      ); // "Settings" in Indonesian
     });
 
     testWidgets('Item counter increments', (WidgetTester tester) async {
@@ -69,8 +72,9 @@ void main() {
       expect(find.textContaining('4 items'), findsOneWidget);
     });
 
-    testWidgets('Item counter does not go below zero',
-        (WidgetTester tester) async {
+    testWidgets('Item counter does not go below zero', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const DefaultLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -85,8 +89,9 @@ void main() {
       expect(find.textContaining('0 items'), findsOneWidget);
     });
 
-    testWidgets('All translation sections are displayed',
-        (WidgetTester tester) async {
+    testWidgets('All translation sections are displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const DefaultLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -108,8 +113,9 @@ void main() {
       expect(find.text('Forgot Password?'), findsOneWidget);
     });
 
-    testWidgets('Common action chips are displayed',
-        (WidgetTester tester) async {
+    testWidgets('Common action chips are displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const DefaultLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -126,14 +132,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Default (Monolithic) Approach'), findsOneWidget);
-      expect(
-        find.textContaining('One JSON file per locale'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('One JSON file per locale'), findsOneWidget);
     });
 
-    testWidgets('Parameterized translations work correctly',
-        (WidgetTester tester) async {
+    testWidgets('Parameterized translations work correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const DefaultLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -144,8 +148,9 @@ void main() {
       expect(find.textContaining('Discount 20%'), findsOneWidget);
     });
 
-    testWidgets('Spanish language option is available',
-        (WidgetTester tester) async {
+    testWidgets('Spanish language option is available', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const DefaultLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -158,4 +163,3 @@ void main() {
     });
   });
 }
-

@@ -6,7 +6,9 @@ import 'package:core/assets/core_localizations.dart';
 
 void main() {
   group('CoreLocalizations Tests', () {
-    testWidgets('CoreLocalizations can be accessed', (WidgetTester tester) async {
+    testWidgets('CoreLocalizations can be accessed', (
+      WidgetTester tester,
+    ) async {
       CoreLocalizations? l10n;
 
       await tester.pumpWidget(
@@ -32,7 +34,10 @@ void main() {
     });
 
     test('Supported locales includes en and id', () {
-      expect(CoreLocalizations.supportedLocales.length, greaterThanOrEqualTo(2));
+      expect(
+        CoreLocalizations.supportedLocales.length,
+        greaterThanOrEqualTo(2),
+      );
       final languageCodes = CoreLocalizations.supportedLocales
           .map((l) => l.languageCode)
           .toList();
@@ -41,7 +46,9 @@ void main() {
   });
 
   group('Buttons Module Tests', () {
-    testWidgets('English button texts are correct', (WidgetTester tester) async {
+    testWidgets('English button texts are correct', (
+      WidgetTester tester,
+    ) async {
       CoreLocalizations? l10n;
 
       await tester.pumpWidget(
@@ -70,7 +77,9 @@ void main() {
       expect(l10n!.confirm, 'Confirm');
     });
 
-    testWidgets('Indonesian button texts are correct', (WidgetTester tester) async {
+    testWidgets('Indonesian button texts are correct', (
+      WidgetTester tester,
+    ) async {
       CoreLocalizations? l10n;
 
       await tester.pumpWidget(
@@ -101,7 +110,9 @@ void main() {
   });
 
   group('Widgets Module Tests', () {
-    testWidgets('English widget texts are correct', (WidgetTester tester) async {
+    testWidgets('English widget texts are correct', (
+      WidgetTester tester,
+    ) async {
       CoreLocalizations? l10n;
 
       await tester.pumpWidget(
@@ -130,7 +141,9 @@ void main() {
       expect(l10n!.no_data, 'No data available');
     });
 
-    testWidgets('Indonesian widget texts are correct', (WidgetTester tester) async {
+    testWidgets('Indonesian widget texts are correct', (
+      WidgetTester tester,
+    ) async {
       CoreLocalizations? l10n;
 
       await tester.pumpWidget(
@@ -160,4 +173,3 @@ void main() {
     });
   });
 }
-

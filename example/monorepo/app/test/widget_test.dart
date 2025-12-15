@@ -12,8 +12,9 @@ void main() {
       expect(find.byType(MonorepoHomePage), findsOneWidget);
     });
 
-    testWidgets('Architecture banner is displayed',
-        (WidgetTester tester) async {
+    testWidgets('Architecture banner is displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -25,8 +26,9 @@ void main() {
       expect(find.byIcon(Icons.account_tree), findsOneWidget);
     });
 
-    testWidgets('Both package cards are displayed',
-        (WidgetTester tester) async {
+    testWidgets('Both package cards are displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -51,8 +53,9 @@ void main() {
       expect(find.byIcon(Icons.extension), findsOneWidget); // Core
     });
 
-    testWidgets('App package modules are displayed',
-        (WidgetTester tester) async {
+    testWidgets('App package modules are displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -62,8 +65,9 @@ void main() {
       expect(find.text('Settings Module'), findsOneWidget);
     });
 
-    testWidgets('Core package modules are displayed',
-        (WidgetTester tester) async {
+    testWidgets('Core package modules are displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -72,8 +76,9 @@ void main() {
       expect(find.text('Buttons Module'), findsOneWidget);
     });
 
-    testWidgets('Core setup instructions are shown',
-        (WidgetTester tester) async {
+    testWidgets('Core setup instructions are shown', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -85,8 +90,9 @@ void main() {
       expect(find.byIcon(Icons.info_outline), findsWidgets);
     });
 
-    testWidgets('App localizations work correctly',
-        (WidgetTester tester) async {
+    testWidgets('App localizations work correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -100,8 +106,9 @@ void main() {
       expect(find.textContaining('Welcome, Bob!'), findsOneWidget);
     });
 
-    testWidgets('File source indicators are shown',
-        (WidgetTester tester) async {
+    testWidgets('File source indicators are shown', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -124,15 +131,13 @@ void main() {
         find.textContaining('Independent package management'),
         findsOneWidget,
       );
-      expect(
-        find.textContaining('Shared core library'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('Shared core library'), findsOneWidget);
       expect(find.byIcon(Icons.check_circle), findsOneWidget);
     });
 
-    testWidgets('Module section headers have icons',
-        (WidgetTester tester) async {
+    testWidgets('Module section headers have icons', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -155,8 +160,9 @@ void main() {
       expect(find.text('Indonesia'), findsOneWidget);
     });
 
-    testWidgets('Language can be changed to Indonesian',
-        (WidgetTester tester) async {
+    testWidgets('Language can be changed to Indonesian', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -173,16 +179,18 @@ void main() {
       expect(find.textContaining('Selamat datang'), findsOneWidget);
     });
 
-    testWidgets('PackageCard widgets display correctly',
-        (WidgetTester tester) async {
+    testWidgets('PackageCard widgets display correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
       expect(find.byType(PackageCard), findsNWidgets(2));
     });
 
-    testWidgets('ModuleSectionHeader widgets display correctly',
-        (WidgetTester tester) async {
+    testWidgets('ModuleSectionHeader widgets display correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -197,18 +205,16 @@ void main() {
       expect(find.byType(ListView), findsOneWidget);
 
       // Scroll down
-      await tester.drag(
-        find.byType(ListView),
-        const Offset(0, -500),
-      );
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
       await tester.pumpAndSettle();
 
       // Benefits card should be visible after scrolling
       expect(find.text('Monorepo Benefits'), findsOneWidget);
     });
 
-    testWidgets('Parameterized translations work correctly',
-        (WidgetTester tester) async {
+    testWidgets('Parameterized translations work correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -222,10 +228,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Scroll to benefits
-      await tester.drag(
-        find.byType(ListView),
-        const Offset(0, -600),
-      );
+      await tester.drag(find.byType(ListView), const Offset(0, -600));
       await tester.pumpAndSettle();
 
       // Check all benefit points
@@ -247,8 +250,9 @@ void main() {
       expect(find.text('• cancel: "Cancel"'), findsOneWidget);
     });
 
-    testWidgets('Setup instruction steps are shown',
-        (WidgetTester tester) async {
+    testWidgets('Setup instruction steps are shown', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -256,14 +260,12 @@ void main() {
         find.textContaining('cd examples/3_monorepo/core'),
         findsOneWidget,
       );
-      expect(
-        find.textContaining('dart run localization_gen'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('dart run localization_gen'), findsOneWidget);
     });
 
-    testWidgets('Package cards have colored left borders',
-        (WidgetTester tester) async {
+    testWidgets('Package cards have colored left borders', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -290,8 +292,9 @@ void main() {
   });
 
   group('Monorepo Widget Tests', () {
-    testWidgets('PackageCard displays package info correctly',
-        (WidgetTester tester) async {
+    testWidgets('PackageCard displays package info correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -302,8 +305,9 @@ void main() {
       expect(packageCards.length, equals(2));
     });
 
-    testWidgets('ModuleSectionHeader displays correctly',
-        (WidgetTester tester) async {
+    testWidgets('ModuleSectionHeader displays correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const MonorepoApp());
       await tester.pumpAndSettle();
 
@@ -316,4 +320,3 @@ void main() {
     });
   });
 }
-

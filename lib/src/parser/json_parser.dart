@@ -4,13 +4,38 @@ import '../model/localization_item.dart';
 
 /// Parses JSON localization files with nested structure support
 class JsonLocalizationParser {
-  /// Parse a single JSON file with nested structure
+  /// Creates a new JsonLocalizationParser instance
+  JsonLocalizationParser();
+
+  /// Parses a single JSON file with nested structure
+  ///
+  /// The [file] parameter specifies the JSON file to parse.
+  /// Returns a [LocaleData] object containing the parsed translations.
+  ///
+  /// The locale is extracted from either the @@locale key in the JSON
+  /// or from the filename (e.g., 'app_en.json' -> 'en').
+  ///
+  /// Nested JSON structures are flattened to dot-notation:
+  /// ```json
+  /// {"auth": {"login": "Login"}}
+  /// ```
+  /// becomes:
+  /// ```
+  /// "auth.login": "Login"
+  /// ```
+  ///
+  /// Example:
+  /// ```dart
+  /// final file = File('assets/localizations/app_en.json');
+  /// final localeData = JsonLocalizationParser.parse(file);
+  /// ```
   static LocaleData parse(File file) {
     final content = file.readAsStringSync();
     final json = jsonDecode(content) as Map<String, dynamic>;
 
     // Extract locale from @@locale or filename
-    String locale = json['@@locale'] as String? ?? _extractLocaleFromFilename(file.path);
+    String locale =
+        json['@@locale'] as String? ?? _extractLocaleFromFilename(file.path);
 
     final items = <String, LocalizationItem>{};
 
@@ -61,8 +86,33 @@ class JsonLocalizationParser {
     }
   }
 
-  /// Parse all JSON files in a directory
-  static List<LocaleData> parseDirectory(String dirPath, {bool modular = false, String filePrefix = 'app'}) {
+  /// Parses all JSON files in a directory
+  ///
+  /// The [dirPath] parameter specifies the directory containing JSON files.
+  /// The [modular] parameter enables modular file organization.
+  /// The [filePrefix] parameter specifies the prefix for modular files.
+  ///
+  /// Returns a list of [LocaleData] objects, one per locale.
+  ///
+  /// In modular mode, files like 'app_auth_en.json' and 'app_home_en.json'
+  /// are merged into a single 'en' locale.
+  ///
+  /// Throws an [Exception] if the directory doesn't exist or contains no JSON files.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Standard mode
+  /// final locales = JsonLocalizationParser.parseDirectory('assets/localizations');
+  ///
+  /// // Modular mode
+  /// final locales = JsonLocalizationParser.parseDirectory(
+  ///   'assets/localizations',
+  ///   modular: true,
+  ///   filePrefix: 'app',
+  /// );
+  /// ```
+  static List<LocaleData> parseDirectory(String dirPath,
+      {bool modular = false, String filePrefix = 'app'}) {
     final dir = Directory(dirPath);
     if (!dir.existsSync()) {
       throw Exception('Directory not found: $dirPath');
@@ -90,7 +140,8 @@ class JsonLocalizationParser {
 
   /// Parse modular localization files and merge by locale
   /// Example: app_auth_en.json + app_home_en.json -> merged en locale
-  static List<LocaleData> _parseModularFiles(List<File> jsonFiles, String filePrefix) {
+  static List<LocaleData> _parseModularFiles(
+      List<File> jsonFiles, String filePrefix) {
     final localeMap = <String, Map<String, LocalizationItem>>{};
 
     for (final file in jsonFiles) {
@@ -105,7 +156,8 @@ class JsonLocalizationParser {
       final json = jsonDecode(content) as Map<String, dynamic>;
 
       // Extract locale from @@locale or filename
-      String locale = json['@@locale'] as String? ?? _extractLocaleFromModularFilename(filename, filePrefix);
+      String locale = json['@@locale'] as String? ??
+          _extractLocaleFromModularFilename(filename, filePrefix);
       String? module = json['@@module'] as String?;
 
       if (module != null) {
@@ -127,7 +179,8 @@ class JsonLocalizationParser {
 
     // Convert to LocaleData list
     return localeMap.entries.map((entry) {
-      print('Merged locale "${entry.key}" with ${entry.value.length} translations');
+      print(
+          'Merged locale "${entry.key}" with ${entry.value.length} translations');
       return LocaleData(
         locale: entry.key,
         items: entry.value,
@@ -137,7 +190,8 @@ class JsonLocalizationParser {
 
   /// Extract locale from modular filename like "app_auth_en.json" -> "en"
   /// or "core_common_id.json" -> "id"
-  static String _extractLocaleFromModularFilename(String filename, String filePrefix) {
+  static String _extractLocaleFromModularFilename(
+      String filename, String filePrefix) {
     final parts = filename.replaceAll('.json', '').split('_');
     // Pattern: {prefix}_{module}_{locale}.json
     // Example: app_auth_en.json -> ["app", "auth", "en"]
@@ -162,4 +216,3 @@ class JsonLocalizationParser {
     return parts.length > 1 ? parts.last : 'en';
   }
 }
-

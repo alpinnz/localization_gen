@@ -12,8 +12,9 @@ void main() {
       expect(find.byType(ModularHomePage), findsOneWidget);
     });
 
-    testWidgets('Architecture banner is displayed',
-        (WidgetTester tester) async {
+    testWidgets('Architecture banner is displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -58,8 +59,9 @@ void main() {
       expect(find.byIcon(Icons.settings), findsOneWidget); // Settings
     });
 
-    testWidgets('Auth module content is displayed',
-        (WidgetTester tester) async {
+    testWidgets('Auth module content is displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -70,8 +72,9 @@ void main() {
       expect(find.text('Sign In'), findsOneWidget);
     });
 
-    testWidgets('Auth error messages are displayed',
-        (WidgetTester tester) async {
+    testWidgets('Auth error messages are displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -80,8 +83,9 @@ void main() {
       expect(find.text('Password is too weak'), findsOneWidget);
     });
 
-    testWidgets('Home module content is displayed',
-        (WidgetTester tester) async {
+    testWidgets('Home module content is displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -95,8 +99,9 @@ void main() {
       expect(find.textContaining('Discount 25%'), findsOneWidget);
     });
 
-    testWidgets('Common module chips are displayed',
-        (WidgetTester tester) async {
+    testWidgets('Common module chips are displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -108,8 +113,9 @@ void main() {
       expect(find.text('Cancel'), findsOneWidget);
     });
 
-    testWidgets('Settings module content is displayed',
-        (WidgetTester tester) async {
+    testWidgets('Settings module content is displayed', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -134,8 +140,9 @@ void main() {
       expect(find.text('Indonesia'), findsOneWidget);
     });
 
-    testWidgets('Language can be changed to Indonesian',
-        (WidgetTester tester) async {
+    testWidgets('Language can be changed to Indonesian', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -152,8 +159,9 @@ void main() {
       expect(find.text('Halo'), findsOneWidget); // "Hello" in Indonesian
     });
 
-    testWidgets('ModuleCard widget displays correctly',
-        (WidgetTester tester) async {
+    testWidgets('ModuleCard widget displays correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -161,8 +169,9 @@ void main() {
       expect(find.byType(ModuleCard), findsNWidgets(4));
     });
 
-    testWidgets('Error chips have correct styling',
-        (WidgetTester tester) async {
+    testWidgets('Error chips have correct styling', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -178,18 +187,16 @@ void main() {
       expect(find.byType(ListView), findsOneWidget);
 
       // Scroll to bottom
-      await tester.drag(
-        find.byType(ListView),
-        const Offset(0, -500),
-      );
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
       await tester.pumpAndSettle();
 
       // Settings module should still be visible
       expect(find.text('Settings Module'), findsOneWidget);
     });
 
-    testWidgets('Parameterized translations work in home module',
-        (WidgetTester tester) async {
+    testWidgets('Parameterized translations work in home module', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -211,32 +218,36 @@ void main() {
   });
 
   group('Modular Widgets Tests', () {
-    testWidgets('AuthModuleWidget displays correctly',
-        (WidgetTester tester) async {
+    testWidgets('AuthModuleWidget displays correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
       expect(find.byType(AuthModuleWidget), findsOneWidget);
     });
 
-    testWidgets('HomeModuleWidget displays correctly',
-        (WidgetTester tester) async {
+    testWidgets('HomeModuleWidget displays correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
       expect(find.byType(HomeModuleWidget), findsOneWidget);
     });
 
-    testWidgets('CommonModuleWidget displays correctly',
-        (WidgetTester tester) async {
+    testWidgets('CommonModuleWidget displays correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
       expect(find.byType(CommonModuleWidget), findsOneWidget);
     });
 
-    testWidgets('SettingsModuleWidget displays correctly',
-        (WidgetTester tester) async {
+    testWidgets('SettingsModuleWidget displays correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -244,4 +255,3 @@ void main() {
     });
   });
 }
-

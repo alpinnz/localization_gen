@@ -2,10 +2,29 @@ import '../model/localization_item.dart';
 
 /// Generates strongly-typed Dart code with nested structure support
 class DartWriter {
+  /// The name of the generated localization class
   final String className;
+
+  /// Whether to generate a static of(BuildContext) method
   final bool useContext;
+
+  /// Whether the of(BuildContext) method should return a nullable type
   final bool nullable;
 
+  /// Creates a new DartWriter instance
+  ///
+  /// The [className] parameter specifies the name of the generated class.
+  /// The [useContext] parameter controls whether to generate the static of() method.
+  /// The [nullable] parameter controls the return type nullability of the of() method.
+  ///
+  /// Example:
+  /// ```dart
+  /// final writer = DartWriter(
+  ///   className: 'AppLocalizations',
+  ///   useContext: true,
+  ///   nullable: false,
+  /// );
+  /// ```
   DartWriter({
     required this.className,
     this.useContext = true,
@@ -37,8 +56,10 @@ class DartWriter {
     // Static of() method
     if (useContext) {
       buffer.writeln("  /// Get the localization instance from context");
-      buffer.writeln("  static $className${nullable ? '?' : ''} of(BuildContext context) {");
-      buffer.writeln("    return Localizations.of<$className>(context, $className)${nullable ? '' : '!'};");
+      buffer.writeln(
+          "  static $className${nullable ? '?' : ''} of(BuildContext context) {");
+      buffer.writeln(
+          "    return Localizations.of<$className>(context, $className)${nullable ? '' : '!'};");
       buffer.writeln("  }");
       buffer.writeln();
     }
@@ -64,7 +85,8 @@ class DartWriter {
         // This is a namespace, create a getter for nested class
         final nestedClassName = '_${_toPascalCase(key)}';
         buffer.writeln("  /// Access $key translations");
-        buffer.writeln("  $nestedClassName get $key => $nestedClassName(locale);");
+        buffer.writeln(
+            "  $nestedClassName get $key => $nestedClassName(locale);");
         buffer.writeln();
       }
     }
@@ -81,7 +103,8 @@ class DartWriter {
     buffer.writeln();
 
     // Generate nested classes
-    buffer.write(_generateNestedClasses(nestedStructure, locales, baseLocale.items));
+    buffer.write(
+        _generateNestedClasses(nestedStructure, locales, baseLocale.items));
 
     // Generate delegate
     buffer.writeln(_generateDelegate(locales));
@@ -91,7 +114,8 @@ class DartWriter {
 
   /// Build nested structure from flat keys
   /// Example: {"auth.login.title": "Login"} -> {"auth": {"login": {"title": "Login"}}}
-  Map<String, dynamic> _buildNestedStructure(Map<String, LocalizationItem> items) {
+  Map<String, dynamic> _buildNestedStructure(
+      Map<String, LocalizationItem> items) {
     final result = <String, dynamic>{};
 
     for (final item in items.values) {
@@ -136,9 +160,11 @@ class DartWriter {
           final nestedValue = nestedEntry.value;
 
           if (nestedValue is Map) {
-            final nestedClassName = '_${_toPascalCase(key)}_${_toPascalCase(nestedKey)}';
+            final nestedClassName =
+                '_${_toPascalCase(key)}_${_toPascalCase(nestedKey)}';
             buffer.writeln("  /// Access $key.$nestedKey translations");
-            buffer.writeln("  $nestedClassName get $nestedKey => $nestedClassName(locale);");
+            buffer.writeln(
+                "  $nestedClassName get $nestedKey => $nestedClassName(locale);");
             buffer.writeln();
           }
         }
@@ -146,7 +172,9 @@ class DartWriter {
         // Generate methods for leaf nodes in this namespace
         for (final nestedEntry in value.entries) {
           if (nestedEntry.value is LocalizationItem) {
-            buffer.writeln(_generateMethod(nestedEntry.value as LocalizationItem, locales, isNested: true));
+            buffer.writeln(_generateMethod(
+                nestedEntry.value as LocalizationItem, locales,
+                isNested: true));
           }
         }
 
@@ -155,7 +183,8 @@ class DartWriter {
 
         // Recursively generate deeper nested classes
         final valueAsMap = Map<String, dynamic>.from(value);
-        buffer.write(_generateDeeperNestedClasses(key, valueAsMap, locales, allItems));
+        buffer.write(
+            _generateDeeperNestedClasses(key, valueAsMap, locales, allItems));
       }
     }
 
@@ -189,7 +218,8 @@ class DartWriter {
           final nestedValue = nestedEntry.value;
 
           if (nestedValue is LocalizationItem) {
-            buffer.writeln(_generateMethod(nestedValue, locales, isNested: true));
+            buffer
+                .writeln(_generateMethod(nestedValue, locales, isNested: true));
           }
         }
 
@@ -202,7 +232,8 @@ class DartWriter {
   }
 
   /// Generate a single method for a localization key
-  String _generateMethod(LocalizationItem item, List<LocaleData> locales, {bool isNested = false}) {
+  String _generateMethod(LocalizationItem item, List<LocaleData> locales,
+      {bool isNested = false}) {
     final buffer = StringBuffer();
 
     // Get the simple key (last part after dots)
@@ -216,7 +247,8 @@ class DartWriter {
     // Generate method signature
     if (item.hasParameters) {
       // Method with parameters: welcomeUser({required String name})
-      final params = item.parameters.map((p) => 'required String $p').join(', ');
+      final params =
+          item.parameters.map((p) => 'required String $p').join(', ');
       buffer.writeln("  String $simpleKey({$params}) {");
       buffer.writeln("    switch (locale.languageCode) {");
 
@@ -225,7 +257,8 @@ class DartWriter {
         final localeItem = locale.items[item.key];
         if (localeItem != null) {
           buffer.write("      case '${locale.locale}': return ");
-          buffer.write(_interpolateString(localeItem.value, localeItem.parameters));
+          buffer.write(
+              _interpolateString(localeItem.value, localeItem.parameters));
           buffer.writeln(";");
         }
       }
@@ -245,7 +278,8 @@ class DartWriter {
       for (final locale in locales) {
         final localeItem = locale.items[item.key];
         if (localeItem != null) {
-          buffer.writeln("      case '${locale.locale}': return '${_escape(localeItem.value)}';");
+          buffer.writeln(
+              "      case '${locale.locale}': return '${_escape(localeItem.value)}';");
         }
       }
 
@@ -285,7 +319,8 @@ class DartWriter {
     final buffer = StringBuffer();
 
     buffer.writeln("/// Localization delegate for $className");
-    buffer.writeln("class ${className}Delegate extends LocalizationsDelegate<$className> {");
+    buffer.writeln(
+        "class ${className}Delegate extends LocalizationsDelegate<$className> {");
     buffer.writeln("  const ${className}Delegate();");
     buffer.writeln();
     buffer.writeln("  @override");

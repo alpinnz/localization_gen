@@ -133,10 +133,7 @@ class MonorepoHomePage extends StatelessWidget {
                 Text(
                   '📦 AppLocalizations\n'
                   '📁 app_auth_en.json, app_home_en.json, app_settings_en.json',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -179,10 +176,7 @@ class MonorepoHomePage extends StatelessWidget {
                 Text(
                   '📦 CoreLocalizations\n'
                   '📁 core_widgets_en.json, core_buttons_en.json',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -411,13 +405,9 @@ class ModuleSectionHeader extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           title,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: color,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, color: color),
         ),
       ],
     );
   }
 }
-

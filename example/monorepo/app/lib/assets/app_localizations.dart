@@ -15,10 +15,7 @@ class AppLocalizations {
   }
 
   /// All supported locales
-  static const supportedLocales = [
-    Locale('en'),
-    Locale('id'),
-  ];
+  static const supportedLocales = [Locale('en'), Locale('id')];
 
   /// Access login translations
   _Login get login => _Login(locale);
@@ -37,103 +34,124 @@ class AppLocalizations {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en': return 'Settings';
-      case 'id': return 'Pengaturan';
-      default: return 'Settings';
+      case 'en':
+        return 'Settings';
+      case 'id':
+        return 'Pengaturan';
+      default:
+        return 'Settings';
     }
   }
-
 
   String get welcome {
     switch (locale.languageCode) {
-      case 'en': return 'Welcome to Localization Gen!';
-      case 'id': return 'Selamat datang di Localization Gen!';
-      default: return 'Welcome to Localization Gen!';
+      case 'en':
+        return 'Welcome to Localization Gen!';
+      case 'id':
+        return 'Selamat datang di Localization Gen!';
+      default:
+        return 'Welcome to Localization Gen!';
     }
   }
-
 
   String welcome_user({required String name}) {
     switch (locale.languageCode) {
-      case 'en': return 'Welcome, $name!';
-      case 'id': return 'Selamat datang, $name!';
-      default: return 'Welcome, $name!';
+      case 'en':
+        return 'Welcome, $name!';
+      case 'id':
+        return 'Selamat datang, $name!';
+      default:
+        return 'Welcome, $name!';
     }
   }
-
 
   String item_count({required String count}) {
     switch (locale.languageCode) {
-      case 'en': return 'You have $count items';
-      case 'id': return 'Anda memiliki $count item';
-      default: return 'You have $count items';
+      case 'en':
+        return 'You have $count items';
+      case 'id':
+        return 'Anda memiliki $count item';
+      default:
+        return 'You have $count items';
     }
   }
-
 
   String discount({required String value}) {
     switch (locale.languageCode) {
-      case 'en': return 'Discount $value%';
-      case 'id': return 'Diskon $value%';
-      default: return 'Discount $value%';
+      case 'en':
+        return 'Discount $value%';
+      case 'id':
+        return 'Diskon $value%';
+      default:
+        return 'Discount $value%';
     }
   }
-
 
   String get hello {
     switch (locale.languageCode) {
-      case 'en': return 'Hello';
-      case 'id': return 'Halo';
-      default: return 'Hello';
+      case 'en':
+        return 'Hello';
+      case 'id':
+        return 'Halo';
+      default:
+        return 'Hello';
     }
   }
-
 
   String get goodbye {
     switch (locale.languageCode) {
-      case 'en': return 'Goodbye';
-      case 'id': return 'Selamat tinggal';
-      default: return 'Goodbye';
+      case 'en':
+        return 'Goodbye';
+      case 'id':
+        return 'Selamat tinggal';
+      default:
+        return 'Goodbye';
     }
   }
-
 
   String get yes {
     switch (locale.languageCode) {
-      case 'en': return 'Yes';
-      case 'id': return 'Ya';
-      default: return 'Yes';
+      case 'en':
+        return 'Yes';
+      case 'id':
+        return 'Ya';
+      default:
+        return 'Yes';
     }
   }
-
 
   String get no {
     switch (locale.languageCode) {
-      case 'en': return 'No';
-      case 'id': return 'Tidak';
-      default: return 'No';
+      case 'en':
+        return 'No';
+      case 'id':
+        return 'Tidak';
+      default:
+        return 'No';
     }
   }
-
 
   String get save {
     switch (locale.languageCode) {
-      case 'en': return 'Save';
-      case 'id': return 'Simpan';
-      default: return 'Save';
+      case 'en':
+        return 'Save';
+      case 'id':
+        return 'Simpan';
+      default:
+        return 'Save';
     }
   }
-
 
   String get cancel {
     switch (locale.languageCode) {
-      case 'en': return 'Cancel';
-      case 'id': return 'Batal';
-      default: return 'Cancel';
+      case 'en':
+        return 'Cancel';
+      case 'id':
+        return 'Batal';
+      default:
+        return 'Cancel';
     }
   }
-
-
 }
 
 /// Translations for login namespace
@@ -144,49 +162,58 @@ class _Login {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en': return 'Login';
-      case 'id': return 'Masuk';
-      default: return 'Login';
+      case 'en':
+        return 'Login';
+      case 'id':
+        return 'Masuk';
+      default:
+        return 'Login';
     }
   }
-
 
   String get email {
     switch (locale.languageCode) {
-      case 'en': return 'Email';
-      case 'id': return 'Email';
-      default: return 'Email';
+      case 'en':
+        return 'Email';
+      case 'id':
+        return 'Email';
+      default:
+        return 'Email';
     }
   }
-
 
   String get password {
     switch (locale.languageCode) {
-      case 'en': return 'Password';
-      case 'id': return 'Kata Sandi';
-      default: return 'Password';
+      case 'en':
+        return 'Password';
+      case 'id':
+        return 'Kata Sandi';
+      default:
+        return 'Password';
     }
   }
-
 
   String get button {
     switch (locale.languageCode) {
-      case 'en': return 'Sign In';
-      case 'id': return 'Masuk';
-      default: return 'Sign In';
+      case 'en':
+        return 'Sign In';
+      case 'id':
+        return 'Masuk';
+      default:
+        return 'Sign In';
     }
   }
-
 
   String get forgot_password {
     switch (locale.languageCode) {
-      case 'en': return 'Forgot Password?';
-      case 'id': return 'Lupa Kata Sandi?';
-      default: return 'Forgot Password?';
+      case 'en':
+        return 'Forgot Password?';
+      case 'id':
+        return 'Lupa Kata Sandi?';
+      default:
+        return 'Forgot Password?';
     }
   }
-
-
 }
 
 /// Translations for register namespace
@@ -197,31 +224,36 @@ class _Register {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en': return 'Register';
-      case 'id': return 'Daftar';
-      default: return 'Register';
+      case 'en':
+        return 'Register';
+      case 'id':
+        return 'Daftar';
+      default:
+        return 'Register';
     }
   }
-
 
   String get button {
     switch (locale.languageCode) {
-      case 'en': return 'Sign Up';
-      case 'id': return 'Buat Akun';
-      default: return 'Sign Up';
+      case 'en':
+        return 'Sign Up';
+      case 'id':
+        return 'Buat Akun';
+      default:
+        return 'Sign Up';
     }
   }
-
 
   String get terms_accept {
     switch (locale.languageCode) {
-      case 'en': return 'I accept the terms and conditions';
-      case 'id': return 'Saya menerima syarat dan ketentuan';
-      default: return 'I accept the terms and conditions';
+      case 'en':
+        return 'I accept the terms and conditions';
+      case 'id':
+        return 'Saya menerima syarat dan ketentuan';
+      default:
+        return 'I accept the terms and conditions';
     }
   }
-
-
 }
 
 /// Translations for errors namespace
@@ -232,31 +264,36 @@ class _Errors {
 
   String get invalid_email {
     switch (locale.languageCode) {
-      case 'en': return 'Invalid email address';
-      case 'id': return 'Alamat email tidak valid';
-      default: return 'Invalid email address';
+      case 'en':
+        return 'Invalid email address';
+      case 'id':
+        return 'Alamat email tidak valid';
+      default:
+        return 'Invalid email address';
     }
   }
-
 
   String get weak_password {
     switch (locale.languageCode) {
-      case 'en': return 'Password is too weak';
-      case 'id': return 'Kata sandi terlalu lemah';
-      default: return 'Password is too weak';
+      case 'en':
+        return 'Password is too weak';
+      case 'id':
+        return 'Kata sandi terlalu lemah';
+      default:
+        return 'Password is too weak';
     }
   }
-
 
   String get user_not_found {
     switch (locale.languageCode) {
-      case 'en': return 'User not found';
-      case 'id': return 'Pengguna tidak ditemukan';
-      default: return 'User not found';
+      case 'en':
+        return 'User not found';
+      case 'id':
+        return 'Pengguna tidak ditemukan';
+      default:
+        return 'User not found';
     }
   }
-
-
 }
 
 /// Translations for profile namespace
@@ -267,31 +304,36 @@ class _Profile {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en': return 'Profile';
-      case 'id': return 'Profil';
-      default: return 'Profile';
+      case 'en':
+        return 'Profile';
+      case 'id':
+        return 'Profil';
+      default:
+        return 'Profile';
     }
   }
-
 
   String get edit_profile {
     switch (locale.languageCode) {
-      case 'en': return 'Edit Profile';
-      case 'id': return 'Edit Profil';
-      default: return 'Edit Profile';
+      case 'en':
+        return 'Edit Profile';
+      case 'id':
+        return 'Edit Profil';
+      default:
+        return 'Edit Profile';
     }
   }
-
 
   String get change_password {
     switch (locale.languageCode) {
-      case 'en': return 'Change Password';
-      case 'id': return 'Ubah Kata Sandi';
-      default: return 'Change Password';
+      case 'en':
+        return 'Change Password';
+      case 'id':
+        return 'Ubah Kata Sandi';
+      default:
+        return 'Change Password';
     }
   }
-
-
 }
 
 /// Translations for preferences namespace
@@ -302,40 +344,47 @@ class _Preferences {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en': return 'Preferences';
-      case 'id': return 'Preferensi';
-      default: return 'Preferences';
+      case 'en':
+        return 'Preferences';
+      case 'id':
+        return 'Preferensi';
+      default:
+        return 'Preferences';
     }
   }
-
 
   String get language {
     switch (locale.languageCode) {
-      case 'en': return 'Language';
-      case 'id': return 'Bahasa';
-      default: return 'Language';
+      case 'en':
+        return 'Language';
+      case 'id':
+        return 'Bahasa';
+      default:
+        return 'Language';
     }
   }
-
 
   String get theme {
     switch (locale.languageCode) {
-      case 'en': return 'Theme';
-      case 'id': return 'Tema';
-      default: return 'Theme';
+      case 'en':
+        return 'Theme';
+      case 'id':
+        return 'Tema';
+      default:
+        return 'Theme';
     }
   }
-
 
   String get notifications {
     switch (locale.languageCode) {
-      case 'en': return 'Notifications';
-      case 'id': return 'Notifikasi';
-      default: return 'Notifications';
+      case 'en':
+        return 'Notifications';
+      case 'id':
+        return 'Notifikasi';
+      default:
+        return 'Notifications';
     }
   }
-
-
 }
 
 /// Localization delegate for AppLocalizations
@@ -362,4 +411,3 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
 extension AppLocalizationsExtension on AppLocalizations {
   static const delegate = AppLocalizationsDelegate();
 }
-

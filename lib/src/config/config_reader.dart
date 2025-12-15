@@ -4,6 +4,22 @@ import '../model/localization_item.dart';
 
 /// Reads configuration from pubspec.yaml
 class ConfigReader {
+  /// Creates a new ConfigReader instance
+  ConfigReader();
+
+  /// Reads localization configuration from pubspec.yaml
+  ///
+  /// The [pubspecPath] parameter specifies the path to pubspec.yaml file.
+  /// Defaults to 'pubspec.yaml' in the current directory.
+  ///
+  /// Returns a [LocalizationConfig] with default values if no configuration
+  /// is found or if an error occurs during reading.
+  ///
+  /// Example:
+  /// ```dart
+  /// final config = ConfigReader.read('pubspec.yaml');
+  /// print(config.inputDir); // 'assets/localizations'
+  /// ```
   static LocalizationConfig read([String pubspecPath = 'pubspec.yaml']) {
     try {
       final file = File(pubspecPath);
@@ -30,4 +46,3 @@ class ConfigReader {
     }
   }
 }
-

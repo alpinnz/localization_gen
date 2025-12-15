@@ -15,105 +15,122 @@ class CoreLocalizations {
   }
 
   /// All supported locales
-  static const supportedLocales = [
-    Locale('en'),
-    Locale('id'),
-  ];
+  static const supportedLocales = [Locale('en'), Locale('id')];
 
   String get save {
     switch (locale.languageCode) {
-      case 'en': return 'Save';
-      case 'id': return 'Simpan';
-      default: return 'Save';
+      case 'en':
+        return 'Save';
+      case 'id':
+        return 'Simpan';
+      default:
+        return 'Save';
     }
   }
-
 
   String get cancel {
     switch (locale.languageCode) {
-      case 'en': return 'Cancel';
-      case 'id': return 'Batal';
-      default: return 'Cancel';
+      case 'en':
+        return 'Cancel';
+      case 'id':
+        return 'Batal';
+      default:
+        return 'Cancel';
     }
   }
-
 
   String get delete {
     switch (locale.languageCode) {
-      case 'en': return 'Delete';
-      case 'id': return 'Hapus';
-      default: return 'Delete';
+      case 'en':
+        return 'Delete';
+      case 'id':
+        return 'Hapus';
+      default:
+        return 'Delete';
     }
   }
-
 
   String get confirm {
     switch (locale.languageCode) {
-      case 'en': return 'Confirm';
-      case 'id': return 'Konfirmasi';
-      default: return 'Confirm';
+      case 'en':
+        return 'Confirm';
+      case 'id':
+        return 'Konfirmasi';
+      default:
+        return 'Confirm';
     }
   }
-
 
   String get close {
     switch (locale.languageCode) {
-      case 'en': return 'Close';
-      case 'id': return 'Tutup';
-      default: return 'Close';
+      case 'en':
+        return 'Close';
+      case 'id':
+        return 'Tutup';
+      default:
+        return 'Close';
     }
   }
-
 
   String get loading {
     switch (locale.languageCode) {
-      case 'en': return 'Loading...';
-      case 'id': return 'Memuat...';
-      default: return 'Loading...';
+      case 'en':
+        return 'Loading...';
+      case 'id':
+        return 'Memuat...';
+      default:
+        return 'Loading...';
     }
   }
-
 
   String get error {
     switch (locale.languageCode) {
-      case 'en': return 'An error occurred';
-      case 'id': return 'Terjadi kesalahan';
-      default: return 'An error occurred';
+      case 'en':
+        return 'An error occurred';
+      case 'id':
+        return 'Terjadi kesalahan';
+      default:
+        return 'An error occurred';
     }
   }
-
 
   String get retry {
     switch (locale.languageCode) {
-      case 'en': return 'Retry';
-      case 'id': return 'Coba Lagi';
-      default: return 'Retry';
+      case 'en':
+        return 'Retry';
+      case 'id':
+        return 'Coba Lagi';
+      default:
+        return 'Retry';
     }
   }
-
 
   String get no_data {
     switch (locale.languageCode) {
-      case 'en': return 'No data available';
-      case 'id': return 'Tidak ada data';
-      default: return 'No data available';
+      case 'en':
+        return 'No data available';
+      case 'id':
+        return 'Tidak ada data';
+      default:
+        return 'No data available';
     }
   }
-
 
   String get refresh {
     switch (locale.languageCode) {
-      case 'en': return 'Refresh';
-      case 'id': return 'Muat Ulang';
-      default: return 'Refresh';
+      case 'en':
+        return 'Refresh';
+      case 'id':
+        return 'Muat Ulang';
+      default:
+        return 'Refresh';
     }
   }
-
-
 }
 
 /// Localization delegate for CoreLocalizations
-class CoreLocalizationsDelegate extends LocalizationsDelegate<CoreLocalizations> {
+class CoreLocalizationsDelegate
+    extends LocalizationsDelegate<CoreLocalizations> {
   const CoreLocalizationsDelegate();
 
   @override
@@ -136,4 +153,3 @@ class CoreLocalizationsDelegate extends LocalizationsDelegate<CoreLocalizations>
 extension CoreLocalizationsExtension on CoreLocalizations {
   static const delegate = CoreLocalizationsDelegate();
 }
-

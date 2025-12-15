@@ -7,7 +7,9 @@ import 'package:modular_example/assets/app_localizations.dart';
 
 void main() {
   group('Modular App Basic Tests', () {
-    testWidgets('App loads with default English locale', (WidgetTester tester) async {
+    testWidgets('App loads with default English locale', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -16,7 +18,9 @@ void main() {
       expect(find.text('Modular Organization'), findsOneWidget);
     });
 
-    testWidgets('Language can be changed to Indonesian', (WidgetTester tester) async {
+    testWidgets('Language can be changed to Indonesian', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -81,7 +85,9 @@ void main() {
       expect(find.text('Sign In'), findsOneWidget);
     });
 
-    testWidgets('Auth module shows error messages', (WidgetTester tester) async {
+    testWidgets('Auth module shows error messages', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -172,7 +178,9 @@ void main() {
   });
 
   group('Settings Module Tests', () {
-    testWidgets('Settings module displays options', (WidgetTester tester) async {
+    testWidgets('Settings module displays options', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -232,7 +240,10 @@ void main() {
       await tester.pumpWidget(const ModularLocalizationApp());
       await tester.pumpAndSettle();
 
-      expect(find.widgetWithText(AppBar, 'Modular Localization'), findsOneWidget);
+      expect(
+        find.widgetWithText(AppBar, 'Modular Localization'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('Module cards show icons', (WidgetTester tester) async {
@@ -247,7 +258,9 @@ void main() {
   });
 
   group('AppLocalizations Tests', () {
-    testWidgets('AppLocalizations works correctly', (WidgetTester tester) async {
+    testWidgets('AppLocalizations works correctly', (
+      WidgetTester tester,
+    ) async {
       AppLocalizations? l10n;
 
       await tester.pumpWidget(
@@ -284,4 +297,3 @@ void main() {
     });
   });
 }
-
