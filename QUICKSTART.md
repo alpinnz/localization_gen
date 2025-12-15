@@ -8,7 +8,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  localization_gen: ^1.0.0
+  localization_gen: ^1.0.4
 ```
 
 Then run:
@@ -127,7 +127,7 @@ class HomePage extends StatelessWidget {
       body: Column(
         children: [
           Text(l10n.common.hello),
-          Text(l10n.home.welcome('John')),
+          Text(l10n.home.welcome(name: 'John')),
           ElevatedButton(
             onPressed: () {},
             child: Text(l10n.common.save),
@@ -185,6 +185,7 @@ localization_gen:
 - [Full Documentation](https://github.com/alpinnz/localization_gen#readme)
 - [Examples](https://github.com/alpinnz/localization_gen/blob/master/EXAMPLES.md)
 - [Changelog](https://github.com/alpinnz/localization_gen/blob/master/CHANGELOG.md)
+- [Migration Guide](https://github.com/alpinnz/localization_gen/blob/master/MIGRATION_V1.0.4.md)
 
 ## Support
 
@@ -192,4 +193,5 @@ Found an issue? Have a question?
 - Check the examples directory
 - Read the full README
 - Look at test files for usage patterns
+- [Open an issue](https://github.com/alpinnz/localization_gen/issues)
 

@@ -53,7 +53,7 @@ class AppLocalizations {
   }
 
 
-  String welcome_user(String name) {
+  String welcome_user({required String name}) {
     switch (locale.languageCode) {
       case 'en': return 'Welcome, $name!';
       case 'id': return 'Selamat datang, $name!';
@@ -62,7 +62,7 @@ class AppLocalizations {
   }
 
 
-  String item_count(String count) {
+  String item_count({required String count}) {
     switch (locale.languageCode) {
       case 'en': return 'You have $count items';
       case 'id': return 'Anda memiliki $count item';
@@ -71,7 +71,7 @@ class AppLocalizations {
   }
 
 
-  String discount(String value) {
+  String discount({required String value}) {
     switch (locale.languageCode) {
       case 'en': return 'Discount $value%';
       case 'id': return 'Diskon $value%';

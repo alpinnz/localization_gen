@@ -5,6 +5,14 @@ A powerful and type-safe localization generator for Flutter applications using J
 [![Pub Version](https://img.shields.io/pub/v/localization_gen)](https://pub.dev/packages/localization_gen)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/alpinnz/localization_gen/blob/master/LICENSE)
 
+> **Important Update - v1.0.4**  
+> Version 1.0.4 introduces **named parameters** for better code clarity. If you're upgrading from v1.0.3 or earlier:
+> - **Update guide:** [UPDATE_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/UPDATE_V1.0.4.md)
+> - **Migration steps:** [MIGRATION_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/MIGRATION_V1.0.4.md)
+> 
+> **Quick Summary:**  
+> `l10n.welcome('John')` becomes `l10n.welcome(name: 'John')`
+
 ## Features
 
 - **Type-Safe**: Compile-time checking of translation keys
@@ -55,7 +63,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  localization_gen: ^1.0.0
+  localization_gen: ^1.0.4
 
 dependencies:
   flutter_localizations:
@@ -126,7 +134,7 @@ class HomePage extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(l10n.common.hello)),
-      body: Text(l10n.home.welcome('John')),
+      body: Text(l10n.home.welcome(name: 'John')),
     );
   }
 }
@@ -178,8 +186,8 @@ localization_gen:
 
 Usage:
 ```dart
-l10n.greetings.welcome('John')      // "Welcome, John!"
-l10n.greetings.items('5')           // "You have 5 items"
+l10n.greetings.welcome(name: 'John')      // "Welcome, John!"
+l10n.greetings.items(count: '5')          // "You have 5 items"
 ```
 
 ### Modular Organization
@@ -267,8 +275,8 @@ final l10n = AppLocalizations.of(context);
 // Nested access
 l10n.auth.login.title
 
-// With parameters
-l10n.home.welcome('John')
+// With parameters (using named parameters)
+l10n.home.welcome(name: 'John')
 
 // Deep nesting
 l10n.settings.profile.edit.title
@@ -328,6 +336,71 @@ jobs:
 | Monorepo Support | Yes | No | No |
 
 ## Migration Guide
+
+### From v1.0.3 to v1.0.4
+
+Version 1.0.4 introduces **improved parameter handling** with named parameters for better code clarity and safety.
+
+**What Changed:**
+```dart
+// Before (v1.0.3 and earlier) - Positional parameters
+l10n.welcome_user('John')
+l10n.item_count('5')
+l10n.discount('20')
+
+// After (v1.0.4+) - Named parameters with required keyword
+l10n.welcome_user(name: 'John')
+l10n.item_count(count: '5')
+l10n.discount(value: '20')
+```
+
+**Migration Steps:**
+
+1. **Update the package:**
+   ```yaml
+   dev_dependencies:
+     localization_gen: ^1.0.4
+   ```
+
+2. **Regenerate localization files:**
+   ```bash
+   dart run localization_gen:localization_gen
+   ```
+
+3. **Update all method calls with parameters:**
+   - Find all calls to methods with parameters
+   - Convert from positional to named parameters
+   - Use the parameter name from your JSON (e.g., `{name}` becomes `name:`)
+
+4. **Test your application:**
+   - Run all tests to catch any missed conversions
+   - The compiler will show errors for any unconverted calls
+
+**Example Migration:**
+
+Before:
+```dart
+Text(l10n.home.welcome_user('Alice'))
+Text(l10n.shop.discount('25'))
+Text(l10n.cart.item_count('10'))
+```
+
+After:
+```dart
+Text(l10n.home.welcome_user(name: 'Alice'))
+Text(l10n.shop.discount(value: '25'))
+Text(l10n.cart.item_count(count: '10'))
+```
+
+**Why This Change?**
+
+Named parameters provide:
+- Better code clarity
+- Prevention of parameter order mistakes
+- Improved IDE autocomplete
+- Easier maintenance
+
+For detailed migration guide, see [MIGRATION_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/MIGRATION_V1.0.4.md).
 
 ### From intl
 
@@ -393,11 +466,19 @@ MIT License - see [LICENSE](https://github.com/alpinnz/localization_gen/blob/mas
 
 ## Support
 
-- [Documentation](https://github.com/alpinnz/localization_gen#readme)
-- [Quick Start Guide](https://github.com/alpinnz/localization_gen/blob/master/QUICKSTART.md)
-- [Examples](https://github.com/alpinnz/localization_gen/blob/master/EXAMPLES.md)
-- [Changelog](https://github.com/alpinnz/localization_gen/blob/master/CHANGELOG.md)
-- [Issues](https://github.com/alpinnz/localization_gen/issues)
+### Documentation
+- [Quick Start Guide](https://github.com/alpinnz/localization_gen/blob/master/QUICKSTART.md) - Get started in 5 minutes
+- [Examples](https://github.com/alpinnz/localization_gen/blob/master/EXAMPLES.md) - Real-world examples
+- [Changelog](https://github.com/alpinnz/localization_gen/blob/master/CHANGELOG.md) - Version history
+
+### v1.0.4 Update Resources
+- [Update Guide](https://github.com/alpinnz/localization_gen/blob/master/UPDATE_V1.0.4.md) - Complete update documentation
+- [Migration Guide](https://github.com/alpinnz/localization_gen/blob/master/MIGRATION_V1.0.4.md) - Step-by-step migration
+
+### Get Help
+- [Report Issues](https://github.com/alpinnz/localization_gen/issues)
+- [Discussions](https://github.com/alpinnz/localization_gen/discussions)
+- Contact maintainer via GitHub
 
 ## Acknowledgments
 
@@ -405,7 +486,7 @@ Inspired by the need for better localization organization in large Flutter proje
 
 ---
 
-**Version:** 1.0.0  
+**Version:** 1.0.4  
 **Dart SDK:** >=3.0.0 <4.0.0  
 **Flutter:** >=3.0.0
 

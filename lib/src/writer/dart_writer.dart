@@ -215,9 +215,9 @@ class DartWriter {
 
     // Generate method signature
     if (item.hasParameters) {
-      // Method with parameters: welcomeUser(String name)
-      final params = item.parameters.map((p) => 'String $p').join(', ');
-      buffer.writeln("  String $simpleKey($params) {");
+      // Method with parameters: welcomeUser({required String name})
+      final params = item.parameters.map((p) => 'required String $p').join(', ');
+      buffer.writeln("  String $simpleKey({$params}) {");
       buffer.writeln("    switch (locale.languageCode) {");
 
       // Generate switch cases for each locale

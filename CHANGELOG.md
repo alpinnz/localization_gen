@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-12-15
+
+### Changed
+- **IMPORTANT**: Updated method parameter generation from positional to named parameters with `required` keyword
+  - Old: `welcome_user(String name)`
+  - New: `welcome_user({required String name})`
+  - **Migration recommended**: All method calls with parameters should be updated to use named parameters
+  - See [MIGRATION_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/MIGRATION_V1.0.4.md) for detailed migration guide
+  - See [UPDATE_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/UPDATE_V1.0.4.md) for complete update documentation
+  
+### Why This Change?
+- Better API clarity and self-documenting code
+- Prevention of parameter order mistakes
+- Improved IDE autocomplete support
+- Future-proof for adding optional parameters
+
+### Impact
+- Applications using methods with parameters will need to update their method calls
+- Compiler will catch all locations that need updating with clear error messages
+- This change improves code quality and maintainability
+
+### Documentation
+- Added comprehensive update guide (UPDATE_V1.0.4.md)
+- Updated all examples to use named parameters
+- Updated README and QUICKSTART with new syntax
+- Updated migration guide with detailed step-by-step instructions
+
 ## [1.0.3] - 2024-12-14
 
 ### Fixed
@@ -113,12 +140,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+### 1.0.4
+Named parameters with required keyword for better API design and code clarity.
+
+### 1.0.3
+Documentation fixes for branch references.
+
+### 1.0.2
+Metadata cleanup for pub.dev compliance.
+
+### 1.0.1
+Modular organization support and enhanced examples.
+
 ### 1.0.0
 First stable release ready for production use. Includes comprehensive examples, documentation, and testing.
 
 ---
 
 ## Upgrade Guide
+
+### From 1.0.3 to 1.0.4
+
+1. Update your `pubspec.yaml`:
+   ```yaml
+   dev_dependencies:
+     localization_gen: ^1.0.4
+   ```
+
+2. Regenerate your localization files:
+   ```bash
+   dart run localization_gen:localization_gen
+   ```
+
+3. Update all method calls with parameters from positional to named:
+   ```dart
+   // Before
+   l10n.welcome('John')
+   
+   // After
+   l10n.welcome(name: 'John')
+   ```
+
+4. Test your application - the compiler will catch any missed conversions
+
+For detailed migration guide, see [MIGRATION_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/MIGRATION_V1.0.4.md).
 
 ### From 0.x to 1.0.0
 
@@ -146,10 +211,4 @@ Planned for future releases:
 - Performance optimizations
 - More configuration options
 - Additional examples
-- Enhanced error messages
-- IDE plugins
-
----
-
-For detailed information about each version, see the [Releases](https://github.com/alpinnz/localization_gen/releases) page.
 

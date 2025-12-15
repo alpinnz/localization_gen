@@ -6,7 +6,7 @@ This directory contains three complete example applications demonstrating differ
 
 ### 1. Default Example
 
-**Location:** `examples/default/`
+**Location:** `example/default/`
 
 **Description:** Traditional nested JSON approach with single file per locale.
 
@@ -22,11 +22,9 @@ This directory contains three complete example applications demonstrating differ
 - 12 comprehensive tests
 - Simple configuration
 
-**Languages:** English, Indonesian
+**Languages:** English, Indonesian, Spanish
 
 [View Default Example README](https://github.com/alpinnz/localization_gen/blob/master/example/default/README.md)
-
----
 
 ### 2. Modular Example
 
@@ -52,11 +50,9 @@ This directory contains three complete example applications demonstrating differ
 - Common (shared buttons)
 - Settings (preferences)
 
-**Languages:** English, Indonesian
+**Languages:** English, Indonesian, Spanish
 
 [View Modular Example README](https://github.com/alpinnz/localization_gen/blob/master/example/modular/README.md)
-
----
 
 ### 3. Monorepo Example
 
@@ -80,11 +76,9 @@ This directory contains three complete example applications demonstrating differ
 - **App Package:** Main application with app-specific features
 - **Core Package:** Shared library with common components
 
-**Languages:** English, Indonesian
+**Languages:** English, Indonesian, Spanish
 
 [View Monorepo Example README](https://github.com/alpinnz/localization_gen/blob/master/example/monorepo/README.md)
-
----
 
 ## Comparison Matrix
 
@@ -98,8 +92,6 @@ This directory contains three complete example applications demonstrating differ
 | **Scalability** | Medium | High | Very High |
 | **Team Size** | Small | Medium-Large | Large |
 | **Best For** | Standard apps | Feature-rich apps | Enterprise |
-
----
 
 ## Running Examples
 
@@ -133,20 +125,16 @@ cd example/monorepo/app
 dart run localization_gen:localization_gen
 ```
 
----
-
 ## Common Features
 
 All examples include:
 
-- **Language Switching:** Toggle between English and Indonesian
+- **Language Switching:** Toggle between English, Indonesian, and Spanish
 - **Type-Safe Access:** Compile-time checking of translations
 - **Parameter Interpolation:** Dynamic values in translations
 - **Comprehensive Tests:** Full test coverage
 - **Clean Architecture:** Well-organized code structure
 - **Production Ready:** Can be used as templates
-
----
 
 ## Testing
 
@@ -164,8 +152,6 @@ This will run tests for:
 - Monorepo Core (6 tests)
 
 Total: 59 tests
-
----
 
 ## Configuration Examples
 
@@ -204,8 +190,6 @@ localization_gen:
   file_prefix: app  # or core
 ```
 
----
-
 ## Choosing the Right Example
 
 **Start with Default if:**
@@ -226,16 +210,12 @@ localization_gen:
 - You have a large organization
 - You need independent package versioning
 
----
-
 ## Learn More
 
 - [Main README](https://github.com/alpinnz/localization_gen#readme) - Library documentation
 - [QUICKSTART](https://github.com/alpinnz/localization_gen/blob/master/QUICKSTART.md) - Quick setup guide
 - [CHANGELOG](https://github.com/alpinnz/localization_gen/blob/master/CHANGELOG.md) - Version history
 - Individual example READMEs for detailed information
-
----
 
 ## Support
 
@@ -244,6 +224,7 @@ For questions or issues:
 - Review main documentation
 - Look at test files for usage patterns
 - Examine generated code for implementation details
+- [Open an issue](https://github.com/alpinnz/localization_gen/issues)
 
 All examples are fully functional and tested. Feel free to use them as starting points for your own projects.
 

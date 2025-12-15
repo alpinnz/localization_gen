@@ -304,7 +304,7 @@ void main() {
 
       final code = writer.generate([localeData]);
 
-      expect(code, contains('String greeting(String name)'));
+      expect(code, contains('String greeting({required String name})'));
       expect(code, contains('Hello, \$name!'));
     });
 
@@ -352,8 +352,8 @@ void main() {
 
       final code = writer.generate([localeData]);
 
-      expect(code, contains('class AppLocalizationsExtension'));
-      expect(code, contains('static const LocalizationsDelegate'));
+      expect(code, contains('extension AppLocalizationsExtension'));
+      expect(code, contains('static const delegate'));
       expect(code, contains('isSupported'));
       expect(code, contains('load'));
       expect(code, contains('shouldReload'));
@@ -482,7 +482,7 @@ void main() {
 
       final code = writer.generate([enData, idData]);
 
-      expect(code, contains('String greeting(String name)'));
+      expect(code, contains('String greeting({required String name})'));
       expect(code, contains("case 'en': return 'Welcome, \$name!'"));
       expect(code, contains("case 'id': return 'Selamat datang, \$name!'"));
 

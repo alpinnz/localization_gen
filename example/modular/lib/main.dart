@@ -339,12 +339,12 @@ class HomeModuleWidget extends StatelessWidget {
       children: [
         Text(AppLocalizations.of(context).welcome),
         const SizedBox(height: 4),
-        Text(AppLocalizations.of(context).welcome_user('Alice')),
-        const SizedBox(height: 4),
-        Text(AppLocalizations.of(context).item_count('15')),
+        Text(AppLocalizations.of(context).welcome_user(name: 'Alice')),
+        const SizedBox(height: 8),
+        Text(AppLocalizations.of(context).item_count(count: '15')),
         const SizedBox(height: 4),
         Text(
-          AppLocalizations.of(context).discount('25'),
+          AppLocalizations.of(context).discount(value: '25'),
           style: const TextStyle(
             color: Colors.green,
             fontWeight: FontWeight.bold,

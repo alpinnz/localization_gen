@@ -103,9 +103,9 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
               title: AppLocalizations.of(context).home.welcome,
               icon: Icons.home,
               children: [
-                Text(AppLocalizations.of(context).home.welcome_user('John Doe')),
+                Text(AppLocalizations.of(context).home.welcome_user(name: 'John Doe')),
                 const SizedBox(height: 8),
-                Text(AppLocalizations.of(context).home.discount('20')),
+                Text(AppLocalizations.of(context).home.discount(value: '20')),
               ],
             ),
             const SizedBox(height: 16),
@@ -116,7 +116,7 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
               title: 'Item Counter',
               icon: Icons.inventory,
               children: [
-                Text(AppLocalizations.of(context).home.item_count('$_itemCount')),
+                Text(AppLocalizations.of(context).home.item_count(count: '$_itemCount')),
                 const SizedBox(height: 8),
                 Row(
                   children: [

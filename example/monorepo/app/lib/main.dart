@@ -118,8 +118,8 @@ class MonorepoHomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(appL10n.welcome),
-                Text(appL10n.welcome_user('Bob')),
-                Text(appL10n.discount('30')),
+                Text(appL10n.welcome_user(name: 'Bob')),
+                Text(appL10n.discount(value: '30')),
                 const SizedBox(height: 16),
                 ModuleSectionHeader(
                   title: 'Settings Module',
