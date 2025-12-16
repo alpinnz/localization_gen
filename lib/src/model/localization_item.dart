@@ -73,6 +73,9 @@ class LocalizationConfig {
   /// Prefix for modular file names
   final String filePrefix;
 
+  /// Whether to enable strict validation of locale consistency
+  final bool strictValidation;
+
   /// Creates a new LocalizationConfig with default values
   ///
   /// All parameters are optional and have sensible defaults:
@@ -84,6 +87,7 @@ class LocalizationConfig {
   /// - [modular]: false
   /// - [filePattern]: 'app_{module}_{locale}.json'
   /// - [filePrefix]: 'app'
+  /// - [strictValidation]: false
   LocalizationConfig({
     this.inputDir = 'assets/localizations',
     this.outputDir = 'lib/assets',
@@ -93,6 +97,7 @@ class LocalizationConfig {
     this.modular = false,
     this.filePattern = 'app_{module}_{locale}.json',
     this.filePrefix = 'app',
+    this.strictValidation = false,
   });
 
   /// Creates a LocalizationConfig from a map of configuration values
@@ -120,6 +125,7 @@ class LocalizationConfig {
       filePattern:
           map['file_pattern'] as String? ?? 'app_{module}_{locale}.json',
       filePrefix: map['file_prefix'] as String? ?? 'app',
+      strictValidation: map['strict_validation'] as bool? ?? false,
     );
   }
 }

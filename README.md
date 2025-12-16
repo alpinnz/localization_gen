@@ -5,23 +5,28 @@ A powerful and type-safe localization generator for Flutter applications using J
 [![Pub Version](https://img.shields.io/pub/v/localization_gen)](https://pub.dev/packages/localization_gen)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/alpinnz/localization_gen/blob/master/LICENSE)
 
-> **Important Update - v1.0.4**  
-> Version 1.0.4 introduces **named parameters** for better code clarity. If you're upgrading from v1.0.3 or earlier:
-> - **Update guide:** [UPDATE_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/UPDATE_V1.0.4.md)
-> - **Migration steps:** [MIGRATION_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/MIGRATION_V1.0.4.md)
-> 
-> **Quick Summary:**  
-> `l10n.welcome('John')` becomes `l10n.welcome(name: 'John')`
+> **Latest Update - v1.0.6**  
+> Version 1.0.6 introduces **watch mode** and **strict validation**:
+> -  **Watch Mode**: Auto-regenerate on file changes with `--watch`
+> -  **Strict Validation**: Ensure locale consistency with `strict_validation: true`
+> -  **Enhanced Error Handling**: Clear error messages with file paths and line numbers
+> -  **Better Performance**: Optimized code generation
+>
+> **Previous Update - v1.0.4**  
+> Named parameters for better code clarity: `l10n.welcome(name: 'John')`  
+> See [MIGRATION_V1.0.4.md](https://github.com/alpinnz/localization_gen/blob/master/MIGRATION_V1.0.4.md)
 
 ## Features
 
-- **Type-Safe**: Compile-time checking of translation keys
-- **Nested JSON**: Organize translations hierarchically for better maintainability
-- **Modular**: Support for feature-based file organization
-- **Parameter Interpolation**: Dynamic values in translations
-- **Multi-Package**: Monorepo support with independent localization per package
-- **Customizable**: Flexible configuration options
-- **Production Ready**: Comprehensive examples and testing
+-  **Type-Safe**: Compile-time checking of translation keys
+-  **Nested JSON**: Organize translations hierarchically up to 10 levels deep
+-  **Watch Mode**: Auto-regenerate on file changes during development
+-  **Modular**: Support for feature-based file organization
+-  **Parameter Interpolation**: Dynamic values with named parameters
+-  **Strict Validation**: Ensure all locales have consistent keys and parameters
+-  **Multi-Package**: Monorepo support with independent localization per package
+-  **Customizable**: Flexible configuration options
+-  **Production Ready**: Comprehensive testing and error handling
 
 ## Why Use This Package?
 
@@ -63,11 +68,16 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  localization_gen: ^1.0.4
+  localization_gen: ^1.0.6
 
 dependencies:
   flutter_localizations:
     sdk: flutter
+```
+
+Then run:
+```bash
+dart pub get
 ```
 
 ## Quick Start
@@ -81,6 +91,7 @@ localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: AppLocalizations
+  strict_validation: true  # Optional: ensure all locales match
 ```
 
 ### 2. Create JSON Files
@@ -100,10 +111,36 @@ Create `assets/localizations/app_en.json`:
 }
 ```
 
+Create `assets/localizations/app_id.json`:
+
+```json
+{
+  "@@locale": "id",
+  "common": {
+    "hello": "Halo",
+    "save": "Simpan"
+  },
+  "home": {
+    "welcome": "Selamat datang, {name}!"
+  }
+}
+```
+
 ### 3. Generate Code
 
+**One-time generation:**
 ```bash
-dart run localization_gen:localization_gen
+dart run localization_gen
+```
+
+**Watch mode (auto-regenerate on file changes):**
+```bash
+dart run localization_gen --watch
+```
+
+**Custom debounce delay:**
+```bash
+dart run localization_gen --watch --debounce=500
 ```
 
 ### 4. Use in App
@@ -142,6 +179,8 @@ class HomePage extends StatelessWidget {
 
 ## Configuration Options
 
+All configuration options in `pubspec.yaml`:
+
 ```yaml
 localization_gen:
   # Required
@@ -151,10 +190,168 @@ localization_gen:
   
   # Optional
   use_context: true                   # Enable context-aware access (default: true)
-  nullable: false                     # Make translations non-nullable (default: false)
+  nullable: false                     # Make translations nullable (default: false)
   modular: false                      # Use modular file organization (default: false)
   file_prefix: app                    # Prefix for JSON files (default: app)
+  strict_validation: false            # Validate locale consistency (default: false)
 ```
+
+### Configuration Details
+
+- **input_dir**: Where your JSON translation files are located
+- **output_dir**: Where the generated Dart code will be saved
+- **class_name**: Main class name for localization (e.g., `AppLocalizations`)
+- **use_context**: Generates static `of(BuildContext)` method for easy access
+- **nullable**: Whether `of(context)` returns nullable type
+- **modular**: Enable modular file organization (see [Modular Organization](#modular-organization))
+- **file_prefix**: Prefix for JSON files when using modular mode
+- **strict_validation**: Ensures all locales have identical keys and parameters
+
+### Strict Validation
+
+When `strict_validation: true`, the generator will:
+-  Ensure all locales have the same translation keys
+-  Verify parameters match across locales (order-independent)
+-  Throw clear errors if locales are inconsistent
+
+Example error:
+```
+LocaleValidationException: Locale has missing translation keys
+  Locale: id
+  Missing keys (2):
+    - auth.login.forgot_password
+    - settings.theme
+  File: assets/localizations/app_id.json
+```
+
+## CLI Options
+
+The generator supports several command-line options:
+
+```bash
+# Show help
+dart run localization_gen --help
+
+# Generate once
+dart run localization_gen
+
+# Watch mode - auto-regenerate on changes
+dart run localization_gen --watch
+
+# Watch mode with custom debounce (milliseconds)
+dart run localization_gen --watch --debounce=500
+
+# Custom config file
+dart run localization_gen --config=custom_pubspec.yaml
+```
+
+### Available Options
+
+- `-h, --help`: Show usage information
+- `-w, --watch`: Enable watch mode for auto-regeneration
+- `-d, --debounce`: Debounce delay in milliseconds (default: 300)
+- `-c, --config`: Path to pubspec.yaml file (default: pubspec.yaml)
+
+## Watch Mode
+
+Watch mode automatically regenerates localization files when JSON files change. Perfect for development!
+
+### Usage
+
+```bash
+dart run localization_gen --watch
+```
+
+### Features
+
+- 👀 Monitors your `input_dir` for JSON file changes
+- ⚡ Debounced regeneration (default 300ms, customizable)
+- 🎯 Only processes `.json` files
+- ⌨️ Press `Ctrl+C` to stop
+- 📝 Clear console output showing what changed
+
+### Example Output
+
+```
+Starting localization generation...
+Config:
+   Input:  assets/localizations
+   Output: lib/assets
+   Class:  AppLocalizations
+   Modular: false
+
+Scanning JSON localization files...
+Found 2 locale(s): en, id
+
+Generating Dart code...
+Generated: lib/assets/app_localizations.dart
+
+Done! Generated 25 translations.
+
+👀 Watching for changes in: assets/localizations
+   Press Ctrl+C to stop
+
+🔄 File modified: app_en.json
+   Regenerating...
+✅ Regeneration complete
+```
+
+### Best Practices
+
+1. **Use During Development**: Run watch mode in a terminal while developing
+2. **Adjust Debounce**: Increase debounce for slower machines or very large files
+3. **Git Integration**: Add generated files to `.gitignore` if regenerating in CI/CD
+
+## Error Handling
+
+The generator provides detailed error messages to help you fix issues quickly.
+
+### Common Errors
+
+#### Missing Translation Keys
+
+```
+LocaleValidationException: Locale has missing translation keys
+  Locale: id
+  Missing keys (2):
+    - auth.login.title
+    - home.welcome
+  File: assets/localizations/app_id.json
+```
+
+**Fix**: Add the missing keys to the Indonesian locale file.
+
+#### Parameter Mismatch
+
+```
+ParameterException: Parameter mismatch between locales
+  Key: home.welcome
+  Expected parameters: name
+  Actual parameters: user
+  File: assets/localizations/app_id.json
+```
+
+**Fix**: Use the same parameter names in all locale files.
+
+#### Invalid JSON
+
+```
+JsonParseException: Invalid JSON format
+  File: assets/localizations/app_en.json
+  Line: 5
+  Content: {"key": "value",}
+```
+
+**Fix**: Remove the trailing comma or fix JSON syntax.
+
+#### Unsupported Value Types
+
+```
+Warning: Unsupported value type int for key "version"
+  File: assets/localizations/app_en.json
+```
+
+**Fix**: JSON values must be strings or nested objects. Convert numbers/booleans to strings.
 
 ## JSON File Format
 
@@ -489,4 +686,3 @@ Inspired by the need for better localization organization in large Flutter proje
 **Version:** 1.0.4  
 **Dart SDK:** >=3.0.0 <4.0.0  
 **Flutter:** >=3.0.0
-

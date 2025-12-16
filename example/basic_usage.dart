@@ -4,7 +4,9 @@
 /// - Generate localizations from JSON files
 /// - Use the generated code in a simple Dart application
 library;
+
 import 'package:localization_gen/localization_gen.dart';
+
 void main() {
   // Create a localization generator instance
   final generator = LocalizationGenerator();

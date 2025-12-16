@@ -2,7 +2,9 @@
 ///
 /// This example shows how to use a custom pubspec.yaml path
 library;
+
 import 'package:localization_gen/localization_gen.dart';
+
 void main() {
   // Create a generator with custom configuration path
   final generator = LocalizationGenerator(

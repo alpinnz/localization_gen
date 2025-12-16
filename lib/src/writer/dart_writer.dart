@@ -84,7 +84,7 @@ class DartWriter {
       if (value is Map) {
         // This is a namespace, create a getter for nested class
         final nestedClassName = '_${_toPascalCase(key)}';
-        buffer.writeln("  /// Access $key translations");
+        buffer.writeln("  /// App $key translations");
         buffer.writeln(
             "  $nestedClassName get $key => $nestedClassName(locale);");
         buffer.writeln();
@@ -133,36 +133,53 @@ class DartWriter {
     return result;
   }
 
-  /// Generate nested classes for namespaces
+  /// Generate nested classes for namespaces with full recursive support
   String _generateNestedClasses(
     Map<String, dynamic> structure,
     List<LocaleData> locales,
     Map<String, LocalizationItem> allItems,
   ) {
     final buffer = StringBuffer();
+    _generateNestedClassesRecursive(structure, locales, '', buffer);
+    return buffer.toString();
+  }
 
+  /// Recursively generate nested classes for any depth level
+  void _generateNestedClassesRecursive(
+    Map<String, dynamic> structure,
+    List<LocaleData> locales,
+    String parentPath,
+    StringBuffer buffer,
+  ) {
     for (final entry in structure.entries) {
       final key = entry.key;
       final value = entry.value;
 
       if (value is Map) {
-        final className = '_${_toPascalCase(key)}';
-        buffer.writeln("/// Translations for $key namespace");
+        // Build class name from parent path
+        final currentPath = parentPath.isEmpty ? key : '${parentPath}_$key';
+        final className = '_${_pathToPascalCase(currentPath)}';
+        final displayPath = currentPath.replaceAll('_', '.');
+
+        buffer.writeln("/// Translations for $displayPath namespace");
         buffer.writeln("class $className {");
         buffer.writeln("  $className(this.locale);");
         buffer.writeln();
         buffer.writeln("  final Locale locale;");
         buffer.writeln();
 
-        // Generate nested class getters
-        for (final nestedEntry in value.entries) {
+        // Convert to Map<String, dynamic> for type safety
+        final valueMap = Map<String, dynamic>.from(value);
+
+        // Generate nested class getters for sub-namespaces
+        for (final nestedEntry in valueMap.entries) {
           final nestedKey = nestedEntry.key;
           final nestedValue = nestedEntry.value;
 
           if (nestedValue is Map) {
-            final nestedClassName =
-                '_${_toPascalCase(key)}_${_toPascalCase(nestedKey)}';
-            buffer.writeln("  /// Access $key.$nestedKey translations");
+            final nestedPath = '${currentPath}_$nestedKey';
+            final nestedClassName = '_${_pathToPascalCase(nestedPath)}';
+            buffer.writeln("  /// App $displayPath.$nestedKey translations");
             buffer.writeln(
                 "  $nestedClassName get $nestedKey => $nestedClassName(locale);");
             buffer.writeln();
@@ -170,7 +187,7 @@ class DartWriter {
         }
 
         // Generate methods for leaf nodes in this namespace
-        for (final nestedEntry in value.entries) {
+        for (final nestedEntry in valueMap.entries) {
           if (nestedEntry.value is LocalizationItem) {
             buffer.writeln(_generateMethod(
                 nestedEntry.value as LocalizationItem, locales,
@@ -181,54 +198,10 @@ class DartWriter {
         buffer.writeln("}");
         buffer.writeln();
 
-        // Recursively generate deeper nested classes
-        final valueAsMap = Map<String, dynamic>.from(value);
-        buffer.write(
-            _generateDeeperNestedClasses(key, valueAsMap, locales, allItems));
+        // Recursively generate nested classes for deeper levels
+        _generateNestedClassesRecursive(valueMap, locales, currentPath, buffer);
       }
     }
-
-    return buffer.toString();
-  }
-
-  /// Generate deeper nested classes (3+ levels)
-  String _generateDeeperNestedClasses(
-    String parentKey,
-    Map<String, dynamic> structure,
-    List<LocaleData> locales,
-    Map<String, LocalizationItem> allItems,
-  ) {
-    final buffer = StringBuffer();
-
-    for (final entry in structure.entries) {
-      final key = entry.key;
-      final value = entry.value;
-
-      if (value is Map<String, dynamic>) {
-        final className = '_${_toPascalCase(parentKey)}_${_toPascalCase(key)}';
-        buffer.writeln("/// Translations for $parentKey.$key namespace");
-        buffer.writeln("class $className {");
-        buffer.writeln("  $className(this.locale);");
-        buffer.writeln();
-        buffer.writeln("  final Locale locale;");
-        buffer.writeln();
-
-        // Generate methods for leaf nodes
-        for (final nestedEntry in value.entries) {
-          final nestedValue = nestedEntry.value;
-
-          if (nestedValue is LocalizationItem) {
-            buffer
-                .writeln(_generateMethod(nestedValue, locales, isNested: true));
-          }
-        }
-
-        buffer.writeln("}");
-        buffer.writeln();
-      }
-    }
-
-    return buffer.toString();
   }
 
   /// Generate a single method for a localization key
@@ -298,6 +271,15 @@ class DartWriter {
       if (part.isEmpty) return '';
       return part[0].toUpperCase() + part.substring(1);
     }).join();
+  }
+
+  /// Convert path to PascalCase for class names
+  /// Example: "level1_level2" -> "Level1Level2", "auth_login" -> "AuthLogin"
+  String _pathToPascalCase(String path) {
+    return path.split('_').map((part) {
+      if (part.isEmpty) return '';
+      return part[0].toUpperCase() + part.substring(1);
+    }).join('');
   }
 
   /// Interpolate string with parameters: "Welcome {name}" -> "Welcome $name"

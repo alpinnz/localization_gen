@@ -1,0 +1,50 @@
+{
+  "@@locale": "en",
+  "level1": {
+    "level2": {
+      "level3": {
+        "level4": {
+          "level5": {
+            "level6": {
+              "level7": {
+                "level8": {
+                  "level9": {
+                    "level10": {
+                      "deepValue": "This is deeply nested value",
+                      "greeting": "Hello from level 10!",
+                      "message": "You reached the deepest level with {count} steps"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "app": {
+    "settings": {
+      "profile": {
+        "personal": {
+          "info": {
+            "contact": {
+              "phone": {
+                "mobile": {
+                  "primary": {
+                    "number": "Primary Phone Number",
+                    "label": "Your primary mobile number"
+                  },
+                  "secondary": {
+                    "number": "Secondary Phone Number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

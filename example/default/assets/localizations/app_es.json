@@ -46,6 +46,104 @@
       "theme": "Tema",
       "notifications": "Notificaciones"
     }
+  },
+  "app": {
+    "features": {
+      "ecommerce": {
+        "catalog": {
+          "products": {
+            "categories": {
+              "electronics": {
+                "subcategories": {
+                  "mobile": {
+                    "brands": {
+                      "premium": {
+                        "title": "Marcas Premium de Móviles",
+                        "description": "Descubre dispositivos móviles de primer nivel",
+                        "featured_message": "Destacado: {count} marcas disponibles",
+                        "promo": "¡Obtén {discount}% de descuento en dispositivos premium!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "social": {
+        "messaging": {
+          "conversations": {
+            "threads": {
+              "groups": {
+                "settings": {
+                  "privacy": {
+                    "permissions": {
+                      "roles": {
+                        "admin": {
+                          "title": "Administrador",
+                          "description": "Acceso completo a todas las configuraciones del grupo",
+                          "grant_permission": "Conceder {permission} a {user}",
+                          "revoke_warning": "¿Estás seguro de que quieres revocar el acceso?"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "analytics": {
+        "dashboard": {
+          "reports": {
+            "metrics": {
+              "performance": {
+                "charts": {
+                  "timeseries": {
+                    "data": {
+                      "aggregations": {
+                        "daily": {
+                          "title": "Métricas de Rendimiento Diario",
+                          "subtitle": "Ver análisis detallado para {date}",
+                          "summary": "Total: {count} eventos procesados",
+                          "export": "Exportar datos a {format}"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "system": {
+      "configuration": {
+        "network": {
+          "connections": {
+            "protocols": {
+              "security": {
+                "encryption": {
+                  "algorithms": {
+                    "advanced": {
+                      "settings": {
+                        "title": "Configuración de Cifrado Avanzado",
+                        "description": "Configurar cifrado {protocol}",
+                        "key_strength": "Fuerza de clave: {bits} bits",
+                        "status": "Estado: {status}"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 

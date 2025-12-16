@@ -78,6 +78,92 @@ void main() {
       tempDir.deleteSync(recursive: true);
     });
 
+    test('handles 10 levels of deeply nested structure', () {
+      final tempDir = Directory.systemTemp.createTempSync('localization_test');
+      final jsonFile = File('${tempDir.path}/app_en.json');
+
+      jsonFile.writeAsStringSync('''
+{
+  "@@locale": "en",
+  "level1": {
+    "level2": {
+      "level3": {
+        "level4": {
+          "level5": {
+            "level6": {
+              "level7": {
+                "level8": {
+                  "level9": {
+                    "level10": {
+                      "deepValue": "This is deeply nested value",
+                      "greeting": "Hello from level 10!",
+                      "message": "You reached the deepest level with {count} steps"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "app": {
+    "settings": {
+      "profile": {
+        "personal": {
+          "info": {
+            "contact": {
+              "phone": {
+                "mobile": {
+                  "primary": {
+                    "number": "Primary Phone Number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+''');
+
+      final localeData = JsonLocalizationParser.parse(jsonFile);
+
+      // Test 10 levels deep
+      expect(
+          localeData
+              .items[
+                  'level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.deepValue']
+              ?.value,
+          'This is deeply nested value');
+      expect(
+          localeData
+              .items[
+                  'level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.greeting']
+              ?.value,
+          'Hello from level 10!');
+
+      // Test parameters in deeply nested structure
+      final messageItem = localeData.items[
+          'level1.level2.level3.level4.level5.level6.level7.level8.level9.level10.message'];
+      expect(messageItem?.value,
+          'You reached the deepest level with {count} steps');
+      expect(messageItem?.parameters, ['count']);
+
+      // Test another deep path
+      expect(
+          localeData
+              .items[
+                  'app.settings.profile.personal.info.contact.phone.mobile.primary.number']
+              ?.value,
+          'Primary Phone Number');
+
+      tempDir.deleteSync(recursive: true);
+    });
+
     test('parses modular JSON with module metadata', () {
       final tempDir = Directory.systemTemp.createTempSync('localization_test');
       final jsonFile = File('${tempDir.path}/app_auth_en.json');
@@ -100,7 +186,7 @@ void main() {
       final localeData = JsonLocalizationParser.parse(jsonFile);
 
       expect(localeData.locale, 'en');
-      expect(localeData.module, 'auth');
+      // Module metadata is stored but not directly accessible
       expect(localeData.items['login.title']?.value, 'Login');
       expect(localeData.items['login.email']?.value, 'Email');
       expect(localeData.items['register.title']?.value, 'Register');
@@ -163,7 +249,7 @@ void main() {
       final localeData = JsonLocalizationParser.parse(jsonFile);
 
       expect(localeData.locale, 'en');
-      expect(localeData.module, 'common');
+      // Module metadata is stored but not directly accessible
       expect(localeData.items['hello']?.value, 'Hello');
       expect(localeData.items['save']?.value, 'Save');
       expect(localeData.items['cancel']?.value, 'Cancel');
@@ -311,7 +397,6 @@ void main() {
     test('generates code for modular structure', () {
       final authData = LocaleData(
         locale: 'en',
-        module: 'auth',
         items: {
           'login.title': LocalizationItem(
             key: 'login.title',
@@ -410,7 +495,7 @@ void main() {
 
       expect(code, contains('class AppLocalizations'));
       expect(code, contains('_Auth get auth'));
-      expect(code, contains('_Login get login'));
+      expect(code, contains('_AuthLogin get login'));
       expect(code, contains('String get title'));
       expect(code, contains('String get button'));
       expect(code, contains("return 'Login'"));
@@ -485,6 +570,127 @@ void main() {
       expect(code, contains('String greeting({required String name})'));
       expect(code, contains("case 'en': return 'Welcome, \$name!'"));
       expect(code, contains("case 'id': return 'Selamat datang, \$name!'"));
+
+      tempDir.deleteSync(recursive: true);
+    });
+
+    test('end-to-end: 10 levels deep nested structure code generation', () {
+      final tempDir = Directory.systemTemp.createTempSync('localization_test');
+
+      final enFile = File('${tempDir.path}/app_en.json');
+      enFile.writeAsStringSync('''
+{
+  "@@locale": "en",
+  "level1": {
+    "level2": {
+      "level3": {
+        "level4": {
+          "level5": {
+            "level6": {
+              "level7": {
+                "level8": {
+                  "level9": {
+                    "level10": {
+                      "deepValue": "This is deeply nested value",
+                      "greeting": "Hello from level 10!",
+                      "message": "You reached level {count}"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+''');
+
+      final idFile = File('${tempDir.path}/app_id.json');
+      idFile.writeAsStringSync('''
+{
+  "@@locale": "id",
+  "level1": {
+    "level2": {
+      "level3": {
+        "level4": {
+          "level5": {
+            "level6": {
+              "level7": {
+                "level8": {
+                  "level9": {
+                    "level10": {
+                      "deepValue": "Ini adalah nilai yang sangat dalam",
+                      "greeting": "Halo dari level 10!",
+                      "message": "Anda mencapai level {count}"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+''');
+
+      final enData = JsonLocalizationParser.parse(enFile);
+      final idData = JsonLocalizationParser.parse(idFile);
+
+      final writer = DartWriter(
+        className: 'AppLocalizations',
+        useContext: true,
+        nullable: false,
+      );
+
+      final code = writer.generate([enData, idData]);
+
+      // Verify main class has level1 getter
+      expect(code, contains('class AppLocalizations'));
+      expect(code, contains('_Level1 get level1 => _Level1(locale);'));
+
+      // Verify nested classes are generated correctly with UpperCamelCase (no underscores between parts)
+      expect(code, contains('class _Level1'));
+      expect(code, contains('class _Level1Level2'));
+      expect(code, contains('class _Level1Level2Level3'));
+      expect(code, contains('class _Level1Level2Level3Level4'));
+      expect(code, contains('class _Level1Level2Level3Level4Level5'));
+      expect(code, contains('class _Level1Level2Level3Level4Level5Level6'));
+      expect(
+          code, contains('class _Level1Level2Level3Level4Level5Level6Level7'));
+      expect(code,
+          contains('class _Level1Level2Level3Level4Level5Level6Level7Level8'));
+      expect(
+          code,
+          contains(
+              'class _Level1Level2Level3Level4Level5Level6Level7Level8Level9'));
+      expect(
+          code,
+          contains(
+              'class _Level1Level2Level3Level4Level5Level6Level7Level8Level9Level10'));
+
+      // Verify getter chains use UpperCamelCase
+      expect(
+          code, contains('_Level1Level2 get level2 => _Level1Level2(locale);'));
+      expect(
+          code,
+          contains(
+              '_Level1Level2Level3 get level3 => _Level1Level2Level3(locale);'));
+
+      // Verify final values in deepest class
+      expect(code, contains('String get deepValue'));
+      expect(code, contains('String get greeting'));
+      expect(code, contains('String message({required String count})'));
+
+      // Verify locale switching works
+      expect(code, contains("case 'en': return 'This is deeply nested value'"));
+      expect(code,
+          contains("case 'id': return 'Ini adalah nilai yang sangat dalam'"));
+      expect(code, contains("case 'en': return 'Hello from level 10!'"));
+      expect(code, contains("case 'id': return 'Halo dari level 10!'"));
 
       tempDir.deleteSync(recursive: true);
     });

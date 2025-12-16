@@ -46,6 +46,104 @@
       "theme": "Theme",
       "notifications": "Notifications"
     }
+  },
+  "app": {
+    "features": {
+      "ecommerce": {
+        "catalog": {
+          "products": {
+            "categories": {
+              "electronics": {
+                "subcategories": {
+                  "mobile": {
+                    "brands": {
+                      "premium": {
+                        "title": "Premium Mobile Brands",
+                        "description": "Discover top-tier mobile devices",
+                        "featured_message": "Featured: {count} brands available",
+                        "promo": "Get {discount}% off on premium devices!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "social": {
+        "messaging": {
+          "conversations": {
+            "threads": {
+              "groups": {
+                "settings": {
+                  "privacy": {
+                    "permissions": {
+                      "roles": {
+                        "admin": {
+                          "title": "Administrator",
+                          "description": "Full access to all group settings",
+                          "grant_permission": "Grant {permission} to {user}",
+                          "revoke_warning": "Are you sure you want to revoke access?"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "analytics": {
+        "dashboard": {
+          "reports": {
+            "metrics": {
+              "performance": {
+                "charts": {
+                  "timeseries": {
+                    "data": {
+                      "aggregations": {
+                        "daily": {
+                          "title": "Daily Performance Metrics",
+                          "subtitle": "View detailed analytics for {date}",
+                          "summary": "Total: {count} events processed",
+                          "export": "Export data to {format}"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "system": {
+      "configuration": {
+        "network": {
+          "connections": {
+            "protocols": {
+              "security": {
+                "encryption": {
+                  "algorithms": {
+                    "advanced": {
+                      "settings": {
+                        "title": "Advanced Encryption Settings",
+                        "description": "Configure {protocol} encryption",
+                        "key_strength": "Key strength: {bits} bits",
+                        "status": "Status: {status}"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 

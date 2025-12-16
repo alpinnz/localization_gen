@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import '../model/localization_item.dart';
+import '../exceptions/exceptions.dart';
 
 /// Parses JSON localization files with nested structure support
 class JsonLocalizationParser {
@@ -30,19 +31,62 @@ class JsonLocalizationParser {
   /// final localeData = JsonLocalizationParser.parse(file);
   /// ```
   static LocaleData parse(File file) {
-    final content = file.readAsStringSync();
-    final json = jsonDecode(content) as Map<String, dynamic>;
+    try {
+      if (!file.existsSync()) {
+        throw FileOperationException(
+          'File does not exist',
+          operation: 'read',
+          filePath: file.path,
+        );
+      }
 
-    // Extract locale from @@locale or filename
-    String locale =
-        json['@@locale'] as String? ?? _extractLocaleFromFilename(file.path);
+      final content = file.readAsStringSync();
 
-    final items = <String, LocalizationItem>{};
+      if (content.trim().isEmpty) {
+        throw JsonParseException(
+          'JSON file is empty',
+          filePath: file.path,
+        );
+      }
 
-    // Flatten nested JSON structure
-    _flattenJson(json, items);
+      final dynamic decoded;
+      try {
+        decoded = jsonDecode(content);
+      } catch (e) {
+        throw JsonParseException(
+          'Invalid JSON format: $e',
+          filePath: file.path,
+          jsonContent: content,
+        );
+      }
 
-    return LocaleData(locale: locale, items: items);
+      if (decoded is! Map<String, dynamic>) {
+        throw JsonParseException(
+          'JSON root must be an object, got ${decoded.runtimeType}',
+          filePath: file.path,
+        );
+      }
+
+      final json = decoded;
+
+      // Extract locale from @@locale or filename
+      String locale =
+          json['@@locale'] as String? ?? _extractLocaleFromFilename(file.path);
+
+      final items = <String, LocalizationItem>{};
+
+      // Flatten nested JSON structure
+      _flattenJson(json, items, filePath: file.path);
+
+      return LocaleData(locale: locale, items: items);
+    } on LocalizationException {
+      rethrow;
+    } catch (e) {
+      throw JsonParseException(
+        'Unexpected error parsing file: $e',
+        filePath: file.path,
+      );
+    }
   }
 
   /// Recursively flatten nested JSON to dot-notation keys
@@ -51,6 +95,7 @@ class JsonLocalizationParser {
     Map<String, dynamic> json,
     Map<String, LocalizationItem> items, {
     String prefix = '',
+    String? filePath,
   }) {
     for (final entry in json.entries) {
       final key = entry.key;
@@ -63,7 +108,7 @@ class JsonLocalizationParser {
 
       if (value is Map<String, dynamic>) {
         // Recursively flatten nested objects
-        _flattenJson(value, items, prefix: fullKey);
+        _flattenJson(value, items, prefix: fullKey, filePath: filePath);
       } else if (value is String) {
         // Extract parameters from placeholders like {name}, {count}, etc.
         final parameters = _extractParameters(value);
@@ -82,6 +127,10 @@ class JsonLocalizationParser {
           parameters: parameters,
           description: description,
         );
+      } else if (value != null) {
+        // Warn about unsupported value types
+        print(
+            'Warning: Unsupported value type ${value.runtimeType} for key "$fullKey"${filePath != null ? ' in $filePath' : ''}');
       }
     }
   }
@@ -112,10 +161,16 @@ class JsonLocalizationParser {
   /// );
   /// ```
   static List<LocaleData> parseDirectory(String dirPath,
-      {bool modular = false, String filePrefix = 'app'}) {
+      {bool modular = false,
+      String filePrefix = 'app',
+      bool strictValidation = false}) {
     final dir = Directory(dirPath);
     if (!dir.existsSync()) {
-      throw Exception('Directory not found: $dirPath');
+      throw FileOperationException(
+        'Directory not found',
+        operation: 'read',
+        filePath: dirPath,
+      );
     }
 
     final jsonFiles = dir
@@ -125,17 +180,30 @@ class JsonLocalizationParser {
         .toList();
 
     if (jsonFiles.isEmpty) {
-      throw Exception('No .json files found in: $dirPath');
+      throw FileOperationException(
+        'No .json files found in directory',
+        operation: 'scan',
+        filePath: dirPath,
+      );
     }
 
+    List<LocaleData> locales;
+
     if (modular) {
-      return _parseModularFiles(jsonFiles, filePrefix);
+      locales = _parseModularFiles(jsonFiles, filePrefix);
     } else {
-      return jsonFiles.map((file) {
+      locales = jsonFiles.map((file) {
         print('Parsing: ${file.path}');
         return parse(file);
       }).toList();
     }
+
+    // Validate consistency across locales if strict mode enabled
+    if (strictValidation && locales.length > 1) {
+      _validateLocaleConsistency(locales);
+    }
+
+    return locales;
   }
 
   /// Parse modular localization files and merge by locale
@@ -171,7 +239,7 @@ class JsonLocalizationParser {
 
       // Flatten and add to locale map
       final items = <String, LocalizationItem>{};
-      _flattenJson(json, items);
+      _flattenJson(json, items, filePath: file.path);
 
       // Merge items into locale map
       localeMap[locale]!.addAll(items);
@@ -214,5 +282,63 @@ class JsonLocalizationParser {
     final filename = path.split('/').last;
     final parts = filename.replaceAll('.json', '').split('_');
     return parts.length > 1 ? parts.last : 'en';
+  }
+
+  /// Validates consistency across multiple locales
+  /// Ensures all locales have the same keys and parameters
+  static void _validateLocaleConsistency(List<LocaleData> locales) {
+    if (locales.isEmpty) return;
+
+    final baseLocale = locales.first;
+    final baseKeys = baseLocale.items.keys.toSet();
+
+    for (var i = 1; i < locales.length; i++) {
+      final locale = locales[i];
+      final localeKeys = locale.items.keys.toSet();
+
+      // Check for missing keys
+      final missingKeys = baseKeys.difference(localeKeys).toList();
+      if (missingKeys.isNotEmpty) {
+        throw LocaleValidationException(
+          'Locale has missing translation keys compared to base locale "${baseLocale.locale}"',
+          locale: locale.locale,
+          missingKeys: missingKeys,
+        );
+      }
+
+      // Check for extra keys
+      final extraKeys = localeKeys.difference(baseKeys).toList();
+      if (extraKeys.isNotEmpty) {
+        throw LocaleValidationException(
+          'Locale has extra translation keys not in base locale "${baseLocale.locale}"',
+          locale: locale.locale,
+          extraKeys: extraKeys,
+        );
+      }
+
+      // Validate parameters match for each key
+      for (final key in baseKeys) {
+        final baseItem = baseLocale.items[key]!;
+        final localeItem = locale.items[key]!;
+
+        if (baseItem.parameters.length != localeItem.parameters.length ||
+            !_parametersMatch(baseItem.parameters, localeItem.parameters)) {
+          throw ParameterException(
+            'Parameter mismatch between locales "${baseLocale.locale}" and "${locale.locale}"',
+            key: key,
+            expectedParameters: baseItem.parameters,
+            actualParameters: localeItem.parameters,
+          );
+        }
+      }
+    }
+  }
+
+  /// Checks if two parameter lists match (order-independent)
+  static bool _parametersMatch(List<String> params1, List<String> params2) {
+    if (params1.length != params2.length) return false;
+    final set1 = params1.toSet();
+    final set2 = params2.toSet();
+    return set1.length == set2.length && set1.containsAll(set2);
   }
 }

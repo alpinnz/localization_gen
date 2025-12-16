@@ -1,6 +1,6 @@
 name: localization_gen
-description: Type-safe localization generator for Flutter with nested JSON support, modular organization, and parameter interpolation.
-version: 1.0.5
+description: Type-safe localization generator for Flutter with nested JSON support, modular organization, parameter interpolation, watch mode, and strict validation.
+version: 1.0.6
 homepage: https://github.com/alpinnz/localization_gen
 repository: https://github.com/alpinnz/localization_gen
 issue_tracker: https://github.com/alpinnz/localization_gen/issues
@@ -14,6 +14,7 @@ dependencies:
   args: ^2.5.0
   yaml: ^3.1.2
   path: ^1.9.0
+  watcher: ^1.1.0
 
 dev_dependencies:
   test: ^1.25.0

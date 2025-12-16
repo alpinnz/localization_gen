@@ -5,6 +5,71 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] - 2025-12-16
+
+### Added
+- **Watch Mode**: Auto-regenerate localization files when JSON files change
+  - `--watch` flag for continuous development
+  - `--debounce` option to customize regeneration delay (default: 300ms)
+  - Monitors only `.json` files for changes
+  - Clear console output showing file changes and regeneration status
+  - Graceful shutdown with Ctrl+C
+
+- **Strict Validation**: Ensure locale consistency across all translation files
+  - `strict_validation: true` in config to enable
+  - Validates all locales have identical translation keys
+  - Verifies parameters match across locales (order-independent)
+  - Detailed error messages with missing/extra keys listed
+
+- **Enhanced Error Handling**: Custom exception classes with detailed information
+  - `LocalizationException` base class for all errors
+  - `JsonParseException` for JSON parsing errors with file paths
+  - `LocaleValidationException` for locale consistency errors
+  - `ParameterException` for parameter mismatch errors
+  - `FileOperationException` for file I/O errors
+  - `ConfigException` for configuration errors
+  - All exceptions include file paths, line numbers, and helpful context
+
+- **Comprehensive Test Suite**: 30+ new tests added
+  - Error handling tests for all exception types
+  - Watch mode functionality tests
+  - Locale validation tests
+  - Parameter validation tests
+  - Integration tests for end-to-end workflows
+
+### Changed
+- **CLI Interface**: Made main function async to support watch mode
+- **JSON Parser**: Added detailed error messages for malformed JSON
+- **Code Generation**: Improved error reporting during generation
+- **Configuration**: Added `strict_validation` option to LocalizationConfig
+
+### Improved
+- **Documentation**: Comprehensive README updates
+  - Watch mode usage and examples
+  - Error handling guide with common errors and fixes
+  - CLI options reference
+  - Best practices section
+  - Troubleshooting guide
+  
+- **Developer Experience**:
+  - Clear, actionable error messages
+  - Warnings for unsupported value types
+  - Better progress output during generation
+  - Detailed validation feedback
+
+### Dependencies
+- Added `watcher: ^1.1.0` for file watching functionality
+
+### Breaking Changes
+None - fully backward compatible with v1.0.5
+
+### Migration from 1.0.5
+No migration needed - all existing code works without changes.
+
+To use new features:
+1. Enable watch mode: `dart run localization_gen --watch`
+2. Enable strict validation: Add `strict_validation: true` to config
+
 ## [1.0.5] - 2025-12-15
 
 ### Added

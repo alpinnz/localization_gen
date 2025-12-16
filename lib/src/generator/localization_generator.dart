@@ -67,6 +67,7 @@ class LocalizationGenerator {
         config.inputDir,
         modular: config.modular,
         filePrefix: config.filePrefix,
+        strictValidation: config.strictValidation,
       );
       print(
           'Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');

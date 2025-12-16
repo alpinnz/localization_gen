@@ -46,6 +46,104 @@
       "theme": "Tema",
       "notifications": "Notifikasi"
     }
+  },
+  "app": {
+    "features": {
+      "ecommerce": {
+        "catalog": {
+          "products": {
+            "categories": {
+              "electronics": {
+                "subcategories": {
+                  "mobile": {
+                    "brands": {
+                      "premium": {
+                        "title": "Merek Ponsel Premium",
+                        "description": "Temukan perangkat mobile kelas atas",
+                        "featured_message": "Unggulan: {count} merek tersedia",
+                        "promo": "Dapatkan diskon {discount}% untuk perangkat premium!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "social": {
+        "messaging": {
+          "conversations": {
+            "threads": {
+              "groups": {
+                "settings": {
+                  "privacy": {
+                    "permissions": {
+                      "roles": {
+                        "admin": {
+                          "title": "Administrator",
+                          "description": "Akses penuh ke semua pengaturan grup",
+                          "grant_permission": "Berikan {permission} kepada {user}",
+                          "revoke_warning": "Apakah Anda yakin ingin mencabut akses?"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "analytics": {
+        "dashboard": {
+          "reports": {
+            "metrics": {
+              "performance": {
+                "charts": {
+                  "timeseries": {
+                    "data": {
+                      "aggregations": {
+                        "daily": {
+                          "title": "Metrik Kinerja Harian",
+                          "subtitle": "Lihat analitik terperinci untuk {date}",
+                          "summary": "Total: {count} kejadian diproses",
+                          "export": "Ekspor data ke {format}"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "system": {
+      "configuration": {
+        "network": {
+          "connections": {
+            "protocols": {
+              "security": {
+                "encryption": {
+                  "algorithms": {
+                    "advanced": {
+                      "settings": {
+                        "title": "Pengaturan Enkripsi Lanjutan",
+                        "description": "Konfigurasi enkripsi {protocol}",
+                        "key_strength": "Kekuatan kunci: {bits} bit",
+                        "status": "Status: {status}"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 

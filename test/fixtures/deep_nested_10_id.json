@@ -1,0 +1,50 @@
+{
+  "@@locale": "id",
+  "level1": {
+    "level2": {
+      "level3": {
+        "level4": {
+          "level5": {
+            "level6": {
+              "level7": {
+                "level8": {
+                  "level9": {
+                    "level10": {
+                      "deepValue": "Ini adalah nilai yang sangat dalam",
+                      "greeting": "Halo dari level 10!",
+                      "message": "Anda mencapai level terdalam dengan {count} langkah"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "app": {
+    "settings": {
+      "profile": {
+        "personal": {
+          "info": {
+            "contact": {
+              "phone": {
+                "mobile": {
+                  "primary": {
+                    "number": "Nomor Telepon Utama",
+                    "label": "Nomor telepon utama Anda"
+                  },
+                  "secondary": {
+                    "number": "Nomor Telepon Kedua"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
