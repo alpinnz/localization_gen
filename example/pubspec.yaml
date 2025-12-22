@@ -1,0 +1,16 @@
+name: localization_gen_example
+description: Examples for localization_gen package
+publish_to: none
+
+environment:
+  sdk: ^3.10.3
+
+# This is a parent directory for examples
+# Each subdirectory is a standalone example:
+# - basic/    : Basic single-file localization
+# - modular/  : Modular multi-file organization
+
+# To run examples:
+# cd basic && flutter run
+# cd modular && flutter run
+

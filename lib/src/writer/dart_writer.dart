@@ -1,21 +1,62 @@
 import '../model/localization_item.dart';
 
-/// Generates strongly-typed Dart code with nested structure support
+/// Generates strongly-typed Dart code with nested structure support.
+///
+/// This class is responsible for converting parsed localization data into
+/// Dart code with type-safe access to translations. It supports nested JSON
+/// structures, parameter interpolation, pluralization, gender forms, and
+/// context-based translations.
+///
+/// The generated code follows Flutter's localization patterns and provides
+/// compile-time checking of translation keys.
+///
+/// Example usage:
+/// ```dart
+/// final writer = DartWriter(
+///   className: 'AppLocalizations',
+///   useContext: true,
+///   nullable: false,
+/// );
+/// final dartCode = writer.generate(locales);
+/// ```
 class DartWriter {
-  /// The name of the generated localization class
+  /// The name of the generated localization class.
+  ///
+  /// This will be the class name used in your Flutter application,
+  /// typically 'AppLocalizations'. The generated code can be accessed as:
+  /// ```dart
+  /// final appLocalizations = AppLocalizations.of(context);
+  /// ```
   final String className;
 
-  /// Whether to generate a static of(BuildContext) method
+  /// Whether to generate a static of(BuildContext) method.
+  ///
+  /// When true, generates a convenience method for accessing localizations
+  /// from a BuildContext:
+  /// ```dart
+  /// static AppLocalizations of(BuildContext context) {
+  ///   return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  /// }
+  /// ```
   final bool useContext;
 
-  /// Whether the of(BuildContext) method should return a nullable type
+  /// Whether the of(BuildContext) method should return a nullable type.
+  ///
+  /// When true, the generated of() method returns `AppLocalizations?` instead
+  /// of `AppLocalizations`. Set to false for apps where localizations are
+  /// always available.
   final bool nullable;
 
-  /// Creates a new DartWriter instance
+  /// Creates a new DartWriter instance.
   ///
-  /// The [className] parameter specifies the name of the generated class.
-  /// The [useContext] parameter controls whether to generate the static of() method.
-  /// The [nullable] parameter controls the return type nullability of the of() method.
+  /// The [className] parameter specifies the name of the generated class
+  /// (typically 'AppLocalizations').
+  ///
+  /// The [useContext] parameter controls whether to generate the static of()
+  /// method for convenient access from BuildContext.
+  ///
+  /// The [nullable] parameter controls the return type nullability of the
+  /// of() method. Set to false if localizations are always available.
   ///
   /// Example:
   /// ```dart
@@ -31,7 +72,27 @@ class DartWriter {
     this.nullable = false,
   });
 
-  /// Generate complete Dart file content
+  /// Generates complete Dart file content from locale data.
+  ///
+  /// This method orchestrates the generation of a complete Dart localization
+  /// file including imports, class definitions, nested classes, methods,
+  /// and the localization delegate.
+  ///
+  /// The [locales] parameter contains all parsed locale data. The first locale
+  /// in the list is used as the base locale for structure determination.
+  ///
+  /// Returns a string containing the complete Dart source code ready to be
+  /// written to a file.
+  ///
+  /// Throws [Exception] if the locales list is empty.
+  ///
+  /// Example:
+  /// ```dart
+  /// final dartCode = writer.generate([
+  ///   LocaleData(locale: 'en', items: {...}),
+  ///   LocaleData(locale: 'es', items: {...}),
+  /// ]);
+  /// ```
   String generate(List<LocaleData> locales) {
     if (locales.isEmpty) throw Exception('No locales to generate');
 
@@ -46,16 +107,31 @@ class DartWriter {
     buffer.writeln();
 
     // Main class
-    buffer.writeln("/// Strongly-typed localization class");
+    buffer.writeln(
+        "/// Strongly-typed localization class for application translations.");
+    buffer.writeln("///");
+    buffer.writeln("/// Access translations using:");
+    buffer.writeln("/// ```dart");
+    buffer.writeln("/// final appLocalizations = $className.of(context);");
+    buffer.writeln("/// final text = appLocalizations.hello;");
+    buffer.writeln("/// ```");
     buffer.writeln("class $className {");
+    buffer.writeln(
+        "  /// Creates a new $className instance for the specified locale.");
     buffer.writeln("  $className(this.locale);");
     buffer.writeln();
+    buffer.writeln("  /// The locale for this localization instance.");
     buffer.writeln("  final Locale locale;");
     buffer.writeln();
 
     // Static of() method
     if (useContext) {
-      buffer.writeln("  /// Get the localization instance from context");
+      buffer.writeln("  /// Gets the localization instance from BuildContext.");
+      buffer.writeln("  ///");
+      buffer.writeln("  /// Example:");
+      buffer.writeln("  /// ```dart");
+      buffer.writeln("  /// final appLocalizations = $className.of(context);");
+      buffer.writeln("  /// ```");
       buffer.writeln(
           "  static $className${nullable ? '?' : ''} of(BuildContext context) {");
       buffer.writeln(
@@ -65,7 +141,7 @@ class DartWriter {
     }
 
     // Supported locales
-    buffer.writeln("  /// All supported locales");
+    buffer.writeln("  /// All supported locales for this application.");
     buffer.writeln("  static const supportedLocales = [");
     for (final locale in locales) {
       buffer.writeln("    Locale('${locale.locale}'),");
@@ -84,7 +160,7 @@ class DartWriter {
       if (value is Map) {
         // This is a namespace, create a getter for nested class
         final nestedClassName = '_${_toPascalCase(key)}';
-        buffer.writeln("  /// App $key translations");
+        buffer.writeln("  /// Translations for the $key namespace.");
         buffer.writeln(
             "  $nestedClassName get $key => $nestedClassName(locale);");
         buffer.writeln();
@@ -97,6 +173,13 @@ class DartWriter {
       if (!item.key.contains('.')) {
         buffer.writeln(_generateMethod(item, locales));
       }
+    }
+
+    // Add helper methods if any locale has plurals, genders, or contexts
+    final hasAnySpecialForms = baseLocale.items.values
+        .any((item) => item.hasPlurals || item.hasGenders || item.hasContexts);
+    if (hasAnySpecialForms) {
+      buffer.writeln(_generateHelperMethods());
     }
 
     buffer.writeln("}");
@@ -112,8 +195,23 @@ class DartWriter {
     return buffer.toString();
   }
 
-  /// Build nested structure from flat keys
-  /// Example: {"auth.login.title": "Login"} -> {"auth": {"login": {"title": "Login"}}}
+  /// Builds a nested structure from flat dot-notation keys.
+  ///
+  /// This method converts a flat map of localization items with dot-notation
+  /// keys into a hierarchical nested map structure suitable for code generation.
+  ///
+  /// The [items] parameter contains the flat map of localization items.
+  ///
+  /// Returns a nested map where each level represents a namespace.
+  ///
+  /// Example transformation:
+  /// ```dart
+  /// // Input:
+  /// {"auth.login.title": "Login"}
+  ///
+  /// // Output:
+  /// {"auth": {"login": {"title": LocalizationItem(...)}}}
+  /// ```
   Map<String, dynamic> _buildNestedStructure(
       Map<String, LocalizationItem> items) {
     final result = <String, dynamic>{};
@@ -133,7 +231,26 @@ class DartWriter {
     return result;
   }
 
-  /// Generate nested classes for namespaces with full recursive support
+  /// Generates nested classes for namespaces with full recursive support.
+  ///
+  /// This method creates Dart class definitions for each namespace level in
+  /// the nested translation structure. Each nested class provides type-safe
+  /// access to its translations.
+  ///
+  /// The [structure] parameter contains the nested map of translations.
+  /// The [locales] parameter contains all locale data for generating switches.
+  /// The [allItems] parameter contains all flat localization items for reference.
+  ///
+  /// Returns a string containing the generated nested class definitions.
+  ///
+  /// Example generated code:
+  /// ```dart
+  /// class _Auth {
+  ///   _Auth(this.locale);
+  ///   final Locale locale;
+  ///   _AuthLogin get login => _AuthLogin(locale);
+  /// }
+  /// ```
   String _generateNestedClasses(
     Map<String, dynamic> structure,
     List<LocaleData> locales,
@@ -144,7 +261,20 @@ class DartWriter {
     return buffer.toString();
   }
 
-  /// Recursively generate nested classes for any depth level
+  /// Recursively generates nested classes for any depth level.
+  ///
+  /// This method is called recursively to generate class definitions for
+  /// deeply nested translation structures, supporting up to 10 levels deep.
+  ///
+  /// The [structure] parameter contains the current level's nested map.
+  /// The [locales] parameter contains all locale data.
+  /// The [parentPath] parameter tracks the current path for class naming.
+  /// The [buffer] parameter accumulates the generated code.
+  ///
+  /// Each generated class includes:
+  /// - A constructor accepting a Locale
+  /// - Getters for sub-namespaces
+  /// - Methods for leaf translation nodes
   void _generateNestedClassesRecursive(
     Map<String, dynamic> structure,
     List<LocaleData> locales,
@@ -204,7 +334,37 @@ class DartWriter {
     }
   }
 
-  /// Generate a single method for a localization key
+  /// Generates a single method for a localization key.
+  ///
+  /// This method creates either a getter or a method with parameters for
+  /// accessing a specific translation. It handles parameter interpolation,
+  /// pluralization, gender forms, and context forms.
+  ///
+  /// The [item] parameter contains the localization item data.
+  /// The [locales] parameter contains all locale data for generating switches.
+  /// The [isNested] parameter indicates if this is in a nested class.
+  ///
+  /// Returns a string containing the generated method code.
+  ///
+  /// Example generated code for a simple getter:
+  /// ```dart
+  /// String get hello {
+  ///   switch (locale.languageCode) {
+  ///     case 'en': return 'Hello';
+  ///     default: return 'Hello';
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// Example generated code for a parameterized method:
+  /// ```dart
+  /// String welcome({required String name}) {
+  ///   switch (locale.languageCode) {
+  ///     case 'en': return 'Welcome $name';
+  ///     default: return 'Welcome $name';
+  ///   }
+  /// }
+  /// ```
   String _generateMethod(LocalizationItem item, List<LocaleData> locales,
       {bool isNested = false}) {
     final buffer = StringBuffer();
@@ -215,6 +375,21 @@ class DartWriter {
     // Add description as doc comment
     if (item.description != null) {
       buffer.writeln("  /// ${item.description}");
+    }
+
+    // Handle pluralization
+    if (item.hasPlurals) {
+      return _generatePluralMethod(item, locales, simpleKey);
+    }
+
+    // Handle gender forms
+    if (item.hasGenders) {
+      return _generateGenderMethod(item, locales, simpleKey);
+    }
+
+    // Handle context forms
+    if (item.hasContexts) {
+      return _generateContextMethod(item, locales, simpleKey);
     }
 
     // Generate method signature
@@ -265,7 +440,191 @@ class DartWriter {
     return buffer.toString();
   }
 
-  /// Convert string to PascalCase
+  /// Generates a method for pluralization support.
+  ///
+  /// Creates a method that selects the appropriate plural form based on count.
+  /// Supports forms: zero, one, two, few, many, other.
+  ///
+  /// The [item] parameter contains the localization item with plural forms.
+  /// The [locales] parameter contains all locale data.
+  /// The [simpleKey] parameter is the method name to generate.
+  ///
+  /// Returns a string containing the generated pluralization method.
+  String _generatePluralMethod(
+      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+    final buffer = StringBuffer();
+    final params = item.parameters.where((p) => p != 'count').toList();
+    final paramStr = params.isEmpty
+        ? '{required int count}'
+        : '{required int count, ${params.map((p) => 'required String $p').join(', ')}}';
+
+    buffer.writeln("  String $simpleKey($paramStr) {");
+    buffer.writeln("    switch (locale.languageCode) {");
+
+    for (final locale in locales) {
+      final localeItem = locale.items[item.key];
+      if (localeItem != null && localeItem.hasPlurals) {
+        buffer.writeln("      case '${locale.locale}':");
+        buffer.writeln("        return _selectPlural(count, {");
+
+        for (final entry in localeItem.pluralForms!.entries) {
+          final form = entry.key;
+          final value = entry.value;
+          final interpolated =
+              _interpolateStringForPlural(value, item.parameters);
+          buffer.writeln("          '$form': $interpolated,");
+        }
+
+        buffer.writeln("        });");
+      }
+    }
+
+    // Default case
+    if (item.pluralForms != null) {
+      buffer.writeln("      default:");
+      buffer.writeln("        return _selectPlural(count, {");
+      for (final entry in item.pluralForms!.entries) {
+        final form = entry.key;
+        final value = entry.value;
+        final interpolated =
+            _interpolateStringForPlural(value, item.parameters);
+        buffer.writeln("          '$form': $interpolated,");
+      }
+      buffer.writeln("        });");
+    }
+
+    buffer.writeln("    }");
+    buffer.writeln("  }");
+    buffer.writeln();
+    return buffer.toString();
+  }
+
+  /// Generates a method for gender-based forms.
+  ///
+  /// Creates a method that selects the appropriate form based on gender.
+  /// Supports forms: male, female, other.
+  ///
+  /// The [item] parameter contains the localization item with gender forms.
+  /// The [locales] parameter contains all locale data.
+  /// The [simpleKey] parameter is the method name to generate.
+  ///
+  /// Returns a string containing the generated gender-based method.
+  String _generateGenderMethod(
+      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+    final buffer = StringBuffer();
+    final params = item.parameters.where((p) => p != 'gender').toList();
+    final paramStr = params.isEmpty
+        ? '{required String gender}'
+        : '{required String gender, ${params.map((p) => 'required String $p').join(', ')}}';
+
+    buffer.writeln("  String $simpleKey($paramStr) {");
+    buffer.writeln("    switch (locale.languageCode) {");
+
+    for (final locale in locales) {
+      final localeItem = locale.items[item.key];
+      if (localeItem != null && localeItem.hasGenders) {
+        buffer.writeln("      case '${locale.locale}':");
+        buffer.writeln("        return _selectGender(gender, {");
+
+        for (final entry in localeItem.genderForms!.entries) {
+          final form = entry.key;
+          final value = entry.value;
+          final interpolated =
+              _interpolateStringForPlural(value, item.parameters);
+          buffer.writeln("          '$form': $interpolated,");
+        }
+
+        buffer.writeln("        });");
+      }
+    }
+
+    // Default case
+    if (item.genderForms != null) {
+      buffer.writeln("      default:");
+      buffer.writeln("        return _selectGender(gender, {");
+      for (final entry in item.genderForms!.entries) {
+        final form = entry.key;
+        final value = entry.value;
+        final interpolated =
+            _interpolateStringForPlural(value, item.parameters);
+        buffer.writeln("          '$form': $interpolated,");
+      }
+      buffer.writeln("        });");
+    }
+
+    buffer.writeln("    }");
+    buffer.writeln("  }");
+    buffer.writeln();
+    return buffer.toString();
+  }
+
+  /// Generates a method for context-based forms.
+  ///
+  /// Creates a method that selects the appropriate form based on context.
+  /// The context parameter allows translations to vary based on usage context.
+  ///
+  /// The [item] parameter contains the localization item with context forms.
+  /// The [locales] parameter contains all locale data.
+  /// The [simpleKey] parameter is the method name to generate.
+  ///
+  /// Returns a string containing the generated context-based method.
+  String _generateContextMethod(
+      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+    final buffer = StringBuffer();
+    final params = item.parameters.where((p) => p != 'context').toList();
+    final paramStr = params.isEmpty
+        ? '{required String context}'
+        : '{required String context, ${params.map((p) => 'required String $p').join(', ')}}';
+
+    buffer.writeln("  String $simpleKey($paramStr) {");
+    buffer.writeln("    switch (locale.languageCode) {");
+
+    for (final locale in locales) {
+      final localeItem = locale.items[item.key];
+      if (localeItem != null && localeItem.hasContexts) {
+        buffer.writeln("      case '${locale.locale}':");
+        buffer.writeln("        return _selectContext(context, {");
+
+        for (final entry in localeItem.contextForms!.entries) {
+          final form = entry.key;
+          final value = entry.value;
+          final interpolated =
+              _interpolateStringForPlural(value, item.parameters);
+          buffer.writeln("          '$form': $interpolated,");
+        }
+
+        buffer.writeln("        });");
+      }
+    }
+
+    // Default case
+    if (item.contextForms != null) {
+      buffer.writeln("      default:");
+      buffer.writeln("        return _selectContext(context, {");
+      for (final entry in item.contextForms!.entries) {
+        final form = entry.key;
+        final value = entry.value;
+        final interpolated =
+            _interpolateStringForPlural(value, item.parameters);
+        buffer.writeln("          '$form': $interpolated,");
+      }
+      buffer.writeln("        });");
+    }
+
+    buffer.writeln("    }");
+    buffer.writeln("  }");
+    buffer.writeln();
+    return buffer.toString();
+  }
+
+  /// Converts a string to PascalCase.
+  ///
+  /// Used for generating class names from namespace keys.
+  ///
+  /// Example:
+  /// ```dart
+  /// _toPascalCase('hello_world'); // Returns 'HelloWorld'
+  /// ```
   String _toPascalCase(String input) {
     return input.split('_').map((part) {
       if (part.isEmpty) return '';
@@ -273,8 +632,15 @@ class DartWriter {
     }).join();
   }
 
-  /// Convert path to PascalCase for class names
-  /// Example: "level1_level2" -> "Level1Level2", "auth_login" -> "AuthLogin"
+  /// Converts a path to PascalCase for class names.
+  ///
+  /// Handles underscores in nested paths to create appropriate class names.
+  ///
+  /// Example:
+  /// ```dart
+  /// _pathToPascalCase('level1_level2'); // Returns 'Level1Level2'
+  /// _pathToPascalCase('auth_login');    // Returns 'AuthLogin'
+  /// ```
   String _pathToPascalCase(String path) {
     return path.split('_').map((part) {
       if (part.isEmpty) return '';
@@ -282,7 +648,21 @@ class DartWriter {
     }).join('');
   }
 
-  /// Interpolate string with parameters: "Welcome {name}" -> "Welcome $name"
+  /// Interpolates parameters into a string template.
+  ///
+  /// Converts template placeholders like {name} into Dart string interpolation
+  /// syntax like $name.
+  ///
+  /// The [template] parameter is the string with {placeholder} syntax.
+  /// The [params] parameter lists all parameters to interpolate.
+  ///
+  /// Returns a quoted string with Dart interpolation syntax.
+  ///
+  /// Example:
+  /// ```dart
+  /// _interpolateString('Welcome {name}', ['name']);
+  /// // Returns "'Welcome \$name'"
+  /// ```
   String _interpolateString(String template, List<String> params) {
     var result = template;
     for (final param in params) {
@@ -291,12 +671,81 @@ class DartWriter {
     return "'${_escape(result)}'";
   }
 
-  /// Escape single quotes in strings
+  /// Interpolates parameters for plural/gender/context forms.
+  ///
+  /// Similar to [_interpolateString] but specifically for special form methods.
+  ///
+  /// The [template] parameter is the string with {placeholder} syntax.
+  /// The [params] parameter lists all parameters to interpolate.
+  ///
+  /// Returns a quoted string with Dart interpolation syntax.
+  String _interpolateStringForPlural(String template, List<String> params) {
+    var result = template;
+    for (final param in params) {
+      result = result.replaceAll('{$param}', '\$$param');
+    }
+    return "'${_escape(result)}'";
+  }
+
+  /// Escapes single quotes in strings.
+  ///
+  /// Ensures generated strings are properly escaped for Dart code.
+  ///
+  /// Example:
+  /// ```dart
+  /// _escape("It's great"); // Returns "It\\'s great"
+  /// ```
   String _escape(String text) {
     return text.replaceAll("'", "\\'");
   }
 
-  /// Generate LocalizationsDelegate
+  /// Generates helper methods for plural, gender, and context selection.
+  ///
+  /// These helper methods are used by generated translation methods to select
+  /// the appropriate form based on count, gender, or context parameters.
+  ///
+  /// Returns a string containing the helper method implementations:
+  /// - `_selectPlural`: Selects plural form based on count
+  /// - `_selectGender`: Selects gender form based on gender parameter
+  /// - `_selectContext`: Selects context form based on context parameter
+  String _generateHelperMethods() {
+    return '''
+  /// Select the appropriate plural form based on count
+  String _selectPlural(int count, Map<String, String> forms) {
+    if (count == 0 && forms.containsKey('zero')) return forms['zero']!;
+    if (count == 1 && forms.containsKey('one')) return forms['one']!;
+    if (count == 2 && forms.containsKey('two')) return forms['two']!;
+    if (forms.containsKey('many') && count >= 5) return forms['many']!;
+    if (forms.containsKey('few') && count >= 2 && count <= 4) return forms['few']!;
+    return forms['other'] ?? forms.values.first;
+  }
+
+  /// Select the appropriate gender form
+  String _selectGender(String gender, Map<String, String> forms) {
+    return forms[gender.toLowerCase()] ?? forms['other'] ?? forms.values.first;
+  }
+
+  /// Select the appropriate context form
+  String _selectContext(String context, Map<String, String> forms) {
+    return forms[context.toLowerCase()] ?? forms.values.first;
+  }
+''';
+  }
+
+  /// Generates the LocalizationsDelegate implementation.
+  ///
+  /// Creates a delegate class that Flutter uses to load localization instances.
+  /// Also generates an extension for convenient access to the delegate.
+  ///
+  /// The [locales] parameter contains all supported locale data.
+  ///
+  /// Returns a string containing the delegate class and extension code.
+  ///
+  /// Generated code includes:
+  /// - `isSupported`: Checks if a locale is supported
+  /// - `load`: Loads localization instance for a locale
+  /// - `shouldReload`: Controls when to reload (always false)
+  /// - Extension with static delegate accessor
   String _generateDelegate(List<LocaleData> locales) {
     final buffer = StringBuffer();
 

@@ -100,7 +100,12 @@ class FileWatcher {
     }
   }
 
-  /// Checks if the event should trigger a regeneration
+  /// Checks if a watch event should trigger regeneration.
+  ///
+  /// The [event] parameter contains the file system event.
+  ///
+  /// Returns true if the event is for a JSON file and is an ADD, MODIFY,
+  /// or REMOVE event.
   bool _shouldProcessEvent(WatchEvent event) {
     // Only process JSON files
     if (!event.path.endsWith('.json')) {
@@ -113,7 +118,12 @@ class FileWatcher {
         event.type == ChangeType.REMOVE;
   }
 
-  /// Handles file changes with debouncing
+  /// Handles file changes with debouncing.
+  ///
+  /// The [event] parameter contains the file system event.
+  ///
+  /// Cancels any pending regeneration and schedules a new one after
+  /// the debounce duration.
   void _handleFileChange(WatchEvent event) {
     // Cancel existing timer
     _debounceTimer?.cancel();
@@ -124,23 +134,32 @@ class FileWatcher {
     });
   }
 
-  /// Regenerates localization files
+  /// Regenerates localization files after a change.
+  ///
+  /// The [event] parameter contains the file system event that triggered
+  /// the regeneration.
+  ///
+  /// Calls the generator and displays success or error messages.
   void _regenerate(WatchEvent event) {
     final eventType = _getEventTypeString(event.type);
     final fileName = event.path.split('/').last;
 
-    print('\n🔄 File $eventType: $fileName');
-    print('   Regenerating...');
+    print('\n[CHANGE] File $eventType: $fileName');
+    print('[REGEN] Regenerating...');
 
     try {
       generator.generate();
-      print('✅ Regeneration complete\n');
+      print('[SUCCESS] Regeneration complete\n');
     } catch (e) {
-      print('❌ Regeneration failed: $e\n');
+      print('[ERROR] Regeneration failed: $e\n');
     }
   }
 
-  /// Converts ChangeType to readable string
+  /// Converts ChangeType to a readable string.
+  ///
+  /// The [type] parameter is the change type from the watch event.
+  ///
+  /// Returns a human-readable string describing the change type.
   String _getEventTypeString(ChangeType type) {
     switch (type) {
       case ChangeType.ADD:

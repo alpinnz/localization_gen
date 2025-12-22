@@ -1,152 +1,99 @@
 # Modular Example
 
-An advanced example demonstrating modular organization with separate JSON files per feature module.
+Feature-based modular localization for large applications.
+
+**Repository**: https://github.com/alpinnz/localization_gen/tree/master/example/modular
 
 ## Features
 
-- Modular JSON structure with separate files per module
-- Support for English and Indonesian languages
-- Better organization for large projects
-- Team-friendly file separation
-- Scalable architecture
+- Multiple JSON files per locale
+- Feature-based organization
+- Automatic merging by locale
+- Scalable structure
 
-## Structure
-
-This example uses **multiple JSON files** organized by feature modules:
-
-```
-assets/localizations/
-├── app_auth_en.json       # Authentication module
-├── app_auth_id.json
-├── app_home_en.json       # Home module
-├── app_home_id.json
-├── app_common_en.json     # Common/shared module
-├── app_common_id.json
-├── app_settings_en.json   # Settings module
-└── app_settings_id.json
-```
-
-Each file contains translations for a specific feature:
-
-**app_auth_en.json:**
-```json
-{
-  "@@locale": "en",
-  "@@module": "auth",
-  "login": {
-    "title": "Login",
-    "email": "Email"
-  },
-  "errors": {
-    "invalid_email": "Invalid email address"
-  }
-}
-```
-
-## Generated Code
-
-The generator creates flat structure per module:
-
-```dart
-final l10n = AppLocalizations.of(context);
-l10n.login.title           // "Login"
-l10n.errors.invalid_email  // "Invalid email address"
-```
-
-Note: Unlike nested structure, modular approach has flat access within each module.
-
-## Running the Example
+## Quick Start
 
 ```bash
-# Navigate to the example directory
-cd example/modular
-
-# Get dependencies
+# Install dependencies
 flutter pub get
 
-# Run the app
+# Generate (merges all files)
+dart run localization_gen
+
+# Run app
 flutter run
-
-# Run tests
-flutter test test/main_test.dart
 ```
-
-## Test Coverage
-
-This example includes 19 comprehensive tests covering:
-
-- App initialization and loading
-- Language switching functionality
-- All module displays (Auth, Home, Common, Settings)
-- Localization in both languages
-- UI interactions and scrolling
-- AppLocalizations API
-
-All tests are passing with 100% success rate.
-
-## Use Case
-
-Best suited for:
-- Large applications with many features
-- Multi-team development
-- Projects requiring clear module boundaries
-- Applications planning for significant growth
-- Teams working on separate features
-
-## Benefits
-
-1. **Better Organization**: Each feature has its own translation file
-2. **Team Collaboration**: Teams can work on separate modules without conflicts
-3. **Maintainability**: Easier to find and update translations
-4. **Scalability**: Add new modules without affecting existing ones
-5. **Clear Boundaries**: Feature separation is enforced at translation level
 
 ## Configuration
 
-The example uses this configuration in `pubspec.yaml`:
+See `pubspec.yaml`:
 
 ```yaml
 localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: AppLocalizations
-  use_context: true
-  nullable: false
   modular: true
   file_prefix: app
 ```
 
-Key setting: `modular: true` enables modular file parsing.
+## File Structure
 
-## Supported Languages
+```
+modular/
+├── lib/
+│   └── assets/
+│       └── app_localizations.dart     # Generated (merged)
+└── assets/
+    └── localizations/
+        ├── app_auth_en.json           # Auth - English
+        ├── app_auth_id.json           # Auth - Indonesian
+        ├── app_home_en.json           # Home - English
+        └── app_home_id.json           # Home - Indonesian
+```
 
-- English (en)
-- Indonesian (id)
+## How It Works
 
-## Module Organization
+Files are merged by locale:
 
-### Auth Module
-- Login form
-- Registration
-- Error messages
+**English** = `app_auth_en.json` + `app_home_en.json`  
+**Indonesian** = `app_auth_id.json` + `app_home_id.json`
 
-### Home Module
-- Welcome messages
-- User greetings
-- Item counts and discounts
+Result: Single `AppLocalizations` class with all translations.
 
-### Common Module
-- Shared buttons and actions
-- Common UI elements
+## File Naming
 
-### Settings Module
-- Profile settings
-- Preferences
-- Theme and language options
+```
+{prefix}_{module}_{locale}.json
 
-## Learn More
+Examples:
+app_auth_en.json
+app_home_id.json
+app_settings_en.json
+```
 
-- See the main [README](https://github.com/alpinnz/localization_gen#readme) for library documentation
-- Check [EXAMPLES.md](https://github.com/alpinnz/localization_gen/blob/master/EXAMPLES.md) for other example types
-- Compare with [Default Example](https://github.com/alpinnz/localization_gen/tree/master/example/default) for traditional approach
+## Usage
+
+```dart
+import 'assets/app_localizations.dart';
+
+// All modules merged
+final appLocalizations = AppLocalizations.of(context);
+
+Text(appLocalizations.login.title);  // Auth module
+Text(appLocalizations.welcome);      // Home module
+```
+
+## Benefits
+
+- Clear feature separation
+- Easier maintenance
+- Team collaboration friendly
+- Add/remove modules easily
+
+## Next Steps
+
+- Add new module: Create `app_newmodule_en.json` and `app_newmodule_id.json`
+- Run `dart run localization_gen`
+- Translations automatically merged
 

@@ -5,6 +5,73 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-12-22
+
+### Added
+- **Field Rename Feature**: Support for multiple naming conventions
+  - New `FieldRename` enum with 6 naming options
+  - `field_rename` configuration option in pubspec.yaml
+  - Options: `none`, `kebab`, `snake`, `pascal`, `camel`, `screamingSnake`
+  - Converts JSON keys to desired Dart naming convention
+  - Supports consistent code style across projects
+  - Fully tested with 18 comprehensive tests
+
+- **Enhanced Documentation**:
+  - Consolidated all markdown files (23 → 7 files, 70% reduction)
+  - Added full GitHub repository URLs for easy navigation
+  - Removed all emoticons for professional appearance
+  - Consistent formatting across all documentation
+  - Clear structure: README, CONTRIBUTING, CHANGELOG, examples, tests
+  - Professional tone suitable for library package
+
+- **Test Suite Expansion**:
+  - Added `test/model/field_rename_test.dart` (18 tests)
+  - Total test coverage: 82+ comprehensive tests
+  - Test structure mirrors lib/src for easy validation
+  - All tests organized by component
+  - Updated test/all_test.dart runner
+
+- **Repository Navigation**:
+  - All documentation includes full GitHub URLs
+  - Easy access to examples, issues, and documentation
+  - Improved discoverability for contributors
+  - Better pub.dev integration
+
+### Changed
+- **Version**: Major feature addition (1.0.7 → 1.1.0)
+- **Documentation Structure**: Streamlined from 23 to 7 essential markdown files
+  - Root: README.md, CONTRIBUTING.md, CHANGELOG.md
+  - Examples: 3 README files (overview, basic, modular)
+  - Tests: 1 README file
+- **Test Organization**: Restructured tests to mirror source structure
+- **Configuration**: Added `field_rename` option to `LocalizationConfig`
+- **Package Description**: Updated to include field rename feature
+
+### Fixed
+- Test file corruption issues resolved
+- Documentation consistency improved
+- Example structure clarified
+- All markdown files formatted professionally
+
+### Migration from 1.0.x
+
+No breaking changes. New `field_rename` option is optional with default value `none`.
+
+To use the new feature, add to your `pubspec.yaml`:
+
+```yaml
+localization_gen:
+  field_rename: snake  # Choose: none, kebab, snake, pascal, camel, screamingSnake
+```
+
+### Notes
+
+This release focuses on:
+- Adding flexible naming convention support
+- Improving documentation quality and navigation
+- Expanding test coverage
+- Maintaining backward compatibility
+
 ## [1.0.6] - 2025-12-16
 
 ### Added
@@ -288,10 +355,10 @@ First stable release ready for production use. Includes comprehensive examples, 
 3. Update all method calls with parameters from positional to named:
    ```dart
    // Before
-   l10n.welcome('John')
+   appLocalizations.welcome('John')
    
    // After
-   l10n.welcome(name: 'John')
+   appLocalizations.welcome(name: 'John')
    ```
 
 4. Test your application - the compiler will catch any missed conversions

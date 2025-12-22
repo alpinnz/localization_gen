@@ -2,9 +2,31 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 import '../model/localization_item.dart';
 
-/// Reads configuration from pubspec.yaml
+/// Reads and parses localization configuration from pubspec.yaml.
+///
+/// This class is responsible for loading configuration settings that control
+/// how localization files are processed and generated. It reads the
+/// `localization_gen` section from pubspec.yaml.
+///
+/// Configuration options include:
+/// - `input_dir`: Directory containing JSON localization files
+/// - `output_dir`: Directory for generated Dart files
+/// - `class_name`: Name of the generated localization class
+/// - `use_context`: Whether to generate BuildContext helper
+/// - `nullable`: Whether the context helper returns nullable type
+/// - `modular`: Enable modular file organization
+/// - `file_pattern`: Pattern for modular files
+/// - `file_prefix`: Prefix for modular files
+/// - `strict_validation`: Enable strict locale validation
+///
+/// Example usage:
+/// ```dart
+/// final config = ConfigReader.read('pubspec.yaml');
+/// print(config.className); // 'AppLocalizations'
+/// print(config.inputDir);  // 'assets/localizations'
+/// ```
 class ConfigReader {
-  /// Creates a new ConfigReader instance
+  /// Creates a new ConfigReader instance.
   ConfigReader();
 
   /// Reads localization configuration from pubspec.yaml

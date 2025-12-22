@@ -3,9 +3,30 @@ import 'dart:io';
 import '../model/localization_item.dart';
 import '../exceptions/exceptions.dart';
 
-/// Parses JSON localization files with nested structure support
+/// Parses JSON localization files with nested structure support.
+///
+/// This class handles reading and parsing of JSON files containing translations.
+/// It supports:
+/// - Nested JSON structures (converted to dot-notation)
+/// - Parameter placeholders ({name}, {count}, etc.)
+/// - Pluralization forms (@plural)
+/// - Gender forms (@gender)
+/// - Context forms (@context)
+/// - Metadata and descriptions (@key notation)
+///
+/// Example usage:
+/// ```dart
+/// // Parse a single file
+/// final file = File('assets/localizations/app_en.json');
+/// final localeData = JsonLocalizationParser.parse(file);
+///
+/// // Parse a directory
+/// final locales = JsonLocalizationParser.parseDirectory(
+///   'assets/localizations',
+/// );
+/// ```
 class JsonLocalizationParser {
-  /// Creates a new JsonLocalizationParser instance
+  /// Creates a new JsonLocalizationParser instance.
   JsonLocalizationParser();
 
   /// Parses a single JSON file with nested structure
@@ -91,6 +112,7 @@ class JsonLocalizationParser {
 
   /// Recursively flatten nested JSON to dot-notation keys
   /// Example: {"auth": {"login": "Login"}} -> {"auth.login": "Login"}
+  /// Supports pluralization, gender, and context forms
   static void _flattenJson(
     Map<String, dynamic> json,
     Map<String, LocalizationItem> items, {
@@ -107,8 +129,96 @@ class JsonLocalizationParser {
       final fullKey = prefix.isEmpty ? key : '$prefix.$key';
 
       if (value is Map<String, dynamic>) {
-        // Recursively flatten nested objects
-        _flattenJson(value, items, prefix: fullKey, filePath: filePath);
+        // Check for special forms (plural, gender, context)
+        if (value.containsKey('@plural')) {
+          // Pluralization: {"@plural": {"zero": "...", "one": "...", "other": "..."}}
+          final pluralMap = value['@plural'] as Map<String, dynamic>;
+          final pluralForms = <String, String>{};
+          final allParams = <String>{};
+
+          for (final pluralEntry in pluralMap.entries) {
+            if (pluralEntry.value is String) {
+              pluralForms[pluralEntry.key] = pluralEntry.value as String;
+              allParams.addAll(_extractParameters(pluralEntry.value as String));
+            }
+          }
+
+          // Get description
+          String? description;
+          final metadataKey = '@$key';
+          if (json.containsKey(metadataKey)) {
+            final metadata = json[metadataKey] as Map<String, dynamic>?;
+            description = metadata?['description'] as String?;
+          }
+
+          items[fullKey] = LocalizationItem(
+            key: fullKey,
+            value: pluralForms['other'] ?? pluralForms.values.first,
+            parameters: allParams.toList(),
+            description: description,
+            pluralForms: pluralForms,
+          );
+        } else if (value.containsKey('@gender')) {
+          // Gender forms: {"@gender": {"male": "...", "female": "...", "other": "..."}}
+          final genderMap = value['@gender'] as Map<String, dynamic>;
+          final genderForms = <String, String>{};
+          final allParams = <String>{};
+
+          for (final genderEntry in genderMap.entries) {
+            if (genderEntry.value is String) {
+              genderForms[genderEntry.key] = genderEntry.value as String;
+              allParams.addAll(_extractParameters(genderEntry.value as String));
+            }
+          }
+
+          // Get description
+          String? description;
+          final metadataKey = '@$key';
+          if (json.containsKey(metadataKey)) {
+            final metadata = json[metadataKey] as Map<String, dynamic>?;
+            description = metadata?['description'] as String?;
+          }
+
+          items[fullKey] = LocalizationItem(
+            key: fullKey,
+            value: genderForms['other'] ?? genderForms.values.first,
+            parameters: allParams.toList(),
+            description: description,
+            genderForms: genderForms,
+          );
+        } else if (value.containsKey('@context')) {
+          // Context forms: {"@context": {"formal": "...", "informal": "..."}}
+          final contextMap = value['@context'] as Map<String, dynamic>;
+          final contextForms = <String, String>{};
+          final allParams = <String>{};
+
+          for (final contextEntry in contextMap.entries) {
+            if (contextEntry.value is String) {
+              contextForms[contextEntry.key] = contextEntry.value as String;
+              allParams
+                  .addAll(_extractParameters(contextEntry.value as String));
+            }
+          }
+
+          // Get description
+          String? description;
+          final metadataKey = '@$key';
+          if (json.containsKey(metadataKey)) {
+            final metadata = json[metadataKey] as Map<String, dynamic>?;
+            description = metadata?['description'] as String?;
+          }
+
+          items[fullKey] = LocalizationItem(
+            key: fullKey,
+            value: contextForms.values.first,
+            parameters: allParams.toList(),
+            description: description,
+            contextForms: contextForms,
+          );
+        } else {
+          // Regular nested object, recurse deeper
+          _flattenJson(value, items, prefix: fullKey, filePath: filePath);
+        }
       } else if (value is String) {
         // Extract parameters from placeholders like {name}, {count}, etc.
         final parameters = _extractParameters(value);
@@ -206,8 +316,20 @@ class JsonLocalizationParser {
     return locales;
   }
 
-  /// Parse modular localization files and merge by locale
-  /// Example: app_auth_en.json + app_home_en.json -> merged en locale
+  /// Parses modular localization files and merges by locale.
+  ///
+  /// In modular mode, multiple JSON files for the same locale are merged together.
+  ///
+  /// The [jsonFiles] parameter contains all JSON files in the directory.
+  /// The [filePrefix] parameter specifies the expected file prefix.
+  ///
+  /// Returns a list of merged [LocaleData] objects.
+  ///
+  /// Example:
+  /// ```
+  /// app_auth_en.json + app_home_en.json -> merged 'en' locale
+  /// app_auth_id.json + app_home_id.json -> merged 'id' locale
+  /// ```
   static List<LocaleData> _parseModularFiles(
       List<File> jsonFiles, String filePrefix) {
     final localeMap = <String, Map<String, LocalizationItem>>{};
@@ -284,8 +406,20 @@ class JsonLocalizationParser {
     return parts.length > 1 ? parts.last : 'en';
   }
 
-  /// Validates consistency across multiple locales
-  /// Ensures all locales have the same keys and parameters
+  /// Validates consistency across multiple locales.
+  ///
+  /// Ensures all locales have the same keys and matching parameters for
+  /// each translation. This is useful for catching missing or mismatched
+  /// translations early in development.
+  ///
+  /// The [locales] parameter contains all locale data to validate.
+  ///
+  /// Throws [LocaleValidationException] if inconsistencies are found.
+  ///
+  /// Example:
+  /// ```dart
+  /// _validateLocaleConsistency([englishLocale, spanishLocale, indonesianLocale]);
+  /// ```
   static void _validateLocaleConsistency(List<LocaleData> locales) {
     if (locales.isEmpty) return;
 
@@ -334,7 +468,17 @@ class JsonLocalizationParser {
     }
   }
 
-  /// Checks if two parameter lists match (order-independent)
+  /// Checks if two parameter lists match.
+  ///
+  /// The [params1] and [params2] parameters are lists of parameter names.
+  ///
+  /// Returns true if both lists contain the same parameters (order-independent).
+  ///
+  /// Example:
+  /// ```dart
+  /// _parametersMatch(['name', 'count'], ['count', 'name']); // Returns true
+  /// _parametersMatch(['name'], ['count']); // Returns false
+  /// ```
   static bool _parametersMatch(List<String> params1, List<String> params2) {
     if (params1.length != params2.length) return false;
     final set1 = params1.toSet();

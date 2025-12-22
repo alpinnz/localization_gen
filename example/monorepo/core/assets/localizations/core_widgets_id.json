@@ -1,9 +1,0 @@
-{
-  "@@locale": "id",
-  "@@module": "widgets",
-  "loading": "Memuat...",
-  "error": "Terjadi kesalahan",
-  "retry": "Coba Lagi",
-  "no_data": "Tidak ada data",
-  "refresh": "Muat Ulang"
-}

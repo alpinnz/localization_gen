@@ -1,9 +1,0 @@
-{
-  "@@locale": "en",
-  "@@module": "widgets",
-  "loading": "Loading...",
-  "error": "An error occurred",
-  "retry": "Retry",
-  "no_data": "No data available",
-  "refresh": "Refresh"
-}

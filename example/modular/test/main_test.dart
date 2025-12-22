@@ -261,7 +261,7 @@ void main() {
     testWidgets('AppLocalizations works correctly', (
       WidgetTester tester,
     ) async {
-      AppLocalizations? l10n;
+      AppLocalizations? appLocalizations;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -274,7 +274,7 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {
-              l10n = AppLocalizations.of(context);
+              appLocalizations = AppLocalizations.of(context);
               return const Scaffold();
             },
           ),
@@ -282,10 +282,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(l10n, isNotNull);
-      expect(l10n!.hello, 'Hello');
-      expect(l10n!.login.title, 'Login');
-      expect(l10n!.welcome, 'Welcome to Localization Gen!');
+      expect(appLocalizations, isNotNull);
+      expect(appLocalizations!.hello, 'Hello');
+      expect(appLocalizations!.login.title, 'Login');
+      expect(appLocalizations!.welcome, 'Welcome to Localization Gen!');
     });
 
     test('Supported locales includes en and id', () {

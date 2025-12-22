@@ -65,18 +65,41 @@ class JsonParseException extends LocalizationException {
   }
 }
 
-/// Exception thrown when locale validation fails
+/// Exception thrown when locale validation fails.
+///
+/// This exception is raised during strict validation when locales don't
+/// have consistent translation keys. It provides detailed information about
+/// missing or extra keys to help developers fix the inconsistencies.
+///
+/// Example:
+/// ```dart
+/// throw LocaleValidationException(
+///   'Missing translations in Spanish locale',
+///   locale: 'es',
+///   missingKeys: ['auth.login', 'auth.logout'],
+/// );
+/// ```
 class LocaleValidationException extends LocalizationException {
-  /// The locale that failed validation
+  /// The locale that failed validation.
   final String locale;
 
-  /// Missing keys in this locale
+  /// Missing keys in this locale compared to the base locale.
+  ///
+  /// When present, indicates which translations are missing.
   final List<String>? missingKeys;
 
-  /// Extra keys not in base locale
+  /// Extra keys not present in the base locale.
+  ///
+  /// When present, indicates translations that shouldn't be there.
   final List<String>? extraKeys;
 
-  /// Creates a new LocaleValidationException
+  /// Creates a new LocaleValidationException.
+  ///
+  /// The [message] parameter describes the validation error.
+  /// The [locale] parameter specifies which locale failed validation.
+  /// The [missingKeys] parameter lists missing translations.
+  /// The [extraKeys] parameter lists unexpected translations.
+  /// The [filePath] parameter optionally specifies the file location.
   const LocaleValidationException(
     super.message, {
     required this.locale,
@@ -174,12 +197,30 @@ class CodeGenerationException extends LocalizationException {
   }
 }
 
-/// Exception thrown when file operations fail
+/// Exception thrown when file operations fail.
+///
+/// This exception is raised when file system operations like reading,
+/// writing, or deleting files encounter errors.
+///
+/// Example:
+/// ```dart
+/// throw FileOperationException(
+///   'Failed to read localization file',
+///   operation: 'read',
+///   filePath: 'assets/localizations/app_en.json',
+/// );
+/// ```
 class FileOperationException extends LocalizationException {
-  /// The operation that failed (read, write, delete, etc.)
+  /// The file operation that failed.
+  ///
+  /// Common values: 'read', 'write', 'delete', 'scan'.
   final String operation;
 
-  /// Creates a new FileOperationException
+  /// Creates a new FileOperationException.
+  ///
+  /// The [message] parameter describes the file operation error.
+  /// The [operation] parameter specifies what operation failed.
+  /// The [filePath] parameter optionally specifies the file location.
   const FileOperationException(
     super.message, {
     required this.operation,

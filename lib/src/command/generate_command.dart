@@ -1,12 +1,40 @@
 import 'dart:io';
 import 'package:args/args.dart';
+import 'base_command.dart';
 import '../generator/localization_generator.dart';
 import '../watcher/file_watcher.dart';
 import '../config/config_reader.dart';
 
-/// Command-line interface handler
-class GenerateCommand {
-  Future<void> run(List<String> args) async {
+/// Command to generate localization code from JSON files.
+///
+/// This command reads JSON localization files and generates type-safe Dart code
+/// for accessing translations. Supports watch mode for automatic regeneration
+/// during development.
+///
+/// Usage:
+/// ```bash
+/// dart run localization_gen generate
+/// dart run localization_gen generate --watch
+/// dart run localization_gen generate --config=my_pubspec.yaml
+/// ```
+class GenerateCommand extends BaseCommand {
+  @override
+  String get name => 'generate';
+
+  @override
+  String get description => 'Generate localization code from JSON files';
+
+  /// Executes the generate command with the provided arguments.
+  ///
+  /// Supports the following options:
+  /// - `--help` or `-h`: Display help information
+  /// - `--watch` or `-w`: Enable watch mode for auto-regeneration
+  /// - `--config` or `-c`: Specify path to pubspec.yaml
+  /// - `--debounce` or `-d`: Set debounce delay in milliseconds for watch mode
+  ///
+  /// Returns 0 on success, 1 on error.
+  @override
+  Future<int> execute(List<String> args) async {
     final parser = ArgParser()
       ..addFlag(
         'help',
@@ -38,7 +66,7 @@ class GenerateCommand {
 
       if (results['help'] as bool) {
         _printUsage(parser);
-        return;
+        return 0;
       }
 
       final configPath = results['config'] as String;
@@ -64,20 +92,32 @@ class GenerateCommand {
 
         // Set up signal handlers for graceful shutdown
         ProcessSignal.sigint.watch().listen((_) {
-          print('\n\n👋 Stopping watch mode...');
+          print('\n\nStopping watch mode...');
           watcher.stop();
           exit(0);
         });
 
         await watcher.start();
       }
+
+      return 0;
     } catch (e) {
-      print('Error: $e\n');
+      stderr.writeln('Error: $e\n');
       _printUsage(parser);
-      exit(1);
+      return 1;
     }
   }
 
+  /// Prints help information for the generate command.
+  ///
+  /// Displays usage examples and available options.
+  void _printHelp(ArgParser parser) {
+    _printUsage(parser);
+  }
+
+  /// Prints usage information for the generate command.
+  ///
+  /// The [parser] parameter provides the argument parser configuration.
   void _printUsage(ArgParser parser) {
     print('localization_gen - Strongly-typed localization generator\n');
     print('Usage: dart run localization_gen [options]\n');

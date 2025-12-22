@@ -15,6 +15,15 @@ class LocalizationItem {
   /// Additional metadata associated with this entry
   final Map<String, dynamic>? metadata;
 
+  /// Pluralization forms (zero, one, two, few, many, other)
+  final Map<String, String>? pluralForms;
+
+  /// Gender-based forms (male, female, other)
+  final Map<String, String>? genderForms;
+
+  /// Context-based variants
+  final Map<String, String>? contextForms;
+
   /// Creates a new LocalizationItem
   ///
   /// The [key] parameter is the dot-notation key for the translation.
@@ -22,6 +31,9 @@ class LocalizationItem {
   /// The [parameters] parameter lists parameter names found in the value.
   /// The [description] parameter provides optional documentation.
   /// The [metadata] parameter stores additional information.
+  /// The [pluralForms] parameter contains plural variants.
+  /// The [genderForms] parameter contains gender-based variants.
+  /// The [contextForms] parameter contains context-based variants.
   ///
   /// Example:
   /// ```dart
@@ -38,13 +50,26 @@ class LocalizationItem {
     this.parameters = const [],
     this.description,
     this.metadata,
+    this.pluralForms,
+    this.genderForms,
+    this.contextForms,
   });
 
   /// Returns true if this localization entry has parameters
   bool get hasParameters => parameters.isNotEmpty;
 
+  /// Returns true if this localization entry has plural forms
+  bool get hasPlurals => pluralForms != null && pluralForms!.isNotEmpty;
+
+  /// Returns true if this localization entry has gender forms
+  bool get hasGenders => genderForms != null && genderForms!.isNotEmpty;
+
+  /// Returns true if this localization entry has context forms
+  bool get hasContexts => contextForms != null && contextForms!.isNotEmpty;
+
   @override
-  String toString() => 'LocalizationItem(key: $key, params: $parameters)';
+  String toString() =>
+      'LocalizationItem(key: $key, params: $parameters, plurals: $hasPlurals, genders: $hasGenders)';
 }
 
 /// Configuration from pubspec.yaml
@@ -76,6 +101,9 @@ class LocalizationConfig {
   /// Whether to enable strict validation of locale consistency
   final bool strictValidation;
 
+  /// Field naming convention for generated code
+  final String fieldRename;
+
   /// Creates a new LocalizationConfig with default values
   ///
   /// All parameters are optional and have sensible defaults:
@@ -98,6 +126,7 @@ class LocalizationConfig {
     this.filePattern = 'app_{module}_{locale}.json',
     this.filePrefix = 'app',
     this.strictValidation = false,
+    this.fieldRename = 'none',
   });
 
   /// Creates a LocalizationConfig from a map of configuration values
@@ -126,6 +155,7 @@ class LocalizationConfig {
           map['file_pattern'] as String? ?? 'app_{module}_{locale}.json',
       filePrefix: map['file_prefix'] as String? ?? 'app',
       strictValidation: map['strict_validation'] as bool? ?? false,
+      fieldRename: map['field_rename'] as String? ?? 'none',
     );
   }
 }

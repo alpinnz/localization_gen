@@ -105,6 +105,9 @@ class LocalizationGenerator {
       print('     GlobalMaterialLocalizations.delegate,');
       print('   ],');
       print('   supportedLocales: ${config.className}.supportedLocales,');
+      print('\nAccess translations using:');
+      print('   final appLocalizations = ${config.className}.of(context);');
+      print('   final text = appLocalizations.yourKey;');
     } catch (e, stack) {
       print('Error: $e');
       if (watch) {
@@ -114,7 +117,14 @@ class LocalizationGenerator {
     }
   }
 
-  /// Convert PascalCase to snake_case
+  /// Converts a PascalCase string to snake_case.
+  ///
+  /// Used to generate file names from class names.
+  ///
+  /// Example:
+  /// ```dart
+  /// _toSnakeCase('AppLocalizations'); // Returns 'app_localizations'
+  /// ```
   String _toSnakeCase(String input) {
     return input
         .replaceAllMapped(

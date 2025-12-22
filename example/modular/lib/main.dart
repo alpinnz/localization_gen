@@ -50,7 +50,7 @@ class ModularHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final appLocalizations = AppLocalizations.of(context);
     final currentLocale = Localizations.localeOf(context);
 
     return Scaffold(
@@ -92,7 +92,7 @@ class ModularHomePage extends StatelessWidget {
               moduleFile: 'app_auth_en.json',
               icon: Icons.lock,
               color: Colors.blue,
-              child: AuthModuleWidget(l10n: l10n),
+              child: AuthModuleWidget(appLocalizations: appLocalizations),
             ),
             const SizedBox(height: 16),
 
@@ -102,7 +102,7 @@ class ModularHomePage extends StatelessWidget {
               moduleFile: 'app_home_en.json',
               icon: Icons.home,
               color: Colors.purple,
-              child: HomeModuleWidget(l10n: l10n),
+              child: HomeModuleWidget(appLocalizations: appLocalizations),
             ),
             const SizedBox(height: 16),
 
@@ -112,7 +112,7 @@ class ModularHomePage extends StatelessWidget {
               moduleFile: 'app_common_en.json',
               icon: Icons.widgets,
               color: Colors.orange,
-              child: CommonModuleWidget(l10n: l10n),
+              child: CommonModuleWidget(appLocalizations: appLocalizations),
             ),
             const SizedBox(height: 16),
 
@@ -255,9 +255,9 @@ class ModuleCard extends StatelessWidget {
 
 // Auth Module Widget
 class AuthModuleWidget extends StatelessWidget {
-  final AppLocalizations l10n;
+  final AppLocalizations appLocalizations;
 
-  const AuthModuleWidget({super.key, required this.l10n});
+  const AuthModuleWidget({super.key, required this.appLocalizations});
 
   @override
   Widget build(BuildContext context) {
@@ -328,9 +328,9 @@ class AuthModuleWidget extends StatelessWidget {
 
 // Home Module Widget
 class HomeModuleWidget extends StatelessWidget {
-  final AppLocalizations l10n;
+  final AppLocalizations appLocalizations;
 
-  const HomeModuleWidget({super.key, required this.l10n});
+  const HomeModuleWidget({super.key, required this.appLocalizations});
 
   @override
   Widget build(BuildContext context) {
@@ -357,9 +357,9 @@ class HomeModuleWidget extends StatelessWidget {
 
 // Common Module Widget
 class CommonModuleWidget extends StatelessWidget {
-  final AppLocalizations l10n;
+  final AppLocalizations appLocalizations;
 
-  const CommonModuleWidget({super.key, required this.l10n});
+  const CommonModuleWidget({super.key, required this.appLocalizations});
 
   @override
   Widget build(BuildContext context) {
