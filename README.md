@@ -28,7 +28,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  localization_gen: ^1.0.7
+  localization_gen: ^1.1.0
 
 dependencies:
   flutter_localizations:
@@ -39,6 +39,8 @@ Install dependencies:
 
 ```bash
 dart pub get
+# or
+make install
 ```
 
 ## Quick Start
@@ -100,6 +102,55 @@ Create `assets/localizations/app_id.json`:
 
 ```bash
 dart run localization_gen
+# or
+make generate
+```
+
+## Development Commands
+
+This project includes a Makefile for common development tasks. Run `make help` to see all available commands.
+
+
+```bash
+# Development
+make install          # Install dependencies
+make test             # Run all tests
+make test-file        # Run specific test file (FILE=path/to/test.dart)
+make test-examples    # Run tests for all examples
+make analyze          # Run dart analyze
+make format           # Format all code
+make format-check     # Check code formatting
+make lint             # Run linter
+make check            # Run all checks (analyze + format + test)
+make coverage         # Generate test coverage report
+make watch            # Run tests in watch mode
+
+# Localization
+make generate         # Generate localization (for testing)
+make generate-watch   # Generate localization in watch mode
+make validate         # Validate localization files
+
+# Examples
+make example-basic    # Run basic example
+make example-modular  # Run modular example
+make examples-setup   # Setup all examples
+
+# Cleanup
+make clean            # Remove build artifacts
+make clean-all        # Deep clean (including cache)
+
+# Publishing
+make publish-dry      # Dry run publication
+make publish          # Publish to pub.dev
+
+# Maintenance
+make update           # Update dependencies
+make info             # Show package information
+make check-release    # Check if ready for release
+
+# Shortcuts
+make all              # Run install + check
+make run-all          # Run complete test suite (all + examples)
 ```
 
 ### 4. Setup Flutter App
@@ -186,6 +237,8 @@ dart run localization_gen validate
 ```bash
 # Remove generated files
 dart run localization_gen clean
+# or
+make clean
 ```
 
 ### Coverage
@@ -193,6 +246,8 @@ dart run localization_gen clean
 ```bash
 # Generate coverage report
 dart run localization_gen coverage
+# or
+make coverage
 
 # HTML format
 dart run localization_gen coverage --format=html --output=coverage.html

@@ -67,16 +67,16 @@ dart test --watch
 
 ## Test Coverage
 
-| Component | Test File | Tests | Focus Area |
-|-----------|-----------|-------|------------|
-| Config | config_reader_test.dart | 5 | Configuration reading from pubspec.yaml |
-| Exceptions | exceptions_test.dart | 11 | All custom exception types |
-| Generator | localization_generator_test.dart | 4 | End-to-end code generation |
-| Model | localization_item_test.dart | 7 | Data models and structures |
-| Parser | json_parser_test.dart | 13 | JSON file parsing |
-| Parser | validation_test.dart | 8 | Strict validation mode |
-| Watcher | file_watcher_test.dart | 3 | File change detection |
-| Writer | dart_writer_test.dart | 13 | Dart code generation |
+| Component  | Test File                        | Tests | Focus Area                              |
+|------------|----------------------------------|-------|-----------------------------------------|
+| Config     | config_reader_test.dart          | 5     | Configuration reading from pubspec.yaml |
+| Exceptions | exceptions_test.dart             | 11    | All custom exception types              |
+| Generator  | localization_generator_test.dart | 4     | End-to-end code generation              |
+| Model      | localization_item_test.dart      | 7     | Data models and structures              |
+| Parser     | json_parser_test.dart            | 13    | JSON file parsing                       |
+| Parser     | validation_test.dart             | 8     | Strict validation mode                  |
+| Watcher    | file_watcher_test.dart           | 3     | File change detection                   |
+| Writer     | dart_writer_test.dart            | 13    | Dart code generation                    |
 
 **Total**: 64+ comprehensive tests covering all package features
 

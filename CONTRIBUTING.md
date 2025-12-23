@@ -13,14 +13,20 @@ cd localization_gen
 
 # 2. Install dependencies
 dart pub get
+# or
+make install
 
 # 3. Run tests
 dart test
+# or
+make test
 
 # 4. Make changes and verify
 dart analyze
 dart format .
 dart test
+# or
+make check
 ```
 
 ## Development Standards
@@ -142,9 +148,13 @@ Before submitting:
 dart analyze
 dart test
 dart format .
+# or simply
+make check
 
 # Check coverage
 dart test --coverage
+# or
+make coverage
 ```
 
 ## Project Structure

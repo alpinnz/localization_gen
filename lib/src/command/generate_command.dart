@@ -108,13 +108,6 @@ class GenerateCommand extends BaseCommand {
     }
   }
 
-  /// Prints help information for the generate command.
-  ///
-  /// Displays usage examples and available options.
-  void _printHelp(ArgParser parser) {
-    _printUsage(parser);
-  }
-
   /// Prints usage information for the generate command.
   ///
   /// The [parser] parameter provides the argument parser configuration.

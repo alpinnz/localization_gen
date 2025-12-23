@@ -29,9 +29,11 @@ import 'package:localization_gen/src/command/command_router.dart';
 
 /// Main entry point for the localization generator CLI.
 ///
-/// The [args] parameter contains command-line arguments passed to the program.
+/// The [args] parameter contains command-line arguments passed to the
+/// program.
 ///
-/// Returns an exit code where 0 indicates success and non-zero indicates an error.
+/// Returns an exit code where 0 indicates success and non-zero indicates an
+/// error.
 Future<void> main(List<String> args) async {
   final router = CommandRouter();
   final exitCode = await router.run(args);

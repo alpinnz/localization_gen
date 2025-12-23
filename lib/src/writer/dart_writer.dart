@@ -772,8 +772,8 @@ class DartWriter {
     buffer.writeln();
     buffer.writeln("/// Extension for easy access");
     buffer.writeln("extension ${className}Extension on $className {");
-    buffer.writeln("  static const delegate = ${className}Delegate();");
-    buffer.writeln("}");
+    buffer.writeln('  static const delegate = ${className}Delegate();');
+    buffer.writeln('}');
 
     return buffer.toString();
   }

@@ -16,6 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Supports consistent code style across projects
   - Fully tested with 18 comprehensive tests
 
+- **Makefile for Development**: Convenient commands for common tasks
+  - `make help` - Show all available commands
+  - `make install` - Install dependencies
+  - `make test` - Run all tests
+  - `make check` - Run all checks (analyze + format + test)
+  - `make coverage` - Generate test coverage report
+  - `make publish-dry` - Test publication
+  - And more (see `make help` for complete list)
+
 - **Enhanced Documentation**:
   - Consolidated all markdown files (23 → 7 files, 70% reduction)
   - Added full GitHub repository URLs for easy navigation

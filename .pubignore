@@ -1,47 +1,51 @@
-# Development and build files
-.dart_tool/
-.packages
-build/
-.flutter-plugins
-.flutter-plugins-dependencies
+# Files to exclude from package publication
+# See: https://dart.dev/go/pubignore
+
+# Development and internal files
+Makefile.local
+*.py
+*.sh
+.env
+.env.*
 
 # IDE files
-.idea/
 .vscode/
-*.iml
+.idea/
 .run/
+*.iml
+*.ipr
+*.iws
 
-# Test coverage
+# Build outputs
+build/
+.dart_tool/
 coverage/
 
-# Scripts
-run_all_tests.sh
-run_all_tests.py
-
-# Documentation that's not needed in package
-RELEASE_CHECKLIST.md
+# Test coverage reports
+coverage/
+coverage.json
+lcov.info
 
 # Example app build outputs
 example/**/build/
 example/**/.dart_tool/
-example/**/.flutter-plugins
-example/**/.flutter-plugins-dependencies
-example/**/android/
-example/**/ios/
-example/**/linux/
-example/**/macos/
-example/**/web/
-example/**/windows/
+example/**/coverage/
 
-# Git files
-.git/
-.gitignore
+# Release preparation files (internal)
+RELEASE_CHECKLIST_*.md
+RELEASE_READY_*.md
 
-# macOS
+# Development notes
+notes/
+drafts/
+.todo
+
+# OS files
 .DS_Store
+Thumbs.db
 
-# Backup files
-*~
-*.swp
-*.bak
+# Lock files (should not be in packages)
+pubspec.lock
+example/**/pubspec.lock
+**/pubspec.lock
 

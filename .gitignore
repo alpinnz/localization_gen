@@ -42,13 +42,12 @@ build/
 # Test coverage
 coverage/
 
-# Scripts
-run_all_tests.sh
-run_all_tests.py
-
-
 # Example app build outputs
 example/**/build/
+
+# Note: Important package files like README.md, CHANGELOG.md, LICENSE, etc.
+# are NOT ignored to ensure they are included in git and pub.dev publications.
+# Use .pubignore to exclude files from pub.dev that should remain in git.
 example/**/.dart_tool/
 example/**/.flutter-plugins
 example/**/.flutter-plugins-dependencies
