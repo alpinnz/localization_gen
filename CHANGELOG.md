@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-01-20
+
+### Fixed
+- **String escaping in generated Dart code**: improved escaping to ensure translations render correctly and generated code always compiles when translations contain:
+  - Backslashes (`\\`)
+  - Dollar signs (`$`) to prevent unintended Dart string interpolation
+  - Single quotes (`'`)
+
+### Added
+- **Writer regression tests**: added coverage to validate escaping and Unicode/symbol preservation in generated output.
+
+### Changed
+- **Examples**:
+  - Standardized example locales to **English (en)** and **Indonesian (id)** only (removed Spanish example locale).
+  - Updated example JSON assets to include a broader set of real-world symbols/unicode samples.
+
+### Removed
+- Removed temporary/extra symbol documentation files that were not intended to ship with the package.
+
 ## [1.1.0] - 2025-12-22
 
 ### Added
