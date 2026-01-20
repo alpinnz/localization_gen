@@ -1,22 +1,25 @@
-# Examples
+# Localization Gen Examples
 
-Working examples demonstrating localization_gen usage.
+Working examples demonstrating different usage patterns of `localization_gen`.
 
-Repository: https://github.com/alpinnz/localization_gen/tree/master/example
+**Repository**: https://github.com/alpinnz/localization_gen/tree/master/example
 
 ## Available Examples
 
 ### 1. Basic Example
 
-Simple single-file localization.
+**Path**: `example/basic/`
 
-**Location**: [example/basic/](https://github.com/alpinnz/localization_gen/tree/master/example/basic)
+Simple single-file per locale approach, ideal for small to medium applications.
 
-**Features**:
-- Single JSON file per locale
-- Nested structure
+**Key Features**:
+- One JSON file per locale
+- Nested structure for organization
 - Parameter interpolation
-- Multiple locales (English, Indonesian)
+- Deep nesting support (up to 10 levels)
+- English and Indonesian locales
+
+**Best for**: Small to medium apps, simple localization needs
 
 **Run**:
 ```bash
@@ -28,48 +31,46 @@ flutter run
 
 ### 2. Modular Example
 
-Feature-based organization.
+**Path**: `example/modular/`
 
-**Location**: [example/modular/](https://github.com/alpinnz/localization_gen/tree/master/example/modular)
+Feature-based organization with multiple files per locale, ideal for large applications.
 
-**Features**:
+**Key Features**:
 - Multiple JSON files per locale
-- Feature-based organization
-- Automatic file merging
-- Scalable structure
+- Feature/module-based organization
+- Automatic file merging by locale
+- Scalable structure for large teams
+- English and Indonesian locales
+
+**Best for**: Large apps, team projects, feature-based development
 
 **Run**:
 ```bash
 cd example/modular
-flutter pub get
-dart run localization_gen
-flutter run
-```
 
-## Quick Setup
+## General Setup Steps
 
 ```bash
-# Navigate to example
-cd example/<example-name>
+# 1. Navigate to example directory
+cd example/basic   # or example/modular
 
-# Install dependencies
+# 2. Install dependencies
 flutter pub get
 
-# Generate localizations
+# 3. Generate localization code
 dart run localization_gen
 
-# Run app
+# 4. Run the app
 flutter run
 ```
 
-## Learning Path
+## Recommended Learning Path
 
-1. Start with `basic/` for core concepts
-2. Explore `modular/` for organization at scale
+1. **Start with `basic/`** - Learn core concepts and basic usage
+2. **Move to `modular/`** - Understand how to scale for large projects
 
-## Configuration
+## Documentation
 
-Each example has its own `pubspec.yaml` with localization_gen configuration.
-
-See example files for different setup options.
-
+- Each example has its own detailed README
+- Main documentation: [../../README.md](../../README.md)
+- Configuration options in each `pubspec.yaml`

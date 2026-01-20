@@ -3,34 +3,51 @@
 
 import 'package:flutter/widgets.dart';
 
-/// Strongly-typed localization class
+/// Strongly-typed localization class for application translations.
+///
+/// Access translations using:
+/// ```dart
+/// final appLocalizations = AppLocalizations.of(context);
+/// final text = appLocalizations.hello;
+/// ```
 class AppLocalizations {
+  /// Creates a new AppLocalizations instance for the specified locale.
   AppLocalizations(this.locale);
 
+  /// The locale for this localization instance.
   final Locale locale;
 
-  /// Get the localization instance from context
+  /// Gets the localization instance from BuildContext.
+  ///
+  /// Example:
+  /// ```dart
+  /// final appLocalizations = AppLocalizations.of(context);
+  /// ```
   static AppLocalizations of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  /// All supported locales
-  static const supportedLocales = [Locale('en'), Locale('id'), Locale('es')];
+  /// All supported locales for this application.
+  static const supportedLocales = [
+    Locale('en'),
+    Locale('id'),
+  ];
 
-  /// App common translations
+  /// Translations for the common namespace.
   _Common get common => _Common(locale);
 
-  /// App auth translations
+  /// Translations for the auth namespace.
   _Auth get auth => _Auth(locale);
 
-  /// App home translations
+  /// Translations for the home namespace.
   _Home get home => _Home(locale);
 
-  /// App settings translations
+  /// Translations for the settings namespace.
   _Settings get settings => _Settings(locale);
 
-  /// App app translations
+  /// Translations for the app namespace.
   _App get app => _App(locale);
+
 }
 
 /// Translations for common namespace
@@ -41,81 +58,274 @@ class _Common {
 
   String get hello {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Hello';
-      case 'id':
-        return 'Halo';
-      case 'es':
-        return 'Hola';
-      default:
-        return 'Hello';
+      case 'en': return 'Hello! 👋';
+      case 'id': return 'Halo! 👋';
+      default: return 'Hello! 👋';
     }
   }
+
 
   String get goodbye {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Goodbye';
-      case 'id':
-        return 'Selamat tinggal';
-      case 'es':
-        return 'Adiós';
-      default:
-        return 'Goodbye';
+      case 'en': return 'Goodbye! 👋';
+      case 'id': return 'Selamat tinggal! 👋';
+      default: return 'Goodbye! 👋';
     }
   }
+
 
   String get yes {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Yes';
-      case 'id':
-        return 'Ya';
-      case 'es':
-        return 'Sí';
-      default:
-        return 'Yes';
+      case 'en': return 'Yes ✓';
+      case 'id': return 'Ya ✓';
+      default: return 'Yes ✓';
     }
   }
+
 
   String get no {
     switch (locale.languageCode) {
-      case 'en':
-        return 'No';
-      case 'id':
-        return 'Tidak';
-      case 'es':
-        return 'No';
-      default:
-        return 'No';
+      case 'en': return 'No ✗';
+      case 'id': return 'Tidak ✗';
+      default: return 'No ✗';
     }
   }
+
 
   String get save {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Save';
-      case 'id':
-        return 'Simpan';
-      case 'es':
-        return 'Guardar';
-      default:
-        return 'Save';
+      case 'en': return '💾 Save';
+      case 'id': return '💾 Simpan';
+      default: return '💾 Save';
     }
   }
 
+
   String get cancel {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Cancel';
-      case 'id':
-        return 'Batal';
-      case 'es':
-        return 'Cancelar';
-      default:
-        return 'Cancel';
+      case 'en': return 'Cancel';
+      case 'id': return 'Batal';
+      default: return 'Cancel';
     }
   }
+
+
+  String get special_chars {
+    switch (locale.languageCode) {
+      case 'en': return 'Special: @#\$%^&*()_+-=[]{}|;\':",./<>?';
+      case 'id': return 'Khusus: @#\$%^&*()_+-=[]{}|;\':",./<>?';
+      default: return 'Special: @#\$%^&*()_+-=[]{}|;\':",./<>?';
+    }
+  }
+
+
+  String get currency {
+    switch (locale.languageCode) {
+      case 'en': return 'Price: \$100 €200 £300 ¥400 ₹500';
+      case 'id': return 'Harga: \$100 €200 £300 ¥400 ₹500';
+      default: return 'Price: \$100 €200 £300 ¥400 ₹500';
+    }
+  }
+
+
+  String get math {
+    switch (locale.languageCode) {
+      case 'en': return 'Math: 2 + 2 = 4, 10 × 5 = 50, π ≈ 3.14, ∞';
+      case 'id': return 'Matematika: 2 + 2 = 4, 10 × 5 = 50, π ≈ 3.14, ∞';
+      default: return 'Math: 2 + 2 = 4, 10 × 5 = 50, π ≈ 3.14, ∞';
+    }
+  }
+
+
+  String get quotes {
+    switch (locale.languageCode) {
+      case 'en': return 'Single \'quote\' and double "quote" test';
+      case 'id': return 'Tanda kutip \'tunggal\' dan "ganda" tes';
+      default: return 'Single \'quote\' and double "quote" test';
+    }
+  }
+
+
+  String get emoji {
+    switch (locale.languageCode) {
+      case 'en': return '😀 🎉 ❤️ 🚀 ⭐ 🌟 💡 🔥 ✨ 🎯';
+      case 'id': return '😀 🎉 ❤️ 🚀 ⭐ 🌟 💡 🔥 ✨ 🎯';
+      default: return '😀 🎉 ❤️ 🚀 ⭐ 🌟 💡 🔥 ✨ 🎯';
+    }
+  }
+
+
+  String get symbols {
+    switch (locale.languageCode) {
+      case 'en': return '© ® ™ € £ ¥ § ¶ † ‡ • ‰ ′ ″';
+      case 'id': return '© ® ™ € £ ¥ § ¶ † ‡ • ‰ ′ ″';
+      default: return '© ® ™ € £ ¥ § ¶ † ‡ • ‰ ′ ″';
+    }
+  }
+
+
+  String get arrows {
+    switch (locale.languageCode) {
+      case 'en': return '← → ↑ ↓ ↔ ↕ ⇐ ⇒ ⇑ ⇓';
+      case 'id': return '← → ↑ ↓ ↔ ↕ ⇐ ⇒ ⇑ ⇓';
+      default: return '← → ↑ ↓ ↔ ↕ ⇐ ⇒ ⇑ ⇓';
+    }
+  }
+
+
+  String get numbers {
+    switch (locale.languageCode) {
+      case 'en': return '① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩';
+      case 'id': return '① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩';
+      default: return '① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩';
+    }
+  }
+
+
+  String get stars {
+    switch (locale.languageCode) {
+      case 'en': return '★ ☆ ✪ ✫ ✬ ✭ ✮ ✯ ✰';
+      case 'id': return '★ ☆ ✪ ✫ ✬ ✭ ✮ ✯ ✰';
+      default: return '★ ☆ ✪ ✫ ✬ ✭ ✮ ✯ ✰';
+    }
+  }
+
+
+  String get checkmarks {
+    switch (locale.languageCode) {
+      case 'en': return '✓ ✔ ✕ ✖ ✗ ✘';
+      case 'id': return '✓ ✔ ✕ ✖ ✗ ✘';
+      default: return '✓ ✔ ✕ ✖ ✗ ✘';
+    }
+  }
+
+
+  String get hearts {
+    switch (locale.languageCode) {
+      case 'en': return '♥ ♡ ❤ ❥ ❣ ❦ ❧';
+      case 'id': return '♥ ♡ ❤ ❥ ❣ ❦ ❧';
+      default: return '♥ ♡ ❤ ❥ ❣ ❦ ❧';
+    }
+  }
+
+
+  String get music {
+    switch (locale.languageCode) {
+      case 'en': return '♩ ♪ ♫ ♬ ♭ ♮ ♯';
+      case 'id': return '♩ ♪ ♫ ♬ ♭ ♮ ♯';
+      default: return '♩ ♪ ♫ ♬ ♭ ♮ ♯';
+    }
+  }
+
+
+  String get weather {
+    switch (locale.languageCode) {
+      case 'en': return '☀ ☁ ☂ ☃ ★ ☆ ☉ ☼ ☽ ☾';
+      case 'id': return '☀ ☁ ☂ ☃ ★ ☆ ☉ ☼ ☽ ☾';
+      default: return '☀ ☁ ☂ ☃ ★ ☆ ☉ ☼ ☽ ☾';
+    }
+  }
+
+
+  String get zodiac {
+    switch (locale.languageCode) {
+      case 'en': return '♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓';
+      case 'id': return '♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓';
+      default: return '♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓';
+    }
+  }
+
+
+  String get cards {
+    switch (locale.languageCode) {
+      case 'en': return '♠ ♣ ♥ ♦';
+      case 'id': return '♠ ♣ ♥ ♦';
+      default: return '♠ ♣ ♥ ♦';
+    }
+  }
+
+
+  String get gender {
+    switch (locale.languageCode) {
+      case 'en': return '♂ ♀ ⚤ ⚥ ⚦ ⚧ ⚨ ⚩';
+      case 'id': return '♂ ♀ ⚤ ⚥ ⚦ ⚧ ⚨ ⚩';
+      default: return '♂ ♀ ⚤ ⚥ ⚦ ⚧ ⚨ ⚩';
+    }
+  }
+
+
+  String get chess {
+    switch (locale.languageCode) {
+      case 'en': return '♔ ♕ ♖ ♗ ♘ ♙ ♚ ♛ ♜ ♝ ♞ ♟';
+      case 'id': return '♔ ♕ ♖ ♗ ♘ ♙ ♚ ♛ ♜ ♝ ♞ ♟';
+      default: return '♔ ♕ ♖ ♗ ♘ ♙ ♚ ♛ ♜ ♝ ♞ ♟';
+    }
+  }
+
+
+  String get greek {
+    switch (locale.languageCode) {
+      case 'en': return 'α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω';
+      case 'id': return 'α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω';
+      default: return 'α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω';
+    }
+  }
+
+
+  String get cyrillic {
+    switch (locale.languageCode) {
+      case 'en': return 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я';
+      case 'id': return 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я';
+      default: return 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я';
+    }
+  }
+
+
+  String get arabic {
+    switch (locale.languageCode) {
+      case 'en': return 'أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي';
+      case 'id': return 'أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي';
+      default: return 'أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي';
+    }
+  }
+
+
+  String get chinese {
+    switch (locale.languageCode) {
+      case 'en': return '中文测试 你好世界';
+      case 'id': return '中文测试 你好世界';
+      default: return '中文测试 你好世界';
+    }
+  }
+
+
+  String get japanese {
+    switch (locale.languageCode) {
+      case 'en': return '日本語テスト こんにちは世界';
+      case 'id': return '日本語テスト こんにちは世界';
+      default: return '日本語テスト こんにちは世界';
+    }
+  }
+
+
+  String get korean {
+    switch (locale.languageCode) {
+      case 'en': return '한국어 테스트 안녕하세요';
+      case 'id': return '한국어 테스트 안녕하세요';
+      default: return '한국어 테스트 안녕하세요';
+    }
+  }
+
+
+  String get mixed {
+    switch (locale.languageCode) {
+      case 'en': return 'Hello! 你好 こんにちは 안녕하세요 مرحبا Привет 🌍';
+      case 'id': return 'Halo! 你好 こんにちは 안녕하세요 مرحبا Привет 🌍';
+      default: return 'Hello! 你好 こんにちは 안녕하세요 مرحبا Привет 🌍';
+    }
+  }
+
+
 }
 
 /// Translations for auth namespace
@@ -132,6 +342,7 @@ class _Auth {
 
   /// App auth.errors translations
   _AuthErrors get errors => _AuthErrors(locale);
+
 }
 
 /// Translations for auth.login namespace
@@ -142,68 +353,49 @@ class _AuthLogin {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Login';
-      case 'id':
-        return 'Masuk';
-      case 'es':
-        return 'Iniciar Sesión';
-      default:
-        return 'Login';
+      case 'en': return 'Login';
+      case 'id': return 'Masuk';
+      default: return 'Login';
     }
   }
+
 
   String get email {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Email';
-      case 'id':
-        return 'Email';
-      case 'es':
-        return 'Correo Electrónico';
-      default:
-        return 'Email';
+      case 'en': return 'Email';
+      case 'id': return 'Email';
+      default: return 'Email';
     }
   }
+
 
   String get password {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Password';
-      case 'id':
-        return 'Kata Sandi';
-      case 'es':
-        return 'Contraseña';
-      default:
-        return 'Password';
+      case 'en': return 'Password';
+      case 'id': return 'Kata Sandi';
+      default: return 'Password';
     }
   }
+
 
   String get button {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Sign In';
-      case 'id':
-        return 'Masuk';
-      case 'es':
-        return 'Entrar';
-      default:
-        return 'Sign In';
+      case 'en': return 'Sign In';
+      case 'id': return 'Masuk';
+      default: return 'Sign In';
     }
   }
 
+
   String get forgot_password {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Forgot Password?';
-      case 'id':
-        return 'Lupa Kata Sandi?';
-      case 'es':
-        return '¿Olvidaste tu contraseña?';
-      default:
-        return 'Forgot Password?';
+      case 'en': return 'Forgot Password?';
+      case 'id': return 'Lupa Kata Sandi?';
+      default: return 'Forgot Password?';
     }
   }
+
+
 }
 
 /// Translations for auth.register namespace
@@ -214,42 +406,31 @@ class _AuthRegister {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Register';
-      case 'id':
-        return 'Daftar';
-      case 'es':
-        return 'Registrarse';
-      default:
-        return 'Register';
+      case 'en': return 'Register';
+      case 'id': return 'Daftar';
+      default: return 'Register';
     }
   }
+
 
   String get button {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Sign Up';
-      case 'id':
-        return 'Buat Akun';
-      case 'es':
-        return 'Crear Cuenta';
-      default:
-        return 'Sign Up';
+      case 'en': return 'Sign Up';
+      case 'id': return 'Buat Akun';
+      default: return 'Sign Up';
     }
   }
 
+
   String get terms_accept {
     switch (locale.languageCode) {
-      case 'en':
-        return 'I accept the terms and conditions';
-      case 'id':
-        return 'Saya menerima syarat dan ketentuan';
-      case 'es':
-        return 'Acepto los términos y condiciones';
-      default:
-        return 'I accept the terms and conditions';
+      case 'en': return 'I accept the terms and conditions';
+      case 'id': return 'Saya menerima syarat dan ketentuan';
+      default: return 'I accept the terms and conditions';
     }
   }
+
+
 }
 
 /// Translations for auth.errors namespace
@@ -260,42 +441,31 @@ class _AuthErrors {
 
   String get invalid_email {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Invalid email address';
-      case 'id':
-        return 'Alamat email tidak valid';
-      case 'es':
-        return 'Correo electrónico inválido';
-      default:
-        return 'Invalid email address';
+      case 'en': return 'Invalid email address';
+      case 'id': return 'Alamat email tidak valid';
+      default: return 'Invalid email address';
     }
   }
+
 
   String get weak_password {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Password is too weak';
-      case 'id':
-        return 'Kata sandi terlalu lemah';
-      case 'es':
-        return 'La contraseña es muy débil';
-      default:
-        return 'Password is too weak';
+      case 'en': return 'Password is too weak';
+      case 'id': return 'Kata sandi terlalu lemah';
+      default: return 'Password is too weak';
     }
   }
 
+
   String get user_not_found {
     switch (locale.languageCode) {
-      case 'en':
-        return 'User not found';
-      case 'id':
-        return 'Pengguna tidak ditemukan';
-      case 'es':
-        return 'Usuario no encontrado';
-      default:
-        return 'User not found';
+      case 'en': return 'User not found';
+      case 'id': return 'Pengguna tidak ditemukan';
+      default: return 'User not found';
     }
   }
+
+
 }
 
 /// Translations for home namespace
@@ -306,55 +476,40 @@ class _Home {
 
   String get welcome {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Welcome to Localization Gen!';
-      case 'id':
-        return 'Selamat datang di Localization Gen!';
-      case 'es':
-        return '¡Bienvenido a Localization Gen!';
-      default:
-        return 'Welcome to Localization Gen!';
+      case 'en': return 'Welcome to Localization Gen!';
+      case 'id': return 'Selamat datang di Localization Gen!';
+      default: return 'Welcome to Localization Gen!';
     }
   }
+
 
   String welcome_user({required String name}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Welcome, $name!';
-      case 'id':
-        return 'Selamat datang, $name!';
-      case 'es':
-        return '¡Bienvenido, $name!';
-      default:
-        return 'Welcome, $name!';
+      case 'en': return 'Welcome, \$name!';
+      case 'id': return 'Selamat datang, \$name!';
+      default: return 'Welcome, \$name!';
     }
   }
+
 
   String item_count({required String count}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'You have $count items';
-      case 'id':
-        return 'Anda memiliki $count item';
-      case 'es':
-        return 'Tienes $count artículos';
-      default:
-        return 'You have $count items';
+      case 'en': return 'You have \$count items';
+      case 'id': return 'Anda memiliki \$count item';
+      default: return 'You have \$count items';
     }
   }
 
+
   String discount({required String value}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Discount $value%';
-      case 'id':
-        return 'Diskon $value%';
-      case 'es':
-        return 'Descuento $value%';
-      default:
-        return 'Discount $value%';
+      case 'en': return 'Discount \$value%';
+      case 'id': return 'Diskon \$value%';
+      default: return 'Discount \$value%';
     }
   }
+
+
 }
 
 /// Translations for settings namespace
@@ -371,16 +526,13 @@ class _Settings {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Settings';
-      case 'id':
-        return 'Pengaturan';
-      case 'es':
-        return 'Configuración';
-      default:
-        return 'Settings';
+      case 'en': return 'Settings';
+      case 'id': return 'Pengaturan';
+      default: return 'Settings';
     }
   }
+
+
 }
 
 /// Translations for settings.profile namespace
@@ -391,42 +543,31 @@ class _SettingsProfile {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Profile';
-      case 'id':
-        return 'Profil';
-      case 'es':
-        return 'Perfil';
-      default:
-        return 'Profile';
+      case 'en': return 'Profile';
+      case 'id': return 'Profil';
+      default: return 'Profile';
     }
   }
+
 
   String get edit_profile {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Edit Profile';
-      case 'id':
-        return 'Edit Profil';
-      case 'es':
-        return 'Editar Perfil';
-      default:
-        return 'Edit Profile';
+      case 'en': return 'Edit Profile';
+      case 'id': return 'Edit Profil';
+      default: return 'Edit Profile';
     }
   }
 
+
   String get change_password {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Change Password';
-      case 'id':
-        return 'Ubah Kata Sandi';
-      case 'es':
-        return 'Cambiar Contraseña';
-      default:
-        return 'Change Password';
+      case 'en': return 'Change Password';
+      case 'id': return 'Ubah Kata Sandi';
+      default: return 'Change Password';
     }
   }
+
+
 }
 
 /// Translations for settings.preferences namespace
@@ -437,55 +578,40 @@ class _SettingsPreferences {
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Preferences';
-      case 'id':
-        return 'Preferensi';
-      case 'es':
-        return 'Preferencias';
-      default:
-        return 'Preferences';
+      case 'en': return 'Preferences';
+      case 'id': return 'Preferensi';
+      default: return 'Preferences';
     }
   }
+
 
   String get language {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Language';
-      case 'id':
-        return 'Bahasa';
-      case 'es':
-        return 'Idioma';
-      default:
-        return 'Language';
+      case 'en': return 'Language';
+      case 'id': return 'Bahasa';
+      default: return 'Language';
     }
   }
+
 
   String get theme {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Theme';
-      case 'id':
-        return 'Tema';
-      case 'es':
-        return 'Tema';
-      default:
-        return 'Theme';
+      case 'en': return 'Theme';
+      case 'id': return 'Tema';
+      default: return 'Theme';
     }
   }
 
+
   String get notifications {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Notifications';
-      case 'id':
-        return 'Notifikasi';
-      case 'es':
-        return 'Notificaciones';
-      default:
-        return 'Notifications';
+      case 'en': return 'Notifications';
+      case 'id': return 'Notifikasi';
+      default: return 'Notifications';
     }
   }
+
+
 }
 
 /// Translations for app namespace
@@ -499,6 +625,7 @@ class _App {
 
   /// App app.system translations
   _AppSystem get system => _AppSystem(locale);
+
 }
 
 /// Translations for app.features namespace
@@ -515,6 +642,7 @@ class _AppFeatures {
 
   /// App app.features.analytics translations
   _AppFeaturesAnalytics get analytics => _AppFeaturesAnalytics(locale);
+
 }
 
 /// Translations for app.features.ecommerce namespace
@@ -524,8 +652,8 @@ class _AppFeaturesEcommerce {
   final Locale locale;
 
   /// App app.features.ecommerce.catalog translations
-  _AppFeaturesEcommerceCatalog get catalog =>
-      _AppFeaturesEcommerceCatalog(locale);
+  _AppFeaturesEcommerceCatalog get catalog => _AppFeaturesEcommerceCatalog(locale);
+
 }
 
 /// Translations for app.features.ecommerce.catalog namespace
@@ -535,8 +663,8 @@ class _AppFeaturesEcommerceCatalog {
   final Locale locale;
 
   /// App app.features.ecommerce.catalog.products translations
-  _AppFeaturesEcommerceCatalogProducts get products =>
-      _AppFeaturesEcommerceCatalogProducts(locale);
+  _AppFeaturesEcommerceCatalogProducts get products => _AppFeaturesEcommerceCatalogProducts(locale);
+
 }
 
 /// Translations for app.features.ecommerce.catalog.products namespace
@@ -546,8 +674,8 @@ class _AppFeaturesEcommerceCatalogProducts {
   final Locale locale;
 
   /// App app.features.ecommerce.catalog.products.categories translations
-  _AppFeaturesEcommerceCatalogProductsCategories get categories =>
-      _AppFeaturesEcommerceCatalogProductsCategories(locale);
+  _AppFeaturesEcommerceCatalogProductsCategories get categories => _AppFeaturesEcommerceCatalogProductsCategories(locale);
+
 }
 
 /// Translations for app.features.ecommerce.catalog.products.categories namespace
@@ -557,8 +685,8 @@ class _AppFeaturesEcommerceCatalogProductsCategories {
   final Locale locale;
 
   /// App app.features.ecommerce.catalog.products.categories.electronics translations
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronics get electronics =>
-      _AppFeaturesEcommerceCatalogProductsCategoriesElectronics(locale);
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronics get electronics => _AppFeaturesEcommerceCatalogProductsCategoriesElectronics(locale);
+
 }
 
 /// Translations for app.features.ecommerce.catalog.products.categories.electronics namespace
@@ -568,120 +696,85 @@ class _AppFeaturesEcommerceCatalogProductsCategoriesElectronics {
   final Locale locale;
 
   /// App app.features.ecommerce.catalog.products.categories.electronics.subcategories translations
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategories
-  get subcategories =>
-      _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategories(
-        locale,
-      );
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategories get subcategories => _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategories(locale);
+
 }
 
 /// Translations for app.features.ecommerce.catalog.products.categories.electronics.subcategories namespace
 class _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategories {
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategories(
-    this.locale,
-  );
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategories(this.locale);
 
   final Locale locale;
 
   /// App app.features.ecommerce.catalog.products.categories.electronics.subcategories.mobile translations
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobile
-  get mobile =>
-      _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobile(
-        locale,
-      );
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobile get mobile => _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobile(locale);
+
 }
 
 /// Translations for app.features.ecommerce.catalog.products.categories.electronics.subcategories.mobile namespace
 class _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobile {
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobile(
-    this.locale,
-  );
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobile(this.locale);
 
   final Locale locale;
 
   /// App app.features.ecommerce.catalog.products.categories.electronics.subcategories.mobile.brands translations
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrands
-  get brands =>
-      _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrands(
-        locale,
-      );
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrands get brands => _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrands(locale);
+
 }
 
 /// Translations for app.features.ecommerce.catalog.products.categories.electronics.subcategories.mobile.brands namespace
 class _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrands {
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrands(
-    this.locale,
-  );
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrands(this.locale);
 
   final Locale locale;
 
   /// App app.features.ecommerce.catalog.products.categories.electronics.subcategories.mobile.brands.premium translations
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrandsPremium
-  get premium =>
-      _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrandsPremium(
-        locale,
-      );
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrandsPremium get premium => _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrandsPremium(locale);
+
 }
 
 /// Translations for app.features.ecommerce.catalog.products.categories.electronics.subcategories.mobile.brands.premium namespace
 class _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrandsPremium {
-  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrandsPremium(
-    this.locale,
-  );
+  _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobileBrandsPremium(this.locale);
 
   final Locale locale;
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Premium Mobile Brands';
-      case 'id':
-        return 'Merek Ponsel Premium';
-      case 'es':
-        return 'Marcas Premium de Móviles';
-      default:
-        return 'Premium Mobile Brands';
+      case 'en': return 'Premium Mobile Brands';
+      case 'id': return 'Merek Ponsel Premium';
+      default: return 'Premium Mobile Brands';
     }
   }
+
 
   String get description {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Discover top-tier mobile devices';
-      case 'id':
-        return 'Temukan perangkat mobile kelas atas';
-      case 'es':
-        return 'Descubre dispositivos móviles de primer nivel';
-      default:
-        return 'Discover top-tier mobile devices';
+      case 'en': return 'Discover top-tier mobile devices';
+      case 'id': return 'Temukan perangkat mobile kelas atas';
+      default: return 'Discover top-tier mobile devices';
     }
   }
+
 
   String featured_message({required String count}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Featured: $count brands available';
-      case 'id':
-        return 'Unggulan: $count merek tersedia';
-      case 'es':
-        return 'Destacado: $count marcas disponibles';
-      default:
-        return 'Featured: $count brands available';
+      case 'en': return 'Featured: \$count brands available';
+      case 'id': return 'Unggulan: \$count merek tersedia';
+      default: return 'Featured: \$count brands available';
     }
   }
 
+
   String promo({required String discount}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Get $discount% off on premium devices!';
-      case 'id':
-        return 'Dapatkan diskon $discount% untuk perangkat premium!';
-      case 'es':
-        return '¡Obtén $discount% de descuento en dispositivos premium!';
-      default:
-        return 'Get $discount% off on premium devices!';
+      case 'en': return 'Get \$discount% off on premium devices!';
+      case 'id': return 'Dapatkan diskon \$discount% untuk perangkat premium!';
+      default: return 'Get \$discount% off on premium devices!';
     }
   }
+
+
 }
 
 /// Translations for app.features.social namespace
@@ -691,8 +784,8 @@ class _AppFeaturesSocial {
   final Locale locale;
 
   /// App app.features.social.messaging translations
-  _AppFeaturesSocialMessaging get messaging =>
-      _AppFeaturesSocialMessaging(locale);
+  _AppFeaturesSocialMessaging get messaging => _AppFeaturesSocialMessaging(locale);
+
 }
 
 /// Translations for app.features.social.messaging namespace
@@ -702,8 +795,8 @@ class _AppFeaturesSocialMessaging {
   final Locale locale;
 
   /// App app.features.social.messaging.conversations translations
-  _AppFeaturesSocialMessagingConversations get conversations =>
-      _AppFeaturesSocialMessagingConversations(locale);
+  _AppFeaturesSocialMessagingConversations get conversations => _AppFeaturesSocialMessagingConversations(locale);
+
 }
 
 /// Translations for app.features.social.messaging.conversations namespace
@@ -713,8 +806,8 @@ class _AppFeaturesSocialMessagingConversations {
   final Locale locale;
 
   /// App app.features.social.messaging.conversations.threads translations
-  _AppFeaturesSocialMessagingConversationsThreads get threads =>
-      _AppFeaturesSocialMessagingConversationsThreads(locale);
+  _AppFeaturesSocialMessagingConversationsThreads get threads => _AppFeaturesSocialMessagingConversationsThreads(locale);
+
 }
 
 /// Translations for app.features.social.messaging.conversations.threads namespace
@@ -724,8 +817,8 @@ class _AppFeaturesSocialMessagingConversationsThreads {
   final Locale locale;
 
   /// App app.features.social.messaging.conversations.threads.groups translations
-  _AppFeaturesSocialMessagingConversationsThreadsGroups get groups =>
-      _AppFeaturesSocialMessagingConversationsThreadsGroups(locale);
+  _AppFeaturesSocialMessagingConversationsThreadsGroups get groups => _AppFeaturesSocialMessagingConversationsThreadsGroups(locale);
+
 }
 
 /// Translations for app.features.social.messaging.conversations.threads.groups namespace
@@ -735,8 +828,8 @@ class _AppFeaturesSocialMessagingConversationsThreadsGroups {
   final Locale locale;
 
   /// App app.features.social.messaging.conversations.threads.groups.settings translations
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettings get settings =>
-      _AppFeaturesSocialMessagingConversationsThreadsGroupsSettings(locale);
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettings get settings => _AppFeaturesSocialMessagingConversationsThreadsGroupsSettings(locale);
+
 }
 
 /// Translations for app.features.social.messaging.conversations.threads.groups.settings namespace
@@ -746,120 +839,85 @@ class _AppFeaturesSocialMessagingConversationsThreadsGroupsSettings {
   final Locale locale;
 
   /// App app.features.social.messaging.conversations.threads.groups.settings.privacy translations
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacy
-  get privacy =>
-      _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacy(
-        locale,
-      );
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacy get privacy => _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacy(locale);
+
 }
 
 /// Translations for app.features.social.messaging.conversations.threads.groups.settings.privacy namespace
 class _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacy {
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacy(
-    this.locale,
-  );
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacy(this.locale);
 
   final Locale locale;
 
   /// App app.features.social.messaging.conversations.threads.groups.settings.privacy.permissions translations
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissions
-  get permissions =>
-      _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissions(
-        locale,
-      );
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissions get permissions => _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissions(locale);
+
 }
 
 /// Translations for app.features.social.messaging.conversations.threads.groups.settings.privacy.permissions namespace
 class _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissions {
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissions(
-    this.locale,
-  );
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissions(this.locale);
 
   final Locale locale;
 
   /// App app.features.social.messaging.conversations.threads.groups.settings.privacy.permissions.roles translations
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRoles
-  get roles =>
-      _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRoles(
-        locale,
-      );
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRoles get roles => _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRoles(locale);
+
 }
 
 /// Translations for app.features.social.messaging.conversations.threads.groups.settings.privacy.permissions.roles namespace
 class _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRoles {
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRoles(
-    this.locale,
-  );
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRoles(this.locale);
 
   final Locale locale;
 
   /// App app.features.social.messaging.conversations.threads.groups.settings.privacy.permissions.roles.admin translations
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRolesAdmin
-  get admin =>
-      _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRolesAdmin(
-        locale,
-      );
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRolesAdmin get admin => _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRolesAdmin(locale);
+
 }
 
 /// Translations for app.features.social.messaging.conversations.threads.groups.settings.privacy.permissions.roles.admin namespace
 class _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRolesAdmin {
-  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRolesAdmin(
-    this.locale,
-  );
+  _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermissionsRolesAdmin(this.locale);
 
   final Locale locale;
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Administrator';
-      case 'id':
-        return 'Administrator';
-      case 'es':
-        return 'Administrador';
-      default:
-        return 'Administrator';
+      case 'en': return 'Administrator';
+      case 'id': return 'Administrator';
+      default: return 'Administrator';
     }
   }
+
 
   String get description {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Full access to all group settings';
-      case 'id':
-        return 'Akses penuh ke semua pengaturan grup';
-      case 'es':
-        return 'Acceso completo a todas las configuraciones del grupo';
-      default:
-        return 'Full access to all group settings';
+      case 'en': return 'Full access to all group settings';
+      case 'id': return 'Akses penuh ke semua pengaturan grup';
+      default: return 'Full access to all group settings';
     }
   }
+
 
   String grant_permission({required String permission, required String user}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Grant $permission to $user';
-      case 'id':
-        return 'Berikan $permission kepada $user';
-      case 'es':
-        return 'Conceder $permission a $user';
-      default:
-        return 'Grant $permission to $user';
+      case 'en': return 'Grant \$permission to \$user';
+      case 'id': return 'Berikan \$permission kepada \$user';
+      default: return 'Grant \$permission to \$user';
     }
   }
 
+
   String get revoke_warning {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Are you sure you want to revoke access?';
-      case 'id':
-        return 'Apakah Anda yakin ingin mencabut akses?';
-      case 'es':
-        return '¿Estás seguro de que quieres revocar el acceso?';
-      default:
-        return 'Are you sure you want to revoke access?';
+      case 'en': return 'Are you sure you want to revoke access?';
+      case 'id': return 'Apakah Anda yakin ingin mencabut akses?';
+      default: return 'Are you sure you want to revoke access?';
     }
   }
+
+
 }
 
 /// Translations for app.features.analytics namespace
@@ -869,8 +927,8 @@ class _AppFeaturesAnalytics {
   final Locale locale;
 
   /// App app.features.analytics.dashboard translations
-  _AppFeaturesAnalyticsDashboard get dashboard =>
-      _AppFeaturesAnalyticsDashboard(locale);
+  _AppFeaturesAnalyticsDashboard get dashboard => _AppFeaturesAnalyticsDashboard(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard namespace
@@ -880,8 +938,8 @@ class _AppFeaturesAnalyticsDashboard {
   final Locale locale;
 
   /// App app.features.analytics.dashboard.reports translations
-  _AppFeaturesAnalyticsDashboardReports get reports =>
-      _AppFeaturesAnalyticsDashboardReports(locale);
+  _AppFeaturesAnalyticsDashboardReports get reports => _AppFeaturesAnalyticsDashboardReports(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard.reports namespace
@@ -891,8 +949,8 @@ class _AppFeaturesAnalyticsDashboardReports {
   final Locale locale;
 
   /// App app.features.analytics.dashboard.reports.metrics translations
-  _AppFeaturesAnalyticsDashboardReportsMetrics get metrics =>
-      _AppFeaturesAnalyticsDashboardReportsMetrics(locale);
+  _AppFeaturesAnalyticsDashboardReportsMetrics get metrics => _AppFeaturesAnalyticsDashboardReportsMetrics(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard.reports.metrics namespace
@@ -902,8 +960,8 @@ class _AppFeaturesAnalyticsDashboardReportsMetrics {
   final Locale locale;
 
   /// App app.features.analytics.dashboard.reports.metrics.performance translations
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformance get performance =>
-      _AppFeaturesAnalyticsDashboardReportsMetricsPerformance(locale);
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformance get performance => _AppFeaturesAnalyticsDashboardReportsMetricsPerformance(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard.reports.metrics.performance namespace
@@ -913,8 +971,8 @@ class _AppFeaturesAnalyticsDashboardReportsMetricsPerformance {
   final Locale locale;
 
   /// App app.features.analytics.dashboard.reports.metrics.performance.charts translations
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceCharts get charts =>
-      _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceCharts(locale);
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceCharts get charts => _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceCharts(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard.reports.metrics.performance.charts namespace
@@ -924,120 +982,85 @@ class _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceCharts {
   final Locale locale;
 
   /// App app.features.analytics.dashboard.reports.metrics.performance.charts.timeseries translations
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseries
-  get timeseries =>
-      _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseries(
-        locale,
-      );
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseries get timeseries => _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseries(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard.reports.metrics.performance.charts.timeseries namespace
 class _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseries {
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseries(
-    this.locale,
-  );
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseries(this.locale);
 
   final Locale locale;
 
   /// App app.features.analytics.dashboard.reports.metrics.performance.charts.timeseries.data translations
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesData
-  get data =>
-      _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesData(
-        locale,
-      );
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesData get data => _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesData(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard.reports.metrics.performance.charts.timeseries.data namespace
 class _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesData {
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesData(
-    this.locale,
-  );
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesData(this.locale);
 
   final Locale locale;
 
   /// App app.features.analytics.dashboard.reports.metrics.performance.charts.timeseries.data.aggregations translations
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregations
-  get aggregations =>
-      _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregations(
-        locale,
-      );
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregations get aggregations => _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregations(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard.reports.metrics.performance.charts.timeseries.data.aggregations namespace
 class _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregations {
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregations(
-    this.locale,
-  );
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregations(this.locale);
 
   final Locale locale;
 
   /// App app.features.analytics.dashboard.reports.metrics.performance.charts.timeseries.data.aggregations.daily translations
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregationsDaily
-  get daily =>
-      _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregationsDaily(
-        locale,
-      );
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregationsDaily get daily => _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregationsDaily(locale);
+
 }
 
 /// Translations for app.features.analytics.dashboard.reports.metrics.performance.charts.timeseries.data.aggregations.daily namespace
 class _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregationsDaily {
-  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregationsDaily(
-    this.locale,
-  );
+  _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDataAggregationsDaily(this.locale);
 
   final Locale locale;
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Daily Performance Metrics';
-      case 'id':
-        return 'Metrik Kinerja Harian';
-      case 'es':
-        return 'Métricas de Rendimiento Diario';
-      default:
-        return 'Daily Performance Metrics';
+      case 'en': return 'Daily Performance Metrics';
+      case 'id': return 'Metrik Kinerja Harian';
+      default: return 'Daily Performance Metrics';
     }
   }
+
 
   String subtitle({required String date}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'View detailed analytics for $date';
-      case 'id':
-        return 'Lihat analitik terperinci untuk $date';
-      case 'es':
-        return 'Ver análisis detallado para $date';
-      default:
-        return 'View detailed analytics for $date';
+      case 'en': return 'View detailed analytics for \$date';
+      case 'id': return 'Lihat analitik terperinci untuk \$date';
+      default: return 'View detailed analytics for \$date';
     }
   }
+
 
   String summary({required String count}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Total: $count events processed';
-      case 'id':
-        return 'Total: $count kejadian diproses';
-      case 'es':
-        return 'Total: $count eventos procesados';
-      default:
-        return 'Total: $count events processed';
+      case 'en': return 'Total: \$count events processed';
+      case 'id': return 'Total: \$count kejadian diproses';
+      default: return 'Total: \$count events processed';
     }
   }
 
+
   String export({required String format}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Export data to $format';
-      case 'id':
-        return 'Ekspor data ke $format';
-      case 'es':
-        return 'Exportar datos a $format';
-      default:
-        return 'Export data to $format';
+      case 'en': return 'Export data to \$format';
+      case 'id': return 'Ekspor data ke \$format';
+      default: return 'Export data to \$format';
     }
   }
+
+
 }
 
 /// Translations for app.system namespace
@@ -1048,6 +1071,7 @@ class _AppSystem {
 
   /// App app.system.configuration translations
   _AppSystemConfiguration get configuration => _AppSystemConfiguration(locale);
+
 }
 
 /// Translations for app.system.configuration namespace
@@ -1057,8 +1081,8 @@ class _AppSystemConfiguration {
   final Locale locale;
 
   /// App app.system.configuration.network translations
-  _AppSystemConfigurationNetwork get network =>
-      _AppSystemConfigurationNetwork(locale);
+  _AppSystemConfigurationNetwork get network => _AppSystemConfigurationNetwork(locale);
+
 }
 
 /// Translations for app.system.configuration.network namespace
@@ -1068,8 +1092,8 @@ class _AppSystemConfigurationNetwork {
   final Locale locale;
 
   /// App app.system.configuration.network.connections translations
-  _AppSystemConfigurationNetworkConnections get connections =>
-      _AppSystemConfigurationNetworkConnections(locale);
+  _AppSystemConfigurationNetworkConnections get connections => _AppSystemConfigurationNetworkConnections(locale);
+
 }
 
 /// Translations for app.system.configuration.network.connections namespace
@@ -1079,8 +1103,8 @@ class _AppSystemConfigurationNetworkConnections {
   final Locale locale;
 
   /// App app.system.configuration.network.connections.protocols translations
-  _AppSystemConfigurationNetworkConnectionsProtocols get protocols =>
-      _AppSystemConfigurationNetworkConnectionsProtocols(locale);
+  _AppSystemConfigurationNetworkConnectionsProtocols get protocols => _AppSystemConfigurationNetworkConnectionsProtocols(locale);
+
 }
 
 /// Translations for app.system.configuration.network.connections.protocols namespace
@@ -1090,8 +1114,8 @@ class _AppSystemConfigurationNetworkConnectionsProtocols {
   final Locale locale;
 
   /// App app.system.configuration.network.connections.protocols.security translations
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurity get security =>
-      _AppSystemConfigurationNetworkConnectionsProtocolsSecurity(locale);
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurity get security => _AppSystemConfigurationNetworkConnectionsProtocolsSecurity(locale);
+
 }
 
 /// Translations for app.system.configuration.network.connections.protocols.security namespace
@@ -1101,120 +1125,85 @@ class _AppSystemConfigurationNetworkConnectionsProtocolsSecurity {
   final Locale locale;
 
   /// App app.system.configuration.network.connections.protocols.security.encryption translations
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryption
-  get encryption =>
-      _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryption(
-        locale,
-      );
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryption get encryption => _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryption(locale);
+
 }
 
 /// Translations for app.system.configuration.network.connections.protocols.security.encryption namespace
 class _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryption {
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryption(
-    this.locale,
-  );
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryption(this.locale);
 
   final Locale locale;
 
   /// App app.system.configuration.network.connections.protocols.security.encryption.algorithms translations
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithms
-  get algorithms =>
-      _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithms(
-        locale,
-      );
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithms get algorithms => _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithms(locale);
+
 }
 
 /// Translations for app.system.configuration.network.connections.protocols.security.encryption.algorithms namespace
 class _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithms {
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithms(
-    this.locale,
-  );
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithms(this.locale);
 
   final Locale locale;
 
   /// App app.system.configuration.network.connections.protocols.security.encryption.algorithms.advanced translations
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvanced
-  get advanced =>
-      _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvanced(
-        locale,
-      );
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvanced get advanced => _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvanced(locale);
+
 }
 
 /// Translations for app.system.configuration.network.connections.protocols.security.encryption.algorithms.advanced namespace
 class _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvanced {
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvanced(
-    this.locale,
-  );
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvanced(this.locale);
 
   final Locale locale;
 
   /// App app.system.configuration.network.connections.protocols.security.encryption.algorithms.advanced.settings translations
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvancedSettings
-  get settings =>
-      _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvancedSettings(
-        locale,
-      );
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvancedSettings get settings => _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvancedSettings(locale);
+
 }
 
 /// Translations for app.system.configuration.network.connections.protocols.security.encryption.algorithms.advanced.settings namespace
 class _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvancedSettings {
-  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvancedSettings(
-    this.locale,
-  );
+  _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgorithmsAdvancedSettings(this.locale);
 
   final Locale locale;
 
   String get title {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Advanced Encryption Settings';
-      case 'id':
-        return 'Pengaturan Enkripsi Lanjutan';
-      case 'es':
-        return 'Configuración de Cifrado Avanzado';
-      default:
-        return 'Advanced Encryption Settings';
+      case 'en': return 'Advanced Encryption Settings';
+      case 'id': return 'Pengaturan Enkripsi Lanjutan';
+      default: return 'Advanced Encryption Settings';
     }
   }
+
 
   String description({required String protocol}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Configure $protocol encryption';
-      case 'id':
-        return 'Konfigurasi enkripsi $protocol';
-      case 'es':
-        return 'Configurar cifrado $protocol';
-      default:
-        return 'Configure $protocol encryption';
+      case 'en': return 'Configure \$protocol encryption';
+      case 'id': return 'Konfigurasi enkripsi \$protocol';
+      default: return 'Configure \$protocol encryption';
     }
   }
+
 
   String key_strength({required String bits}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Key strength: $bits bits';
-      case 'id':
-        return 'Kekuatan kunci: $bits bit';
-      case 'es':
-        return 'Fuerza de clave: $bits bits';
-      default:
-        return 'Key strength: $bits bits';
+      case 'en': return 'Key strength: \$bits bits';
+      case 'id': return 'Kekuatan kunci: \$bits bit';
+      default: return 'Key strength: \$bits bits';
     }
   }
 
+
   String status({required String status}) {
     switch (locale.languageCode) {
-      case 'en':
-        return 'Status: $status';
-      case 'id':
-        return 'Status: $status';
-      case 'es':
-        return 'Estado: $status';
-      default:
-        return 'Status: $status';
+      case 'en': return 'Status: \$status';
+      case 'id': return 'Status: \$status';
+      default: return 'Status: \$status';
     }
   }
+
+
 }
 
 /// Localization delegate for AppLocalizations
@@ -1241,3 +1230,4 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
 extension AppLocalizationsExtension on AppLocalizations {
   static const delegate = AppLocalizationsDelegate();
 }
+

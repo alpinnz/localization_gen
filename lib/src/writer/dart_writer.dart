@@ -687,16 +687,22 @@ class DartWriter {
     return "'${_escape(result)}'";
   }
 
-  /// Escapes single quotes in strings.
+  /// Escapes special characters in strings for Dart code generation.
   ///
   /// Ensures generated strings are properly escaped for Dart code.
+  /// Handles single quotes, backslashes, and dollar signs.
   ///
   /// Example:
   /// ```dart
   /// _escape("It's great"); // Returns "It\\'s great"
+  /// _escape("Path: C:\\Users"); // Returns "Path: C:\\\\Users"
+  /// _escape("Price: \$100"); // Returns "Price: \\\$100"
   /// ```
   String _escape(String text) {
-    return text.replaceAll("'", "\\'");
+    return text
+        .replaceAll('\\', '\\\\')  // Escape backslashes first
+        .replaceAll('\$', '\\\$')   // Escape dollar signs
+        .replaceAll("'", "\\'");    // Escape single quotes
   }
 
   /// Generates helper methods for plural, gender, and context selection.

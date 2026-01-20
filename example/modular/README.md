@@ -4,12 +4,18 @@ Feature-based modular localization for large applications.
 
 **Repository**: https://github.com/alpinnz/localization_gen/tree/master/example/modular
 
+## Overview
+
+This example demonstrates how to organize localization files by feature/module. Multiple JSON files per locale are automatically merged during code generation, making it ideal for large applications with many translations.
+
 ## Features
 
 - Multiple JSON files per locale
-- Feature-based organization
+- Feature-based organization (auth, home, settings, etc.)
 - Automatic merging by locale
-- Scalable structure
+- Scalable structure for large apps
+- Module-specific translations
+- Full Unicode and emoji support 👋 🌍
 
 ## Quick Start
 

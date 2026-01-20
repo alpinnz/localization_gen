@@ -4,12 +4,18 @@ Simple single-file localization for standard applications.
 
 **Repository**: https://github.com/alpinnz/localization_gen/tree/master/example/basic
 
+## Overview
+
+This example demonstrates the basic usage of `localization_gen` with a simple Flutter application. Each locale has its own JSON file containing all translations in a nested structure.
+
 ## Features
 
 - Single JSON file per locale
 - Nested structure for organization
-- Parameter interpolation
+- Parameter interpolation with type safety
+- Deep nesting support (up to 10 levels)
 - Multiple locales (English, Indonesian)
+- Full Unicode and emoji support 👋 🌍
 - Flutter widget integration
 
 ## Quick Start
