@@ -1,6 +1,37 @@
 # Test Suite Documentation
 
-Comprehensive test suite for localization_gen package, organized to mirror the lib/src structure for easy validation and maintenance.
+Comprehensive test suite for localization_gen package. The structure mirrors `lib/src` for easier maintenance.
+
+## Running Tests
+
+```bash
+# All tests
+dart test
+
+# Single file
+dart test test/parser/json_parser_test.dart
+
+# By directory
+dart test test/parser/
+```
+
+## Coverage
+
+```bash
+dart test --coverage=coverage
+```
+
+To render HTML you can use any lcov viewer. Example with `genhtml` (requires lcov):
+
+```bash
+genhtml coverage/lcov.info -o coverage/html
+```
+
+Open `coverage/html/index.html` in your browser.
+
+## Notes
+
+Some watcher-related tests may be skipped on certain platforms due to upstream file watcher behavior.
 
 ## Directory Structure
 
@@ -28,43 +59,6 @@ test/
 
 The test structure directly mirrors lib/src for easy correlation and maintenance.
 
-## Running Tests
-
-### All Tests
-```bash
-dart test
-```
-
-### By Directory
-```bash
-dart test test/config/
-dart test test/exceptions/
-dart test test/generator/
-dart test test/model/
-dart test test/parser/
-dart test test/watcher/
-dart test test/writer/
-```
-
-### Specific File
-```bash
-dart test test/parser/json_parser_test.dart
-dart test test/writer/dart_writer_test.dart
-dart test test/config/config_reader_test.dart
-```
-
-### With Coverage
-```bash
-dart test --coverage=coverage
-genhtml coverage/lcov.info -o coverage/html
-open coverage/html/index.html
-```
-
-### Watch Mode
-```bash
-dart test --watch
-```
-
 ## Test Coverage
 
 | Component  | Test File                        | Tests | Focus Area                              |
@@ -85,7 +79,8 @@ dart test --watch
 All tests use `test_helper.dart` for common functionality:
 
 ### Directory Management
-```dart
+
+```text
 // Create temporary test directory
 final dir = TestHelper.createTempDir('test_prefix_');
 
@@ -94,13 +89,15 @@ TestHelper.cleanupDir(dir);
 ```
 
 ### File Creation
-```dart
+
+```text
 // Create test JSON file
 TestHelper.createJsonFile(dir, 'app_en.json', jsonContent);
 ```
 
 ### Pre-made Templates
-```dart
+
+```text
 // Basic English JSON
 TestHelper.basicEnglishJson();
 
@@ -154,7 +151,7 @@ lib/src/writer/dart_writer.dart
 
 Use this template when creating new tests:
 
-```dart
+```text
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:localization_gen/src/component/file.dart';
@@ -203,17 +200,17 @@ void main() {
 
 ### Group Tests Logically
 
-```dart
+```text
 group('ComponentName', () {
   group('Feature A', () {
     test('behavior 1', () {});
     test('behavior 2', () {});
   });
-  
+
   group('Feature B', () {
     test('behavior 3', () {});
   });
-  
+
   group('Error Handling', () {
     test('throws on invalid input', () {});
   });
@@ -251,14 +248,15 @@ When adding a new source file to lib/src:
 4. **Use TestHelper** for common operations
 
 5. **Add import** to `all_test.dart`
-   ```dart
-   import 'new_component/new_file_test.dart' as new_file_test;
-   
-   void main() {
-     // ...existing imports...
-     new_file_test.main();
-   }
-   ```
+
+```text
+import 'new_component/new_file_test.dart' as new_file_test;
+
+void main() {
+  // ...existing imports...
+  new_file_test.main();
+}
+```
 
 ## Maintenance Guidelines
 
@@ -290,7 +288,6 @@ When adding a new source file to lib/src:
 Check coverage regularly:
 ```bash
 dart test --coverage=coverage
-genhtml coverage/lcov.info -o coverage/html
 ```
 
 Target coverage levels:
@@ -357,4 +354,3 @@ The test suite is organized to:
 - Support continuous integration workflows
 
 Each test file directly corresponds to a source file, making it easy to find and maintain tests as the codebase evolves.
-

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:watcher/watcher.dart';
 import '../generator/localization_generator.dart';
 
@@ -107,12 +108,11 @@ class FileWatcher {
   /// Returns true if the event is for a JSON file and is an ADD, MODIFY,
   /// or REMOVE event.
   bool _shouldProcessEvent(WatchEvent event) {
-    // Only process JSON files
-    if (!event.path.endsWith('.json')) {
+    final normalizedPath = p.normalize(event.path);
+    if (p.extension(normalizedPath).toLowerCase() != '.json') {
       return false;
     }
 
-    // Process ADD, MODIFY, and REMOVE events
     return event.type == ChangeType.ADD ||
         event.type == ChangeType.MODIFY ||
         event.type == ChangeType.REMOVE;
@@ -142,7 +142,7 @@ class FileWatcher {
   /// Calls the generator and displays success or error messages.
   void _regenerate(WatchEvent event) {
     final eventType = _getEventTypeString(event.type);
-    final fileName = event.path.split('/').last;
+    final fileName = p.basename(p.normalize(event.path));
 
     print('\n[CHANGE] File $eventType: $fileName');
     print('[REGEN] Regenerating...');

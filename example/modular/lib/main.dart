@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'assets/app_localizations.dart';
+import 'assets/app_localizations.gen.dart';
 
 void main() {
   runApp(const ModularLocalizationApp());
@@ -233,7 +233,7 @@ class ModuleCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '📁 $moduleFile',
+                        moduleFile,
                         style: TextStyle(
                           fontSize: 11,
                           color: Colors.grey.shade600,

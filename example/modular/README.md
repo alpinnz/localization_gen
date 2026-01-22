@@ -2,31 +2,23 @@
 
 Feature-based modular localization for large applications.
 
-**Repository**: https://github.com/alpinnz/localization_gen/tree/master/example/modular
+Repository: https://github.com/alpinnz/localization_gen/tree/master/example/modular
 
 ## Overview
 
-This example demonstrates how to organize localization files by feature/module. Multiple JSON files per locale are automatically merged during code generation, making it ideal for large applications with many translations.
+This example demonstrates how to organize localization files by feature/module.
+Multiple JSON files per locale are merged during code generation.
 
-## Features
-
-- Multiple JSON files per locale
-- Feature-based organization (auth, home, settings, etc.)
-- Automatic merging by locale
-- Scalable structure for large apps
-- Module-specific translations
-- Full Unicode and emoji support 👋 🌍
+- Input: `assets/localizations/app_<module>_<locale>.json`
+- Output: `lib/assets/app_localizations.gen.dart`
 
 ## Quick Start
 
 ```bash
-# Install dependencies
 flutter pub get
 
-# Generate (merges all files)
-dart run localization_gen
+dart run localization_gen generate
 
-# Run app
 flutter run
 ```
 
@@ -40,66 +32,64 @@ localization_gen:
   output_dir: lib/assets
   class_name: AppLocalizations
   modular: true
+  file_pattern: app_{module}_{locale}.json
   file_prefix: app
+  output_file_suffix: .gen.dart
 ```
 
-## File Structure
+## File Structure (simplified)
 
 ```
 modular/
 ├── lib/
 │   └── assets/
-│       └── app_localizations.dart     # Generated (merged)
+│       └── app_localizations.gen.dart
 └── assets/
     └── localizations/
-        ├── app_auth_en.json           # Auth - English
-        ├── app_auth_id.json           # Auth - Indonesian
-        ├── app_home_en.json           # Home - English
-        └── app_home_id.json           # Home - Indonesian
+        ├── app_auth_en.json
+        ├── app_auth_id.json
+        ├── app_common_en.json
+        ├── app_common_id.json
+        ├── app_home_en.json
+        ├── app_home_id.json
+        ├── app_settings_en.json
+        └── app_settings_id.json
 ```
 
 ## How It Works
 
-Files are merged by locale:
+Files are merged by locale. For example:
 
-**English** = `app_auth_en.json` + `app_home_en.json`  
-**Indonesian** = `app_auth_id.json` + `app_home_id.json`
+- English: `app_auth_en.json` + `app_common_en.json` + `app_home_en.json` + `app_settings_en.json`
+- Indonesian: `app_auth_id.json` + `app_common_id.json` + `app_home_id.json` + `app_settings_id.json`
 
-Result: Single `AppLocalizations` class with all translations.
+Result: a single `AppLocalizations` class with all translations.
 
 ## File Naming
 
+Pattern:
+
 ```
 {prefix}_{module}_{locale}.json
+```
 
 Examples:
-app_auth_en.json
-app_home_id.json
-app_settings_en.json
-```
+
+- `app_auth_en.json`
+- `app_home_id.json`
 
 ## Usage
 
-```dart
-import 'assets/app_localizations.dart';
+```text
+import 'assets/app_localizations.gen.dart';
 
-// All modules merged
-final appLocalizations = AppLocalizations.of(context);
+final l10n = AppLocalizations.of(context);
 
-Text(appLocalizations.login.title);  // Auth module
-Text(appLocalizations.welcome);      // Home module
+Text(l10n.login.title);
+Text(l10n.welcome);
 ```
-
-## Benefits
-
-- Clear feature separation
-- Easier maintenance
-- Team collaboration friendly
-- Add/remove modules easily
 
 ## Next Steps
 
-- Add new module: Create `app_newmodule_en.json` and `app_newmodule_id.json`
-- Run `dart run localization_gen`
-- Translations automatically merged
-
+- Add new module: create `app_newmodule_en.json` and `app_newmodule_id.json`
+- Run `dart run localization_gen generate`

@@ -70,7 +70,7 @@ class AppLocalizations {
     switch (locale.languageCode) {
       case 'en': return 'Welcome, \$name!';
       case 'id': return 'Selamat datang, \$name!';
-      default: return 'Welcome, \$name!';
+      default: return 'Welcome, {name}!';
     }
   }
 
@@ -79,7 +79,7 @@ class AppLocalizations {
     switch (locale.languageCode) {
       case 'en': return 'You have \$count items';
       case 'id': return 'Anda memiliki \$count item';
-      default: return 'You have \$count items';
+      default: return 'You have {count} items';
     }
   }
 
@@ -88,52 +88,52 @@ class AppLocalizations {
     switch (locale.languageCode) {
       case 'en': return 'Discount \$value%';
       case 'id': return 'Diskon \$value%';
-      default: return 'Discount \$value%';
+      default: return 'Discount {value}%';
     }
   }
 
 
   String get hello {
     switch (locale.languageCode) {
-      case 'en': return 'Hello! 👋';
-      case 'id': return 'Halo! 👋';
-      default: return 'Hello! 👋';
+      case 'en': return 'Hello';
+      case 'id': return 'Halo';
+      default: return 'Hello';
     }
   }
 
 
   String get goodbye {
     switch (locale.languageCode) {
-      case 'en': return 'Goodbye! 👋';
-      case 'id': return 'Selamat tinggal! 👋';
-      default: return 'Goodbye! 👋';
+      case 'en': return 'Goodbye';
+      case 'id': return 'Selamat tinggal';
+      default: return 'Goodbye';
     }
   }
 
 
   String get yes {
     switch (locale.languageCode) {
-      case 'en': return 'Yes ✓';
-      case 'id': return 'Ya ✓';
-      default: return 'Yes ✓';
+      case 'en': return 'Yes';
+      case 'id': return 'Ya';
+      default: return 'Yes';
     }
   }
 
 
   String get no {
     switch (locale.languageCode) {
-      case 'en': return 'No ✗';
-      case 'id': return 'Tidak ✗';
-      default: return 'No ✗';
+      case 'en': return 'No';
+      case 'id': return 'Tidak';
+      default: return 'No';
     }
   }
 
 
   String get save {
     switch (locale.languageCode) {
-      case 'en': return '💾 Save';
-      case 'id': return '💾 Simpan';
-      default: return '💾 Save';
+      case 'en': return 'Save';
+      case 'id': return 'Simpan';
+      default: return 'Save';
     }
   }
 
@@ -357,8 +357,26 @@ class AppLocalizations {
   String get mixed {
     switch (locale.languageCode) {
       case 'en': return 'Hello! 你好 こんにちは 안녕하세요 مرحبا Привет 🌍';
-      case 'id': return 'Halo! 你好 こんにちは 안녕하세요 مرحبا Привет 🌍';
+      case 'id': return 'Halo! 你好 こんにちは 안녕하세요 مرحبا Привет';
       default: return 'Hello! 你好 こんにちは 안녕하세요 مرحبا Привет 🌍';
+    }
+  }
+
+
+  String get multiline_notice {
+    switch (locale.languageCode) {
+      case 'en': return 'Your account is temporarily locked for 15 minutes for security reasons.\nYou can try again in.';
+      case 'id': return 'Akun Anda terkunci sementara selama 15 menit demi keamanan.\\nAnda dapat mencoba lagi dalam.';
+      default: return 'Your account is temporarily locked for 15 minutes for security reasons.\nYou can try again in.';
+    }
+  }
+
+
+  String get multiline_sample {
+    switch (locale.languageCode) {
+      case 'en': return 'Line 1\nLine 2';
+      case 'id': return 'Baris 1\\nBaris 2';
+      default: return 'Line 1\nLine 2';
     }
   }
 

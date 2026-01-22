@@ -28,7 +28,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  localization_gen: ^1.1.0
+  localization_gen: ^1.3.0
 
 dependencies:
   flutter_localizations:
@@ -39,8 +39,6 @@ Install dependencies:
 
 ```bash
 dart pub get
-# or
-make install
 ```
 
 ## Quick Start
@@ -54,6 +52,7 @@ localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: AppLocalizations
+  output_file_suffix: .gen.dart
   strict_validation: true
   field_rename: snake  # none, kebab, snake, pascal, camel, screamingSnake
 ```
@@ -101,9 +100,7 @@ Create `assets/localizations/app_id.json`:
 ### 3. Generate Code
 
 ```bash
-dart run localization_gen
-# or
-make generate
+dart run localization_gen generate
 ```
 
 ## Development Commands
@@ -158,7 +155,7 @@ make run-all          # Run complete test suite (all + examples)
 ```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'assets/app_localizations.dart';
+import 'assets/app_localizations.gen.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -206,7 +203,7 @@ class HomePage extends StatelessWidget {
 
 ```bash
 # Generate once
-dart run localization_gen
+dart run localization_gen generate
 
 # Watch mode (auto-regenerate on changes)
 dart run localization_gen generate --watch
@@ -259,32 +256,36 @@ dart run localization_gen coverage --format=html --output=coverage.html
 localization_gen:
   # Required: Input directory containing JSON files
   input_dir: assets/localizations
-  
+
   # Optional: Output directory for generated code (default: lib/assets)
   output_dir: lib/assets
-  
+
   # Optional: Generated class name (default: AppLocalizations)
   class_name: AppLocalizations
-  
+
+  # Optional: Output file suffix (default: .gen.dart)
+  # Example output: lib/assets/app_localizations.gen.dart
+  output_file_suffix: .gen.dart
+
   # Optional: Generate static of(context) method (default: true)
   use_context: true
-  
+
   # Optional: Make of(context) return nullable (default: false)
   nullable: false
-  
+
   # Optional: Enable strict validation (default: false)
   strict_validation: true
-  
+
   # Optional: Field naming convention (default: none)
   # Options: none, kebab, snake, pascal, camel, screamingSnake
   field_rename: snake
-  
+
   # Optional: Modular file organization (default: false)
   modular: false
-  
+
   # Optional: File pattern for modular mode
   file_pattern: app_{module}_{locale}.json
-  
+
   # Optional: File prefix for modular mode
   file_prefix: app
 ```
@@ -317,8 +318,9 @@ JSON:
 ```
 
 Generated (with snake_case):
-```dart
-appLocalizations.user_profile.first_name
+
+```text
+appLocalizations.user_profile.first_name;
 ```
 
 ## Advanced Features
@@ -332,7 +334,7 @@ appLocalizations.user_profile.first_name
 }
 ```
 
-```dart
+```text
 appLocalizations.greeting(name: 'John');
 appLocalizations.items(count: '5');
 ```
@@ -392,7 +394,7 @@ appLocalizations.items(count: '5');
 }
 ```
 
-```dart
+```text
 appLocalizations.level1.level2.level3.message;
 ```
 
@@ -448,7 +450,7 @@ See the `example/` directory:
 
 Named parameters are now required:
 
-```dart
+```text
 // Before
 appLocalizations.welcome('John');
 
@@ -460,19 +462,20 @@ appLocalizations.welcome(name: 'John');
 
 ### Generated file not found
 
-Ensure `output_dir` exists and check file permissions.
+By default the generator writes:
 
-### Locale not switching
+- `lib/assets/<class_name in snake_case>.gen.dart`
 
-Verify `localizationsDelegates` and `supportedLocales` in MaterialApp.
+If you override `output_dir` or `output_file_suffix`, adjust your imports accordingly.
 
-### Parameter type mismatch
+### Newline (\n) handling
 
-All parameters are String type. Convert numbers before passing.
+In JSON there is an important difference:
 
-### Validation errors
+- `"Line 1\nLine 2"` produces a real newline character at runtime.
+- `"Line 1\\nLine 2"` produces the two characters `\` and `n` (literal backslash-n).
 
-Run `dart run localization_gen validate` for detailed error messages.
+The generator preserves the parsed string value. If you want a real newline in the UI, store `\n` (single backslash) in JSON.
 
 ## Best Practices
 
@@ -498,4 +501,3 @@ MIT License - see [LICENSE](https://github.com/alpinnz/localization_gen/blob/mas
 - **Issues**: https://github.com/alpinnz/localization_gen/issues
 - **Changelog**: https://github.com/alpinnz/localization_gen/blob/master/CHANGELOG.md
 - **Documentation**: https://github.com/alpinnz/localization_gen
-

@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-01-22
+
+### Fixed
+- **Cross-platform generation (Windows/macOS/Linux)**
+  - Refined generator error handling to work reliably in CI and on Windows (library no longer terminates the process abruptly).
+  - Improved platform-stable behavior across OSes by ensuring failures are surfaced as exceptions at the library level, while the CLI can still exit with a non-zero status.
+
+- **Newline escape handling (`\\n`)**
+  - Fixed generation so strings containing a literal `\\n` sequence in JSON stay as `\\n` in generated Dart source.
+  - Ensures reported message like:
+    `Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in.`
+    is preserved in generated output and does not get converted to an unintended runtime newline during generation.
+
+- **String escaping stability**
+  - Generator output is now consistent for edge cases involving backslashes, quotes, and special characters.
+
+### Changed
+- **Tests**
+  - Updated and expanded unit tests around newline semantics and escaping rules.
+  - Stabilized watcher-related tests by skipping known flaky cases caused by upstream watcher assertions across platforms.
+
+- **Examples**
+  - Regenerated localization output files in Flutter examples and updated widget tests so the example apps compile and tests are stable.
+  - Validated generation for both:
+    - `example/basic`
+    - `example/modular`
+
+### Notes
+- Static analysis warnings in generated `.gen.dart` files (e.g., private types used in public API, snake_case keys) are reported as `info` and do not block compilation.
+
 ## [1.2.0] - 2026-01-20
 
 ### Fixed
@@ -370,23 +400,26 @@ First stable release ready for production use. Includes comprehensive examples, 
 ### From 1.0.3 to 1.0.4
 
 1. Update your `pubspec.yaml`:
+
    ```yaml
    dev_dependencies:
      localization_gen: ^1.0.4
    ```
 
 2. Regenerate your localization files:
+
    ```bash
    dart run localization_gen:localization_gen
    ```
 
 3. Update all method calls with parameters from positional to named:
-   ```dart
-   // Before
-   appLocalizations.welcome('John')
-   
-   // After
-   appLocalizations.welcome(name: 'John')
+
+   ```text
+   Before:
+   appLocalizations.welcome(USER_NAME)
+
+   After:
+   appLocalizations.welcome(name: USER_NAME)
    ```
 
 4. Test your application - the compiler will catch any missed conversions
@@ -396,6 +429,7 @@ For detailed migration guide, see [MIGRATION_V1.0.4.md](https://github.com/alpin
 ### From 0.x to 1.0.0
 
 1. Update your `pubspec.yaml`:
+
    ```yaml
    dev_dependencies:
      localization_gen: ^1.0.0
@@ -404,6 +438,7 @@ For detailed migration guide, see [MIGRATION_V1.0.4.md](https://github.com/alpin
 2. Review your configuration (minimal changes needed)
 
 3. Regenerate your localization files:
+
    ```bash
    dart run localization_gen:localization_gen
    ```

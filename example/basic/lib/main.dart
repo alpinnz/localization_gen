@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'assets/app_localizations.dart';
+import 'assets/app_localizations.gen.dart';
 
 void main() {
   runApp(const DefaultLocalizationApp());
@@ -77,11 +77,6 @@ class _DefaultHomePageState extends State<DefaultHomePage> {
               _buildLanguageMenuItem(
                 const Locale('id'),
                 'Indonesia',
-                currentLocale,
-              ),
-              _buildLanguageMenuItem(
-                const Locale('es'),
-                'Español',
                 currentLocale,
               ),
             ],

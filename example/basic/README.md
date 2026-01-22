@@ -2,32 +2,22 @@
 
 Simple single-file localization for standard applications.
 
-**Repository**: https://github.com/alpinnz/localization_gen/tree/master/example/basic
+Repository: https://github.com/alpinnz/localization_gen/tree/master/example/basic
 
 ## Overview
 
-This example demonstrates the basic usage of `localization_gen` with a simple Flutter application. Each locale has its own JSON file containing all translations in a nested structure.
+This example demonstrates basic usage of `localization_gen` with a Flutter application.
 
-## Features
-
-- Single JSON file per locale
-- Nested structure for organization
-- Parameter interpolation with type safety
-- Deep nesting support (up to 10 levels)
-- Multiple locales (English, Indonesian)
-- Full Unicode and emoji support 👋 🌍
-- Flutter widget integration
+- One JSON file per locale in `assets/localizations/`
+- Generated output in `lib/assets/app_localizations.gen.dart`
 
 ## Quick Start
 
 ```bash
-# Install dependencies
 flutter pub get
 
-# Generate localization code
-dart run localization_gen
+dart run localization_gen generate
 
-# Run app
 flutter run
 ```
 
@@ -40,6 +30,7 @@ localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: AppLocalizations
+  output_file_suffix: .gen.dart
 ```
 
 ## File Structure
@@ -47,50 +38,29 @@ localization_gen:
 ```
 basic/
 ├── lib/
-│   ├── main.dart                      # Flutter app
+│   ├── main.dart
 │   └── assets/
-│       └── app_localizations.dart     # Generated
+│       └── app_localizations.gen.dart
 └── assets/
     └── localizations/
-        ├── app_en.json                # English
-        └── app_id.json                # Indonesian
-```
-
-## JSON Structure
-
-```json
-{
-  "@@locale": "en",
-  "hello": "Hello",
-  "welcome": "Welcome, {name}!",
-  "auth": {
-    "login": {
-      "title": "Login"
-    }
-  }
-}
+        ├── app_en.json
+        └── app_id.json
 ```
 
 ## Usage
 
-```dart
-import 'assets/app_localizations.dart';
+```text
+import 'assets/app_localizations.gen.dart';
 
 final appLocalizations = AppLocalizations.of(context);
 
-// Simple
-Text(appLocalizations.hello);
-
-// Nested
+Text(appLocalizations.common.hello);
 Text(appLocalizations.auth.login.title);
-
-// Parameters
-Text(appLocalizations.welcome(name: 'John'));
+Text(appLocalizations.home.welcome_user(name: 'John'));
 ```
 
 ## Next Steps
 
 - Modify JSON files in `assets/localizations/`
-- Run `dart run localization_gen` to regenerate
-- See `../modular/` for large app organization
-
+- Run `dart run localization_gen generate` to regenerate
+- See `../modular/` for modular organization

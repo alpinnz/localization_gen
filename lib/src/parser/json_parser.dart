@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart' as p;
 import '../model/localization_item.dart';
 import '../exceptions/exceptions.dart';
 
@@ -286,7 +287,7 @@ class JsonLocalizationParser {
     final jsonFiles = dir
         .listSync()
         .whereType<File>()
-        .where((f) => f.path.endsWith('.json'))
+        .where((f) => p.extension(f.path).toLowerCase() == '.json')
         .toList();
 
     if (jsonFiles.isEmpty) {
@@ -335,7 +336,7 @@ class JsonLocalizationParser {
     final localeMap = <String, Map<String, LocalizationItem>>{};
 
     for (final file in jsonFiles) {
-      final filename = file.path.split('/').last;
+      final filename = p.basename(file.path);
 
       // Skip files that don't match the pattern
       if (!filename.startsWith(filePrefix)) continue;
@@ -382,13 +383,12 @@ class JsonLocalizationParser {
   /// or "core_common_id.json" -> "id"
   static String _extractLocaleFromModularFilename(
       String filename, String filePrefix) {
-    final parts = filename.replaceAll('.json', '').split('_');
+    final base = p.withoutExtension(filename);
+    final parts = base.split('_');
     // Pattern: {prefix}_{module}_{locale}.json
-    // Example: app_auth_en.json -> ["app", "auth", "en"]
     if (parts.length >= 3) {
-      return parts.last; // Return last part as locale
+      return parts.last;
     }
-    // Fallback: try to extract locale from standard pattern
     return parts.length > 1 ? parts.last : 'en';
   }
 
@@ -401,8 +401,9 @@ class JsonLocalizationParser {
 
   /// Extract locale from filename like "app_en.json" -> "en"
   static String _extractLocaleFromFilename(String path) {
-    final filename = path.split('/').last;
-    final parts = filename.replaceAll('.json', '').split('_');
+    final filename = p.basename(path);
+    final base = p.withoutExtension(filename);
+    final parts = base.split('_');
     return parts.length > 1 ? parts.last : 'en';
   }
 

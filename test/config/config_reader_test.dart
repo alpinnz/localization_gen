@@ -27,6 +27,7 @@ name: test_app
 localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
+  output_file_suffix: .gen.dart
   class_name: TestLocalizations
   use_context: true
   nullable: false
@@ -37,6 +38,7 @@ localization_gen:
 
         final config = ConfigReader.read(configFile.path);
 
+        expect(config.outputFileSuffix, equals('.gen.dart'));
         expect(config.inputDir, equals('assets/localizations'));
         expect(config.outputDir, equals('lib/assets'));
         expect(config.className, equals('TestLocalizations'));
@@ -57,6 +59,7 @@ localization_gen:
 
         final config = ConfigReader.read(configFile.path);
 
+        expect(config.outputFileSuffix, equals('.gen.dart'));
         expect(config.className, equals('AppLocalizations'));
         expect(config.outputDir, equals('lib/assets'));
         expect(config.useContext, isTrue);

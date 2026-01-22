@@ -326,6 +326,24 @@ class _Common {
   }
 
 
+  String get multiline_notice {
+    switch (locale.languageCode) {
+      case 'en': return 'Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in.';
+      case 'id': return 'Akun Anda terkunci sementara selama 15 menit demi keamanan.\\nAnda dapat mencoba lagi dalam.';
+      default: return 'Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in.';
+    }
+  }
+
+
+  String get multiline_sample {
+    switch (locale.languageCode) {
+      case 'en': return 'Line 1\\nLine 2';
+      case 'id': return 'Baris 1\\nBaris 2';
+      default: return 'Line 1\\nLine 2';
+    }
+  }
+
+
 }
 
 /// Translations for auth namespace
@@ -487,7 +505,7 @@ class _Home {
     switch (locale.languageCode) {
       case 'en': return 'Welcome, \$name!';
       case 'id': return 'Selamat datang, \$name!';
-      default: return 'Welcome, \$name!';
+      default: return 'Welcome, {name}!';
     }
   }
 
@@ -496,7 +514,7 @@ class _Home {
     switch (locale.languageCode) {
       case 'en': return 'You have \$count items';
       case 'id': return 'Anda memiliki \$count item';
-      default: return 'You have \$count items';
+      default: return 'You have {count} items';
     }
   }
 
@@ -505,7 +523,7 @@ class _Home {
     switch (locale.languageCode) {
       case 'en': return 'Discount \$value%';
       case 'id': return 'Diskon \$value%';
-      default: return 'Discount \$value%';
+      default: return 'Discount {value}%';
     }
   }
 
@@ -761,7 +779,7 @@ class _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobi
     switch (locale.languageCode) {
       case 'en': return 'Featured: \$count brands available';
       case 'id': return 'Unggulan: \$count merek tersedia';
-      default: return 'Featured: \$count brands available';
+      default: return 'Featured: {count} brands available';
     }
   }
 
@@ -770,7 +788,7 @@ class _AppFeaturesEcommerceCatalogProductsCategoriesElectronicsSubcategoriesMobi
     switch (locale.languageCode) {
       case 'en': return 'Get \$discount% off on premium devices!';
       case 'id': return 'Dapatkan diskon \$discount% untuk perangkat premium!';
-      default: return 'Get \$discount% off on premium devices!';
+      default: return 'Get {discount}% off on premium devices!';
     }
   }
 
@@ -904,7 +922,7 @@ class _AppFeaturesSocialMessagingConversationsThreadsGroupsSettingsPrivacyPermis
     switch (locale.languageCode) {
       case 'en': return 'Grant \$permission to \$user';
       case 'id': return 'Berikan \$permission kepada \$user';
-      default: return 'Grant \$permission to \$user';
+      default: return 'Grant {permission} to {user}';
     }
   }
 
@@ -1038,7 +1056,7 @@ class _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDat
     switch (locale.languageCode) {
       case 'en': return 'View detailed analytics for \$date';
       case 'id': return 'Lihat analitik terperinci untuk \$date';
-      default: return 'View detailed analytics for \$date';
+      default: return 'View detailed analytics for {date}';
     }
   }
 
@@ -1047,7 +1065,7 @@ class _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDat
     switch (locale.languageCode) {
       case 'en': return 'Total: \$count events processed';
       case 'id': return 'Total: \$count kejadian diproses';
-      default: return 'Total: \$count events processed';
+      default: return 'Total: {count} events processed';
     }
   }
 
@@ -1056,7 +1074,7 @@ class _AppFeaturesAnalyticsDashboardReportsMetricsPerformanceChartsTimeseriesDat
     switch (locale.languageCode) {
       case 'en': return 'Export data to \$format';
       case 'id': return 'Ekspor data ke \$format';
-      default: return 'Export data to \$format';
+      default: return 'Export data to {format}';
     }
   }
 
@@ -1181,7 +1199,7 @@ class _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgori
     switch (locale.languageCode) {
       case 'en': return 'Configure \$protocol encryption';
       case 'id': return 'Konfigurasi enkripsi \$protocol';
-      default: return 'Configure \$protocol encryption';
+      default: return 'Configure {protocol} encryption';
     }
   }
 
@@ -1190,7 +1208,7 @@ class _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgori
     switch (locale.languageCode) {
       case 'en': return 'Key strength: \$bits bits';
       case 'id': return 'Kekuatan kunci: \$bits bit';
-      default: return 'Key strength: \$bits bits';
+      default: return 'Key strength: {bits} bits';
     }
   }
 
@@ -1199,7 +1217,7 @@ class _AppSystemConfigurationNetworkConnectionsProtocolsSecurityEncryptionAlgori
     switch (locale.languageCode) {
       case 'en': return 'Status: \$status';
       case 'id': return 'Status: \$status';
-      default: return 'Status: \$status';
+      default: return 'Status: {status}';
     }
   }
 

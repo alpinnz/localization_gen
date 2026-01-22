@@ -30,7 +30,9 @@
     "chinese": "中文测试 你好世界",
     "japanese": "日本語テスト こんにちは世界",
     "korean": "한국어 테스트 안녕하세요",
-    "mixed": "Halo! 你好 こんにちは 안녕하세요 مرحبا Привет 🌍"
+    "mixed": "Halo! 你好 こんにちは 안녕하세요 مرحبا Привет 🌍",
+    "multiline_notice": "Akun Anda terkunci sementara selama 15 menit demi keamanan.\\nAnda dapat mencoba lagi dalam.",
+    "multiline_sample": "Baris 1\\nBaris 2"
   },
   "auth": {
     "login": {
@@ -170,4 +172,3 @@
     }
   }
 }
-

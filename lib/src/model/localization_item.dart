@@ -104,6 +104,12 @@ class LocalizationConfig {
   /// Field naming convention for generated code
   final String fieldRename;
 
+  /// Suffix tambahan untuk nama file output.
+  ///
+  /// Default: '.gen.dart' sehingga file output menjadi contoh:
+  /// - app_localizations.gen.dart
+  final String outputFileSuffix;
+
   /// Creates a new LocalizationConfig with default values
   ///
   /// All parameters are optional and have sensible defaults:
@@ -116,6 +122,7 @@ class LocalizationConfig {
   /// - [filePattern]: 'app_{module}_{locale}.json'
   /// - [filePrefix]: 'app'
   /// - [strictValidation]: false
+  /// - [outputFileSuffix]: '.gen.dart'
   LocalizationConfig({
     this.inputDir = 'assets/localizations',
     this.outputDir = 'lib/assets',
@@ -127,6 +134,7 @@ class LocalizationConfig {
     this.filePrefix = 'app',
     this.strictValidation = false,
     this.fieldRename = 'none',
+    this.outputFileSuffix = '.gen.dart',
   });
 
   /// Creates a LocalizationConfig from a map of configuration values
@@ -144,6 +152,8 @@ class LocalizationConfig {
   factory LocalizationConfig.fromMap(Map<String, dynamic>? map) {
     if (map == null) return LocalizationConfig();
 
+    final suffix = map['output_file_suffix'] as String?;
+
     return LocalizationConfig(
       inputDir: map['input_dir'] as String? ?? 'assets/localizations',
       outputDir: map['output_dir'] as String? ?? 'lib/assets',
@@ -156,6 +166,7 @@ class LocalizationConfig {
       filePrefix: map['file_prefix'] as String? ?? 'app',
       strictValidation: map['strict_validation'] as bool? ?? false,
       fieldRename: map['field_rename'] as String? ?? 'none',
+      outputFileSuffix: suffix ?? '.gen.dart',
     );
   }
 }

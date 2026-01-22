@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:args/args.dart';
+import 'package:path/path.dart' as p;
 import 'base_command.dart';
 import '../config/config_reader.dart';
 
@@ -111,7 +112,7 @@ class ValidateCommand extends BaseCommand {
 
           // Try to parse JSON
           // Note: Full validation logic would be in parser
-          printSuccess('  Valid: ${file.path.split('/').last}');
+          printSuccess('  Valid: ${p.basename(file.path)}');
         } catch (e) {
           stderr.writeln('  ✗ Invalid: ${file.path}');
           stderr.writeln('    Error: $e');

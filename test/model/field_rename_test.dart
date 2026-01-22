@@ -15,13 +15,13 @@ void main() {
 
       test('kebab - converts to kebab-case', () {
         expect(FieldRename.kebab.convert('userName'), equals('user-name'));
-        expect(FieldRename.kebab.convert('UserName'), equals('-user-name'));
+        expect(FieldRename.kebab.convert('UserName'), equals('user-name'));
         expect(FieldRename.kebab.convert('user'), equals('user'));
       });
 
       test('snake - converts to snake_case', () {
         expect(FieldRename.snake.convert('userName'), equals('user_name'));
-        expect(FieldRename.snake.convert('UserName'), equals('_user_name'));
+        expect(FieldRename.snake.convert('UserName'), equals('user_name'));
         expect(FieldRename.snake.convert('user'), equals('user'));
       });
 

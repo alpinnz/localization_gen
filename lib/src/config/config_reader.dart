@@ -11,6 +11,7 @@ import '../model/localization_item.dart';
 /// Configuration options include:
 /// - `input_dir`: Directory containing JSON localization files
 /// - `output_dir`: Directory for generated Dart files
+/// - `output_file_suffix`: Suffix untuk nama file output (default: .gen.dart)
 /// - `class_name`: Name of the generated localization class
 /// - `use_context`: Whether to generate BuildContext helper
 /// - `nullable`: Whether the context helper returns nullable type
@@ -43,28 +44,26 @@ class ConfigReader {
   /// print(config.inputDir); // 'assets/localizations'
   /// ```
   static LocalizationConfig read([String pubspecPath = 'pubspec.yaml']) {
-    try {
-      final file = File(pubspecPath);
-      if (!file.existsSync()) {
-        print('Warning: pubspec.yaml not found, using default config');
-        return LocalizationConfig();
-      }
-
-      final content = file.readAsStringSync();
-      final yaml = loadYaml(content) as YamlMap;
-
-      final config = yaml['localization_gen'] as YamlMap?;
-      if (config == null) {
-        print('Warning: No localization_gen config found in pubspec.yaml');
-        return LocalizationConfig();
-      }
-
-      return LocalizationConfig.fromMap(
-        Map<String, dynamic>.from(config),
-      );
-    } catch (e) {
-      print('Error reading config: $e');
-      return LocalizationConfig();
+    final file = File(pubspecPath);
+    if (!file.existsSync()) {
+      throw Exception('Config file not found: $pubspecPath');
     }
+
+    final content = file.readAsStringSync();
+    final yaml = loadYaml(content) as YamlMap;
+
+    final config = yaml['localization_gen'] as YamlMap?;
+    if (config == null) {
+      throw Exception('Missing "localization_gen" section in $pubspecPath');
+    }
+
+    final map = Map<String, dynamic>.from(config);
+
+    final inputDir = (map['input_dir'] as String?)?.trim();
+    if (inputDir == null || inputDir.isEmpty) {
+      throw Exception('Missing required "input_dir" in $pubspecPath');
+    }
+
+    return LocalizationConfig.fromMap(map);
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import '../model/localization_item.dart';
 
 /// Generates strongly-typed Dart code with nested structure support.
@@ -413,7 +414,7 @@ class DartWriter {
 
       // Default case
       buffer.write("      default: return ");
-      buffer.write(_interpolateString(item.value, item.parameters));
+      buffer.write(_dartStringLiteral(item.value));
       buffer.writeln(";");
 
       buffer.writeln("    }");
@@ -427,11 +428,11 @@ class DartWriter {
         final localeItem = locale.items[item.key];
         if (localeItem != null) {
           buffer.writeln(
-              "      case '${locale.locale}': return '${_escape(localeItem.value)}';");
+              "      case '${locale.locale}': return ${_dartStringLiteral(localeItem.value)};");
         }
       }
 
-      buffer.writeln("      default: return '${_escape(item.value)}';");
+      buffer.writeln("      default: return ${_dartStringLiteral(item.value)};");
       buffer.writeln("    }");
       buffer.writeln("  }");
     }
@@ -625,12 +626,10 @@ class DartWriter {
   /// ```dart
   /// _toPascalCase('hello_world'); // Returns 'HelloWorld'
   /// ```
-  String _toPascalCase(String input) {
-    return input.split('_').map((part) {
+  String _toPascalCase(String input) => input.split('_').map((part) {
       if (part.isEmpty) return '';
       return part[0].toUpperCase() + part.substring(1);
     }).join();
-  }
 
   /// Converts a path to PascalCase for class names.
   ///
@@ -666,44 +665,52 @@ class DartWriter {
   String _interpolateString(String template, List<String> params) {
     var result = template;
     for (final param in params) {
-      result = result.replaceAll('{$param}', '\$$param');
+      // Insert a literal "$param" into the generated Dart source.
+      result = result.replaceAll('{$param}', r'$' + param);
     }
-    return "'${_escape(result)}'";
+    return _dartStringLiteral(result);
   }
 
-  /// Interpolates parameters for plural/gender/context forms.
-  ///
-  /// Similar to [_interpolateString] but specifically for special form methods.
-  ///
-  /// The [template] parameter is the string with {placeholder} syntax.
-  /// The [params] parameter lists all parameters to interpolate.
-  ///
-  /// Returns a quoted string with Dart interpolation syntax.
   String _interpolateStringForPlural(String template, List<String> params) {
     var result = template;
     for (final param in params) {
-      result = result.replaceAll('{$param}', '\$$param');
+      result = result.replaceAll('{$param}', r'$' + param);
     }
-    return "'${_escape(result)}'";
+    return _dartStringLiteral(result);
   }
 
-  /// Escapes special characters in strings for Dart code generation.
+  /// Produces a Dart string literal that is always syntactically valid.
   ///
-  /// Ensures generated strings are properly escaped for Dart code.
-  /// Handles single quotes, backslashes, and dollar signs.
+  /// This generator always uses single-quoted Dart string literals for
+  /// consistency and to avoid edge cases when input contains `"` sequences.
   ///
-  /// Example:
-  /// ```dart
-  /// _escape("It's great"); // Returns "It\\'s great"
-  /// _escape("Path: C:\\Users"); // Returns "Path: C:\\\\Users"
-  /// _escape("Price: \$100"); // Returns "Price: \\\$100"
-  /// ```
-  String _escape(String text) {
-    return text
-        .replaceAll('\\', '\\\\')  // Escape backslashes first
-        .replaceAll('\$', '\\\$')   // Escape dollar signs
-        .replaceAll("'", "\\'");    // Escape single quotes
+  /// It escapes:
+  /// - backslashes
+  /// - control characters (\r, \n, \t)
+  /// - dollar signs (to prevent interpolation)
+  /// - single quotes
+  String _dartStringLiteral(String text) {
+    // NOTE: We intentionally do NOT transform literal `\\n` sequences.
+    // If the JSON contains the two characters "\\" + "n", then the generated
+    // Dart source must preserve them as a literal backslash-n.
+    // Real newline characters are still escaped by jsonEncode.
+
+    // Use JSON encoding as a robust baseline (handles control chars and quotes).
+    // jsonEncode() returns a double-quoted JSON string literal.
+    var encoded = jsonEncode(text);
+
+    // Prevent Dart interpolation by escaping dollars.
+    // encoded contains no raw newlines; they're escaped as \n already.
+    encoded = encoded.replaceAll(r'$', r'\$');
+
+    // Convert the JSON double-quoted literal into a single-quoted Dart literal.
+    final inner = encoded.substring(1, encoded.length - 1).replaceAll(r'\"', '"');
+
+    final withEscapedSingleQuotes = inner.replaceAll("'", r"\'");
+
+    return "'$withEscapedSingleQuotes'";
   }
+
 
   /// Generates helper methods for plural, gender, and context selection.
   ///

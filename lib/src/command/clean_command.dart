@@ -80,7 +80,7 @@ class CleanCommand extends BaseCommand {
         return 0;
       }
 
-      final fileName = _toSnakeCase(config.className) + '.dart';
+      final fileName = _toSnakeCase(config.className) + config.outputFileSuffix;
       final generatedFile = File(p.join(config.outputDir, fileName));
 
       int deletedCount = 0;

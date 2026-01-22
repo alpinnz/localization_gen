@@ -26,10 +26,10 @@ localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: AppLocalizations
-  use_context: true
-  nullable: false
   modular: true
+  file_pattern: app_{module}_{locale}.json
   file_prefix: app
+  output_file_suffix: .gen.dart
 
 flutter:
   uses-material-design: true

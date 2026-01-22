@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart' as p;
 import '../config/config_reader.dart';
 import '../parser/json_parser.dart';
 import '../writer/dart_writer.dart';
@@ -93,8 +94,12 @@ class LocalizationGenerator {
         outputDir.createSync(recursive: true);
       }
 
-      final outputFile =
-          File('${config.outputDir}/${_toSnakeCase(config.className)}.dart');
+      final outputFile = File(
+        p.join(
+          config.outputDir,
+          '${_toSnakeCase(config.className)}${config.outputFileSuffix}',
+        ),
+      );
       outputFile.writeAsStringSync(dartCode);
 
       print('Generated: ${outputFile.path}');
@@ -113,7 +118,11 @@ class LocalizationGenerator {
       if (watch) {
         print('Stack trace: $stack');
       }
-      exit(1);
+
+      // Important: don't call exit(1) here.
+      // - Library users (and tests) expect an exception.
+      // - The CLI is responsible for turning failures into process exit codes.
+      throw Exception(e.toString());
     }
   }
 
