@@ -28,7 +28,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  localization_gen: ^1.3.0
+  localization_gen: ^1.3.1
 
 dependencies:
   flutter_localizations:
