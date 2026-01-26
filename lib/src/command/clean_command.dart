@@ -83,8 +83,13 @@ class CleanCommand extends BaseCommand {
       final fileName = _toSnakeCase(config.className) + config.outputFileSuffix;
       final generatedFile = File(p.join(config.outputDir, fileName));
 
+      // Also clean legacy outputs that used ".dart" without ".gen".
+      final legacyFileName = _toSnakeCase(config.className) + '.dart';
+      final legacyGeneratedFile = File(p.join(config.outputDir, legacyFileName));
+
       int deletedCount = 0;
 
+      // Delete current configured output first.
       if (generatedFile.existsSync()) {
         if (dryRun) {
           printInfo('Would delete: ${generatedFile.path}');
@@ -95,6 +100,18 @@ class CleanCommand extends BaseCommand {
         deletedCount++;
       } else {
         printInfo('No generated file found at: ${generatedFile.path}');
+      }
+
+      // Delete legacy output if it exists and is different.
+      if (legacyGeneratedFile.path != generatedFile.path &&
+          legacyGeneratedFile.existsSync()) {
+        if (dryRun) {
+          printInfo('Would delete legacy: ${legacyGeneratedFile.path}');
+        } else {
+          legacyGeneratedFile.deleteSync();
+          printSuccess('Deleted legacy: ${legacyGeneratedFile.path}');
+        }
+        deletedCount++;
       }
 
       print('');

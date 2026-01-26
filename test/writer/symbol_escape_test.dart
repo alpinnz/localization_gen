@@ -1,7 +1,6 @@
 import 'package:test/test.dart';
 import 'package:localization_gen/src/writer/dart_writer.dart';
 import 'package:localization_gen/src/model/localization_item.dart';
-import 'package:localization_gen/src/parser/json_parser.dart';
 
 void main() {
   group('DartWriter Symbol Escaping', () {

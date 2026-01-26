@@ -663,20 +663,56 @@ class DartWriter {
   /// // Returns "'Welcome \$name'"
   /// ```
   String _interpolateString(String template, List<String> params) {
-    var result = template;
-    for (final param in params) {
-      // Insert a literal "$param" into the generated Dart source.
-      result = result.replaceAll('{$param}', r'$' + param);
-    }
-    return _dartStringLiteral(result);
+    // Turn JSON placeholders like "{name}" into Dart interpolation while still
+    // escaping any *literal* dollar signs from the translation text.
+    //
+    // We generate a single-quoted Dart string literal that may include
+    // interpolation segments (e.g. 'Hello ${name}').
+    return _dartInterpolatedStringLiteral(template, params);
   }
 
   String _interpolateStringForPlural(String template, List<String> params) {
-    var result = template;
+    return _dartInterpolatedStringLiteral(template, params);
+  }
+
+  /// Produces a Dart string literal that may contain interpolation.
+  ///
+  /// - Replaces occurrences of `{param}` with `${param}`.
+  /// - Escapes *literal* `$` characters not part of an interpolation.
+  /// - Escapes backslashes, quotes, and control characters.
+  String _dartInterpolatedStringLiteral(String text, List<String> params) {
+    // Mark placeholders with a sentinel so we can escape literal '$' safely.
+    const sentinelPrefix = '__LG_INTERP_START__';
+    const sentinelSuffix = '__LG_INTERP_END__';
+
+    var withSentinels = text;
     for (final param in params) {
-      result = result.replaceAll('{$param}', r'$' + param);
+      withSentinels = withSentinels.replaceAll(
+        '{$param}',
+        '$sentinelPrefix$param$sentinelSuffix',
+      );
     }
-    return _dartStringLiteral(result);
+
+    // Escape everything as a normal Dart literal first.
+    var encoded = jsonEncode(withSentinels);
+
+    // Escape dollars to prevent unintended interpolation.
+    encoded = encoded.replaceAll(r'$', r'\$');
+
+    // Convert JSON double-quoted string to single-quoted Dart string.
+    final inner = encoded.substring(1, encoded.length - 1).replaceAll(r'\"', '"');
+    final withEscapedSingleQuotes = inner.replaceAll("'", r"\'");
+
+    // Restore interpolation segments.
+    var restored = withEscapedSingleQuotes;
+    for (final param in params) {
+      restored = restored.replaceAll(
+        '$sentinelPrefix$param$sentinelSuffix',
+        r'${' + param + '}',
+      );
+    }
+
+    return "'$restored'";
   }
 
   /// Produces a Dart string literal that is always syntactically valid.
