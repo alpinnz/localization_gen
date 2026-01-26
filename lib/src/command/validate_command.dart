@@ -80,11 +80,7 @@ class ValidateCommand extends BaseCommand {
       }
 
       // Find all JSON files
-      final jsonFiles = inputDir
-          .listSync()
-          .whereType<File>()
-          .where((f) => f.path.endsWith('.json'))
-          .toList();
+      final jsonFiles = inputDir.listSync().whereType<File>().where((f) => f.path.endsWith('.json')).toList();
 
       if (jsonFiles.isEmpty) {
         printWarning('No JSON files found in ${config.inputDir}');
@@ -128,8 +124,7 @@ class ValidateCommand extends BaseCommand {
         printWarning('Validation completed with $warningCount warning(s)');
         return 0;
       } else {
-        printWarning(
-            'Validation failed with $errorCount error(s) and $warningCount warning(s)');
+        printWarning('Validation failed with $errorCount error(s) and $warningCount warning(s)');
         return 1;
       }
     } catch (e) {

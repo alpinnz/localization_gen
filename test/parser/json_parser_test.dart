@@ -1,6 +1,7 @@
 /// Tests for JsonLocalizationParser.
 ///
 /// Covers all JSON parsing functionality.
+library;
 
 import 'dart:io';
 import 'package:test/test.dart';
@@ -88,8 +89,7 @@ void main() {
         );
 
         final result = JsonLocalizationParser.parse(file);
-        expect(
-            result.items['multiParam']?.parameters, equals(['user', 'count']));
+        expect(result.items['multiParam']?.parameters, equals(['user', 'count']));
       });
 
       test('handles text without parameters', () {
@@ -106,10 +106,8 @@ void main() {
 
     group('parseDirectory()', () {
       test('parses multiple JSON files', () {
-        TestHelper.createJsonFile(
-            tempDir, 'app_en.json', TestHelper.basicEnglishJson());
-        TestHelper.createJsonFile(
-            tempDir, 'app_id.json', TestHelper.basicIndonesianJson());
+        TestHelper.createJsonFile(tempDir, 'app_en.json', TestHelper.basicEnglishJson());
+        TestHelper.createJsonFile(tempDir, 'app_id.json', TestHelper.basicIndonesianJson());
 
         final results = JsonLocalizationParser.parseDirectory(tempDir.path);
 
@@ -126,8 +124,7 @@ void main() {
       });
 
       test('ignores non-JSON files', () {
-        TestHelper.createJsonFile(
-            tempDir, 'app_en.json', TestHelper.basicEnglishJson());
+        TestHelper.createJsonFile(tempDir, 'app_en.json', TestHelper.basicEnglishJson());
         File('${tempDir.path}/readme.txt').writeAsStringSync('test');
 
         final results = JsonLocalizationParser.parseDirectory(tempDir.path);

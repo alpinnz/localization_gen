@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import '../model/localization_item.dart';
 
 /// Generates strongly-typed Dart code with nested structure support.
@@ -108,8 +109,7 @@ class DartWriter {
     buffer.writeln();
 
     // Main class
-    buffer.writeln(
-        "/// Strongly-typed localization class for application translations.");
+    buffer.writeln("/// Strongly-typed localization class for application translations.");
     buffer.writeln("///");
     buffer.writeln("/// Access translations using:");
     buffer.writeln("/// ```dart");
@@ -117,8 +117,7 @@ class DartWriter {
     buffer.writeln("/// final text = appLocalizations.hello;");
     buffer.writeln("/// ```");
     buffer.writeln("class $className {");
-    buffer.writeln(
-        "  /// Creates a new $className instance for the specified locale.");
+    buffer.writeln("  /// Creates a new $className instance for the specified locale.");
     buffer.writeln("  $className(this.locale);");
     buffer.writeln();
     buffer.writeln("  /// The locale for this localization instance.");
@@ -133,10 +132,8 @@ class DartWriter {
       buffer.writeln("  /// ```dart");
       buffer.writeln("  /// final appLocalizations = $className.of(context);");
       buffer.writeln("  /// ```");
-      buffer.writeln(
-          "  static $className${nullable ? '?' : ''} of(BuildContext context) {");
-      buffer.writeln(
-          "    return Localizations.of<$className>(context, $className)${nullable ? '' : '!'};");
+      buffer.writeln("  static $className${nullable ? '?' : ''} of(BuildContext context) {");
+      buffer.writeln("    return Localizations.of<$className>(context, $className)${nullable ? '' : '!'};");
       buffer.writeln("  }");
       buffer.writeln();
     }
@@ -162,8 +159,7 @@ class DartWriter {
         // This is a namespace, create a getter for nested class
         final nestedClassName = '_${_toPascalCase(key)}';
         buffer.writeln("  /// Translations for the $key namespace.");
-        buffer.writeln(
-            "  $nestedClassName get $key => $nestedClassName(locale);");
+        buffer.writeln("  $nestedClassName get $key => $nestedClassName(locale);");
         buffer.writeln();
       }
     }
@@ -177,8 +173,7 @@ class DartWriter {
     }
 
     // Add helper methods if any locale has plurals, genders, or contexts
-    final hasAnySpecialForms = baseLocale.items.values
-        .any((item) => item.hasPlurals || item.hasGenders || item.hasContexts);
+    final hasAnySpecialForms = baseLocale.items.values.any((item) => item.hasPlurals || item.hasGenders || item.hasContexts);
     if (hasAnySpecialForms) {
       buffer.writeln(_generateHelperMethods());
     }
@@ -187,8 +182,7 @@ class DartWriter {
     buffer.writeln();
 
     // Generate nested classes
-    buffer.write(
-        _generateNestedClasses(nestedStructure, locales, baseLocale.items));
+    buffer.write(_generateNestedClasses(nestedStructure, locales, baseLocale.items));
 
     // Generate delegate
     buffer.writeln(_generateDelegate(locales));
@@ -213,8 +207,7 @@ class DartWriter {
   /// // Output:
   /// {"auth": {"login": {"title": LocalizationItem(...)}}}
   /// ```
-  Map<String, dynamic> _buildNestedStructure(
-      Map<String, LocalizationItem> items) {
+  Map<String, dynamic> _buildNestedStructure(Map<String, LocalizationItem> items) {
     final result = <String, dynamic>{};
 
     for (final item in items.values) {
@@ -311,8 +304,7 @@ class DartWriter {
             final nestedPath = '${currentPath}_$nestedKey';
             final nestedClassName = '_${_pathToPascalCase(nestedPath)}';
             buffer.writeln("  /// App $displayPath.$nestedKey translations");
-            buffer.writeln(
-                "  $nestedClassName get $nestedKey => $nestedClassName(locale);");
+            buffer.writeln("  $nestedClassName get $nestedKey => $nestedClassName(locale);");
             buffer.writeln();
           }
         }
@@ -320,9 +312,7 @@ class DartWriter {
         // Generate methods for leaf nodes in this namespace
         for (final nestedEntry in valueMap.entries) {
           if (nestedEntry.value is LocalizationItem) {
-            buffer.writeln(_generateMethod(
-                nestedEntry.value as LocalizationItem, locales,
-                isNested: true));
+            buffer.writeln(_generateMethod(nestedEntry.value as LocalizationItem, locales, isNested: true));
           }
         }
 
@@ -366,8 +356,7 @@ class DartWriter {
   ///   }
   /// }
   /// ```
-  String _generateMethod(LocalizationItem item, List<LocaleData> locales,
-      {bool isNested = false}) {
+  String _generateMethod(LocalizationItem item, List<LocaleData> locales, {bool isNested = false}) {
     final buffer = StringBuffer();
 
     // Get the simple key (last part after dots)
@@ -396,8 +385,7 @@ class DartWriter {
     // Generate method signature
     if (item.hasParameters) {
       // Method with parameters: welcomeUser({required String name})
-      final params =
-          item.parameters.map((p) => 'required String $p').join(', ');
+      final params = item.parameters.map((p) => 'required String $p').join(', ');
       buffer.writeln("  String $simpleKey({$params}) {");
       buffer.writeln("    switch (locale.languageCode) {");
 
@@ -406,8 +394,7 @@ class DartWriter {
         final localeItem = locale.items[item.key];
         if (localeItem != null) {
           buffer.write("      case '${locale.locale}': return ");
-          buffer.write(
-              _interpolateString(localeItem.value, localeItem.parameters));
+          buffer.write(_interpolateString(localeItem.value, localeItem.parameters));
           buffer.writeln(";");
         }
       }
@@ -427,8 +414,7 @@ class DartWriter {
       for (final locale in locales) {
         final localeItem = locale.items[item.key];
         if (localeItem != null) {
-          buffer.writeln(
-              "      case '${locale.locale}': return ${_dartStringLiteral(localeItem.value)};");
+          buffer.writeln("      case '${locale.locale}': return ${_dartStringLiteral(localeItem.value)};");
         }
       }
 
@@ -451,13 +437,10 @@ class DartWriter {
   /// The [simpleKey] parameter is the method name to generate.
   ///
   /// Returns a string containing the generated pluralization method.
-  String _generatePluralMethod(
-      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+  String _generatePluralMethod(LocalizationItem item, List<LocaleData> locales, String simpleKey) {
     final buffer = StringBuffer();
     final params = item.parameters.where((p) => p != 'count').toList();
-    final paramStr = params.isEmpty
-        ? '{required int count}'
-        : '{required int count, ${params.map((p) => 'required String $p').join(', ')}}';
+    final paramStr = params.isEmpty ? '{required int count}' : '{required int count, ${params.map((p) => 'required String $p').join(', ')}}';
 
     buffer.writeln("  String $simpleKey($paramStr) {");
     buffer.writeln("    switch (locale.languageCode) {");
@@ -471,8 +454,7 @@ class DartWriter {
         for (final entry in localeItem.pluralForms!.entries) {
           final form = entry.key;
           final value = entry.value;
-          final interpolated =
-              _interpolateStringForPlural(value, item.parameters);
+          final interpolated = _interpolateStringForPlural(value, item.parameters);
           buffer.writeln("          '$form': $interpolated,");
         }
 
@@ -487,8 +469,7 @@ class DartWriter {
       for (final entry in item.pluralForms!.entries) {
         final form = entry.key;
         final value = entry.value;
-        final interpolated =
-            _interpolateStringForPlural(value, item.parameters);
+        final interpolated = _interpolateStringForPlural(value, item.parameters);
         buffer.writeln("          '$form': $interpolated,");
       }
       buffer.writeln("        });");
@@ -510,13 +491,10 @@ class DartWriter {
   /// The [simpleKey] parameter is the method name to generate.
   ///
   /// Returns a string containing the generated gender-based method.
-  String _generateGenderMethod(
-      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+  String _generateGenderMethod(LocalizationItem item, List<LocaleData> locales, String simpleKey) {
     final buffer = StringBuffer();
     final params = item.parameters.where((p) => p != 'gender').toList();
-    final paramStr = params.isEmpty
-        ? '{required String gender}'
-        : '{required String gender, ${params.map((p) => 'required String $p').join(', ')}}';
+    final paramStr = params.isEmpty ? '{required String gender}' : '{required String gender, ${params.map((p) => 'required String $p').join(', ')}}';
 
     buffer.writeln("  String $simpleKey($paramStr) {");
     buffer.writeln("    switch (locale.languageCode) {");
@@ -530,8 +508,7 @@ class DartWriter {
         for (final entry in localeItem.genderForms!.entries) {
           final form = entry.key;
           final value = entry.value;
-          final interpolated =
-              _interpolateStringForPlural(value, item.parameters);
+          final interpolated = _interpolateStringForPlural(value, item.parameters);
           buffer.writeln("          '$form': $interpolated,");
         }
 
@@ -546,8 +523,7 @@ class DartWriter {
       for (final entry in item.genderForms!.entries) {
         final form = entry.key;
         final value = entry.value;
-        final interpolated =
-            _interpolateStringForPlural(value, item.parameters);
+        final interpolated = _interpolateStringForPlural(value, item.parameters);
         buffer.writeln("          '$form': $interpolated,");
       }
       buffer.writeln("        });");
@@ -569,13 +545,10 @@ class DartWriter {
   /// The [simpleKey] parameter is the method name to generate.
   ///
   /// Returns a string containing the generated context-based method.
-  String _generateContextMethod(
-      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+  String _generateContextMethod(LocalizationItem item, List<LocaleData> locales, String simpleKey) {
     final buffer = StringBuffer();
     final params = item.parameters.where((p) => p != 'context').toList();
-    final paramStr = params.isEmpty
-        ? '{required String context}'
-        : '{required String context, ${params.map((p) => 'required String $p').join(', ')}}';
+    final paramStr = params.isEmpty ? '{required String context}' : '{required String context, ${params.map((p) => 'required String $p').join(', ')}}';
 
     buffer.writeln("  String $simpleKey($paramStr) {");
     buffer.writeln("    switch (locale.languageCode) {");
@@ -589,8 +562,7 @@ class DartWriter {
         for (final entry in localeItem.contextForms!.entries) {
           final form = entry.key;
           final value = entry.value;
-          final interpolated =
-              _interpolateStringForPlural(value, item.parameters);
+          final interpolated = _interpolateStringForPlural(value, item.parameters);
           buffer.writeln("          '$form': $interpolated,");
         }
 
@@ -605,8 +577,7 @@ class DartWriter {
       for (final entry in item.contextForms!.entries) {
         final form = entry.key;
         final value = entry.value;
-        final interpolated =
-            _interpolateStringForPlural(value, item.parameters);
+        final interpolated = _interpolateStringForPlural(value, item.parameters);
         buffer.writeln("          '$form': $interpolated,");
       }
       buffer.writeln("        });");
@@ -627,9 +598,9 @@ class DartWriter {
   /// _toPascalCase('hello_world'); // Returns 'HelloWorld'
   /// ```
   String _toPascalCase(String input) => input.split('_').map((part) {
-      if (part.isEmpty) return '';
-      return part[0].toUpperCase() + part.substring(1);
-    }).join();
+        if (part.isEmpty) return '';
+        return part[0].toUpperCase() + part.substring(1);
+      }).join();
 
   /// Converts a path to PascalCase for class names.
   ///
@@ -708,7 +679,7 @@ class DartWriter {
     for (final param in params) {
       restored = restored.replaceAll(
         '$sentinelPrefix$param$sentinelSuffix',
-        r'${' + param + '}',
+        r'${' '$param' r'}',
       );
     }
 
@@ -746,7 +717,6 @@ class DartWriter {
 
     return "'$withEscapedSingleQuotes'";
   }
-
 
   /// Generates helper methods for plural, gender, and context selection.
   ///
@@ -799,8 +769,7 @@ class DartWriter {
     final buffer = StringBuffer();
 
     buffer.writeln("/// Localization delegate for $className");
-    buffer.writeln(
-        "class ${className}Delegate extends LocalizationsDelegate<$className> {");
+    buffer.writeln("class ${className}Delegate extends LocalizationsDelegate<$className> {");
     buffer.writeln("  const ${className}Delegate();");
     buffer.writeln();
     buffer.writeln("  @override");

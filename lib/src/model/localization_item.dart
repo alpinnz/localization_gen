@@ -68,8 +68,7 @@ class LocalizationItem {
   bool get hasContexts => contextForms != null && contextForms!.isNotEmpty;
 
   @override
-  String toString() =>
-      'LocalizationItem(key: $key, params: $parameters, plurals: $hasPlurals, genders: $hasGenders)';
+  String toString() => 'LocalizationItem(key: $key, params: $parameters, plurals: $hasPlurals, genders: $hasGenders)';
 }
 
 /// Configuration from pubspec.yaml
@@ -104,11 +103,13 @@ class LocalizationConfig {
   /// Field naming convention for generated code
   final String fieldRename;
 
-  /// Suffix tambahan untuk nama file output.
+  /// Output file suffix.
   ///
-  /// Default: '.gen.dart' sehingga file output menjadi contoh:
+  /// Always '.gen.dart', so the output file looks like:
   /// - app_localizations.gen.dart
-  final String outputFileSuffix;
+  ///
+  /// Note: the `output_file_suffix` configuration option has been removed and is no longer used.
+  static const String outputFileSuffix = '.gen.dart';
 
   /// Creates a new LocalizationConfig with default values
   ///
@@ -122,7 +123,6 @@ class LocalizationConfig {
   /// - [filePattern]: 'app_{module}_{locale}.json'
   /// - [filePrefix]: 'app'
   /// - [strictValidation]: false
-  /// - [outputFileSuffix]: '.gen.dart'
   LocalizationConfig({
     this.inputDir = 'assets/localizations',
     this.outputDir = 'lib/assets',
@@ -134,7 +134,6 @@ class LocalizationConfig {
     this.filePrefix = 'app',
     this.strictValidation = false,
     this.fieldRename = 'none',
-    this.outputFileSuffix = '.gen.dart',
   });
 
   /// Creates a LocalizationConfig from a map of configuration values
@@ -152,8 +151,6 @@ class LocalizationConfig {
   factory LocalizationConfig.fromMap(Map<String, dynamic>? map) {
     if (map == null) return LocalizationConfig();
 
-    final suffix = map['output_file_suffix'] as String?;
-
     return LocalizationConfig(
       inputDir: map['input_dir'] as String? ?? 'assets/localizations',
       outputDir: map['output_dir'] as String? ?? 'lib/assets',
@@ -161,12 +158,10 @@ class LocalizationConfig {
       useContext: map['use_context'] as bool? ?? true,
       nullable: map['nullable'] as bool? ?? false,
       modular: map['modular'] as bool? ?? false,
-      filePattern:
-          map['file_pattern'] as String? ?? 'app_{module}_{locale}.json',
+      filePattern: map['file_pattern'] as String? ?? 'app_{module}_{locale}.json',
       filePrefix: map['file_prefix'] as String? ?? 'app',
       strictValidation: map['strict_validation'] as bool? ?? false,
       fieldRename: map['field_rename'] as String? ?? 'none',
-      outputFileSuffix: suffix ?? '.gen.dart',
     );
   }
 }

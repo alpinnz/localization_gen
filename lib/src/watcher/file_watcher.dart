@@ -113,9 +113,7 @@ class FileWatcher {
       return false;
     }
 
-    return event.type == ChangeType.ADD ||
-        event.type == ChangeType.MODIFY ||
-        event.type == ChangeType.REMOVE;
+    return event.type == ChangeType.ADD || event.type == ChangeType.MODIFY || event.type == ChangeType.REMOVE;
   }
 
   /// Handles file changes with debouncing.

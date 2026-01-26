@@ -15,8 +15,7 @@ void main() {
       final file = File('${dir.path}${Platform.pathSeparator}app_en.JSON');
       file.writeAsStringSync('{"hello":"Hi"}');
 
-      final locales =
-          JsonLocalizationParser.parseDirectory(dir.path, modular: false);
+      final locales = JsonLocalizationParser.parseDirectory(dir.path, modular: false);
       expect(locales, hasLength(1));
       expect(locales.first.locale, equals('en'));
       expect(locales.first.items['hello']?.value, equals('Hi'));

@@ -3,6 +3,7 @@ import 'package:args/args.dart';
 import 'package:path/path.dart' as p;
 import 'base_command.dart';
 import '../config/config_reader.dart';
+import '../model/localization_item.dart';
 
 /// Command to clean generated localization files.
 ///
@@ -80,11 +81,11 @@ class CleanCommand extends BaseCommand {
         return 0;
       }
 
-      final fileName = _toSnakeCase(config.className) + config.outputFileSuffix;
+      final fileName = _toSnakeCase(config.className) + LocalizationConfig.outputFileSuffix;
       final generatedFile = File(p.join(config.outputDir, fileName));
 
       // Also clean legacy outputs that used ".dart" without ".gen".
-      final legacyFileName = _toSnakeCase(config.className) + '.dart';
+      final legacyFileName = '${_toSnakeCase(config.className)}.dart';
       final legacyGeneratedFile = File(p.join(config.outputDir, legacyFileName));
 
       int deletedCount = 0;
@@ -103,8 +104,7 @@ class CleanCommand extends BaseCommand {
       }
 
       // Delete legacy output if it exists and is different.
-      if (legacyGeneratedFile.path != generatedFile.path &&
-          legacyGeneratedFile.existsSync()) {
+      if (legacyGeneratedFile.path != generatedFile.path && legacyGeneratedFile.existsSync()) {
         if (dryRun) {
           printInfo('Would delete legacy: ${legacyGeneratedFile.path}');
         } else {

@@ -52,7 +52,6 @@ localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: AppLocalizations
-  output_file_suffix: .gen.dart
   strict_validation: true
   field_rename: snake  # none, kebab, snake, pascal, camel, screamingSnake
 ```
@@ -263,10 +262,6 @@ localization_gen:
   # Optional: Generated class name (default: AppLocalizations)
   class_name: AppLocalizations
 
-  # Optional: Output file suffix (default: .gen.dart)
-  # Example output: lib/assets/app_localizations.gen.dart
-  output_file_suffix: .gen.dart
-
   # Optional: Generate static of(context) method (default: true)
   use_context: true
 
@@ -288,6 +283,7 @@ localization_gen:
 
   # Optional: File prefix for modular mode
   file_prefix: app
+
 ```
 
 ## Field Rename Options
@@ -466,7 +462,7 @@ By default the generator writes:
 
 - `lib/assets/<class_name in snake_case>.gen.dart`
 
-If you override `output_dir` or `output_file_suffix`, adjust your imports accordingly.
+If you override `output_dir`, adjust your imports accordingly.
 
 ### Newline (\n) handling
 

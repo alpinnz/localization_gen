@@ -1,6 +1,7 @@
 /// Tests for LocalizationGenerator.
 ///
 /// Covers end-to-end generation workflow.
+library;
 
 import 'dart:io';
 import 'package:test/test.dart';
@@ -90,8 +91,7 @@ localization_gen:
         final outputDir = Directory('${tempDir.path}/lib/generated');
         expect(outputDir.existsSync(), isTrue);
 
-        final outputFile =
-            File('${tempDir.path}/lib/generated/app_localizations.gen.dart');
+        final outputFile = File('${tempDir.path}/lib/generated/app_localizations.gen.dart');
         expect(outputFile.existsSync(), isTrue);
       });
 
@@ -138,41 +138,11 @@ localization_gen:
         );
         generator.generate();
 
-        final outputFile =
-            File('${tempDir.path}/lib/my_custom_localizations.gen.dart');
+        final outputFile = File('${tempDir.path}/lib/my_custom_localizations.gen.dart');
         expect(outputFile.existsSync(), isTrue);
       });
 
-      test('supports custom output_file_suffix', () {
-        final localizationsDir = Directory('${tempDir.path}/localizations');
-        localizationsDir.createSync();
-        final outputDir = Directory('${tempDir.path}/lib');
-        outputDir.createSync();
-
-        TestHelper.createJsonFile(
-          localizationsDir,
-          'app_en.json',
-          TestHelper.basicEnglishJson(),
-        );
-
-        final configFile = File('${tempDir.path}/pubspec.yaml');
-        configFile.writeAsStringSync('''
-name: test_app
-localization_gen:
-  input_dir: ${tempDir.path}/localizations
-  output_dir: ${tempDir.path}/lib
-  class_name: AppLocalizations
-  output_file_suffix: .dart
-''');
-
-        final generator = LocalizationGenerator(
-          configPath: configFile.path,
-        );
-        generator.generate();
-
-        final outputFile = File('${tempDir.path}/lib/app_localizations.dart');
-        expect(outputFile.existsSync(), isTrue);
-      });
+      // NOTE: `output_file_suffix` config has been removed. Output is always `.gen.dart`.
     });
   });
 }

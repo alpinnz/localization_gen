@@ -1,6 +1,7 @@
 /// Tests for strict validation functionality.
 ///
 /// Covers locale consistency and validation.
+library;
 
 import 'dart:io';
 import 'package:test/test.dart';

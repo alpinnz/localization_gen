@@ -131,8 +131,7 @@ class CoverageCommand extends BaseCommand {
 
       final missingKeys = baseKeys.difference(localeKeys);
       final extraKeys = localeKeys.difference(baseKeys);
-      final coveragePercent =
-          (localeKeys.length / totalKeys * 100).toStringAsFixed(2);
+      final coveragePercent = (localeKeys.length / totalKeys * 100).toStringAsFixed(2);
 
       coverage[localeCode] = {
         'total': totalKeys,
@@ -189,8 +188,7 @@ class CoverageCommand extends BaseCommand {
       final info = entry.value as Map<String, dynamic>;
 
       buffer.writeln('Locale: $locale');
-      buffer.writeln(
-          '  Translated: ${info['translated']}/$totalKeys (${info['percentage']}%)');
+      buffer.writeln('  Translated: ${info['translated']}/$totalKeys (${info['percentage']}%)');
 
       if (info['missing'] > 0) {
         buffer.writeln('  Missing: ${info['missing']} key(s)');
@@ -241,25 +239,19 @@ class CoverageCommand extends BaseCommand {
     buffer.writeln('<head>');
     buffer.writeln('  <title>Translation Coverage Report</title>');
     buffer.writeln('  <style>');
-    buffer
-        .writeln('    body { font-family: Arial, sans-serif; margin: 20px; }');
+    buffer.writeln('    body { font-family: Arial, sans-serif; margin: 20px; }');
     buffer.writeln('    h1 { color: #333; }');
-    buffer.writeln(
-        '    table { border-collapse: collapse; width: 100%; margin-top: 20px; }');
-    buffer.writeln(
-        '    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }');
+    buffer.writeln('    table { border-collapse: collapse; width: 100%; margin-top: 20px; }');
+    buffer.writeln('    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }');
     buffer.writeln('    th { background-color: #4CAF50; color: white; }');
     buffer.writeln('    tr:nth-child(even) { background-color: #f2f2f2; }');
-    buffer.writeln(
-        '    .progress-bar { background-color: #ddd; border-radius: 10px; overflow: hidden; }');
-    buffer.writeln(
-        '    .progress-fill { height: 20px; background-color: #4CAF50; text-align: center; color: white; line-height: 20px; }');
+    buffer.writeln('    .progress-bar { background-color: #ddd; border-radius: 10px; overflow: hidden; }');
+    buffer.writeln('    .progress-fill { height: 20px; background-color: #4CAF50; text-align: center; color: white; line-height: 20px; }');
     buffer.writeln('  </style>');
     buffer.writeln('</head>');
     buffer.writeln('<body>');
     buffer.writeln('  <h1>Translation Coverage Report</h1>');
-    buffer.writeln(
-        '  <p>Total translation keys: <strong>$totalKeys</strong></p>');
+    buffer.writeln('  <p>Total translation keys: <strong>$totalKeys</strong></p>');
     buffer.writeln('  <table>');
     buffer.writeln('    <tr>');
     buffer.writeln('      <th>Locale</th>');
@@ -278,8 +270,7 @@ class CoverageCommand extends BaseCommand {
       buffer.writeln('      <td>${info['missing']}</td>');
       buffer.writeln('      <td>');
       buffer.writeln('        <div class="progress-bar">');
-      buffer.writeln(
-          '          <div class="progress-fill" style="width: ${info['percentage']}%">${info['percentage']}%</div>');
+      buffer.writeln('          <div class="progress-fill" style="width: ${info['percentage']}%">${info['percentage']}%</div>');
       buffer.writeln('        </div>');
       buffer.writeln('      </td>');
       buffer.writeln('    </tr>');
@@ -305,7 +296,6 @@ class CoverageCommand extends BaseCommand {
     print('\nExamples:');
     print('  dart run localization_gen coverage');
     print('  dart run localization_gen coverage --format=json');
-    print(
-        '  dart run localization_gen coverage --format=html --output=coverage.html');
+    print('  dart run localization_gen coverage --format=html --output=coverage.html');
   }
 }

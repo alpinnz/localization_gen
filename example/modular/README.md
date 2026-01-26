@@ -34,7 +34,6 @@ localization_gen:
   modular: true
   file_pattern: app_{module}_{locale}.json
   file_prefix: app
-  output_file_suffix: .gen.dart
 ```
 
 ## File Structure (simplified)

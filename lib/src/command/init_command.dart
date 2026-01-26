@@ -123,15 +123,14 @@ class InitCommand extends BaseCommand {
           pubspecFile.writeAsStringSync('$content\n$config');
           printSuccess('Added localization_gen configuration to pubspec.yaml');
         } else {
-          printInfo(
-              'localization_gen configuration already exists in pubspec.yaml');
+          printInfo('localization_gen configuration already exists in pubspec.yaml');
         }
       }
 
       // Step 4: Add assets to pubspec.yaml
       _updatePubspecAssets(inputDir);
 
-      print('\n' + '=' * 60);
+      print('\n${'=' * 60}');
       printSuccess('Initialization complete!');
       print('=' * 60);
       print('\nNext steps:');
@@ -230,10 +229,8 @@ localization_gen:
       );
       pubspecFile.writeAsStringSync(updatedContent);
       printSuccess('Added assets configuration to pubspec.yaml');
-    } else if (content.contains('assets:') &&
-        !content.contains('- $inputDir/')) {
-      printInfo(
-          'Please manually add "- $inputDir/" to your assets in pubspec.yaml');
+    } else if (content.contains('assets:') && !content.contains('- $inputDir/')) {
+      printInfo('Please manually add "- $inputDir/" to your assets in pubspec.yaml');
     }
   }
 

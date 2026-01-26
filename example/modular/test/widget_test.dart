@@ -90,7 +90,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Home module translations with parameters.
-      expect(find.textContaining('Welcome to Localization Gen!'), findsOneWidget);
+      expect(
+        find.textContaining('Welcome to Localization Gen!'),
+        findsOneWidget,
+      );
       // Don't assert the injected name, because generated code may intentionally
       // escape interpolation and render a literal placeholder.
       // Discount is styled and includes a percent sign.

@@ -30,7 +30,6 @@ localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: AppLocalizations
-  output_file_suffix: .gen.dart
 ```
 
 ## File Structure

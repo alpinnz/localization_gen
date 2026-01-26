@@ -114,13 +114,13 @@ analyze:
 # Format code
 format:
 	@echo "Formatting code..."
-	@dart format . || (echo "ERROR: Format failed" && exit 1)
+	@dart format --line-length=160 . || (echo "ERROR: Format failed" && exit 1)
 	@echo "SUCCESS: Code formatted"
 
 # Check format without modifying
 format-check:
 	@echo "Checking code formatting..."
-	@dart format --output=none --set-exit-if-changed . || (echo "ERROR: Code needs formatting. Run 'make format' to fix." && exit 1)
+	@dart format --line-length=160 --output=none --set-exit-if-changed . || (echo "ERROR: Code needs formatting. Run 'make format' to fix." && exit 1)
 	@echo "SUCCESS: Code is properly formatted"
 
 # Run linter
@@ -138,7 +138,7 @@ check:
 	@echo "Analysis passed"
 	@echo ""
 	@echo "Step 2/3: Checking code format..."
-	@dart format --output=none --set-exit-if-changed . || (echo "ERROR: Format check failed. Run 'make format' to fix." && exit 1)
+	@dart format --line-length=160 --output=none --set-exit-if-changed . || (echo "ERROR: Format check failed. Run 'make format' to fix." && exit 1)
 	@echo "Format check passed"
 	@echo ""
 	@echo "Step 3/3: Running tests..."

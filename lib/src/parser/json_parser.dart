@@ -92,8 +92,7 @@ class JsonLocalizationParser {
       final json = decoded;
 
       // Extract locale from @@locale or filename
-      String locale =
-          json['@@locale'] as String? ?? _extractLocaleFromFilename(file.path);
+      String locale = json['@@locale'] as String? ?? _extractLocaleFromFilename(file.path);
 
       final items = <String, LocalizationItem>{};
 
@@ -196,8 +195,7 @@ class JsonLocalizationParser {
           for (final contextEntry in contextMap.entries) {
             if (contextEntry.value is String) {
               contextForms[contextEntry.key] = contextEntry.value as String;
-              allParams
-                  .addAll(_extractParameters(contextEntry.value as String));
+              allParams.addAll(_extractParameters(contextEntry.value as String));
             }
           }
 
@@ -240,8 +238,7 @@ class JsonLocalizationParser {
         );
       } else if (value != null) {
         // Warn about unsupported value types
-        print(
-            'Warning: Unsupported value type ${value.runtimeType} for key "$fullKey"${filePath != null ? ' in $filePath' : ''}');
+        print('Warning: Unsupported value type ${value.runtimeType} for key "$fullKey"${filePath != null ? ' in $filePath' : ''}');
       }
     }
   }
@@ -271,10 +268,7 @@ class JsonLocalizationParser {
   ///   filePrefix: 'app',
   /// );
   /// ```
-  static List<LocaleData> parseDirectory(String dirPath,
-      {bool modular = false,
-      String filePrefix = 'app',
-      bool strictValidation = false}) {
+  static List<LocaleData> parseDirectory(String dirPath, {bool modular = false, String filePrefix = 'app', bool strictValidation = false}) {
     final dir = Directory(dirPath);
     if (!dir.existsSync()) {
       throw FileOperationException(
@@ -284,11 +278,7 @@ class JsonLocalizationParser {
       );
     }
 
-    final jsonFiles = dir
-        .listSync()
-        .whereType<File>()
-        .where((f) => p.extension(f.path).toLowerCase() == '.json')
-        .toList();
+    final jsonFiles = dir.listSync().whereType<File>().where((f) => p.extension(f.path).toLowerCase() == '.json').toList();
 
     if (jsonFiles.isEmpty) {
       throw FileOperationException(
@@ -331,8 +321,7 @@ class JsonLocalizationParser {
   /// app_auth_en.json + app_home_en.json -> merged 'en' locale
   /// app_auth_id.json + app_home_id.json -> merged 'id' locale
   /// ```
-  static List<LocaleData> _parseModularFiles(
-      List<File> jsonFiles, String filePrefix) {
+  static List<LocaleData> _parseModularFiles(List<File> jsonFiles, String filePrefix) {
     final localeMap = <String, Map<String, LocalizationItem>>{};
 
     for (final file in jsonFiles) {
@@ -347,8 +336,7 @@ class JsonLocalizationParser {
       final json = jsonDecode(content) as Map<String, dynamic>;
 
       // Extract locale from @@locale or filename
-      String locale = json['@@locale'] as String? ??
-          _extractLocaleFromModularFilename(filename, filePrefix);
+      String locale = json['@@locale'] as String? ?? _extractLocaleFromModularFilename(filename, filePrefix);
       String? module = json['@@module'] as String?;
 
       if (module != null) {
@@ -370,8 +358,7 @@ class JsonLocalizationParser {
 
     // Convert to LocaleData list
     return localeMap.entries.map((entry) {
-      print(
-          'Merged locale "${entry.key}" with ${entry.value.length} translations');
+      print('Merged locale "${entry.key}" with ${entry.value.length} translations');
       return LocaleData(
         locale: entry.key,
         items: entry.value,
@@ -381,8 +368,7 @@ class JsonLocalizationParser {
 
   /// Extract locale from modular filename like "app_auth_en.json" -> "en"
   /// or "core_common_id.json" -> "id"
-  static String _extractLocaleFromModularFilename(
-      String filename, String filePrefix) {
+  static String _extractLocaleFromModularFilename(String filename, String filePrefix) {
     final base = p.withoutExtension(filename);
     final parts = base.split('_');
     // Pattern: {prefix}_{module}_{locale}.json
@@ -456,8 +442,7 @@ class JsonLocalizationParser {
         final baseItem = baseLocale.items[key]!;
         final localeItem = locale.items[key]!;
 
-        if (baseItem.parameters.length != localeItem.parameters.length ||
-            !_parametersMatch(baseItem.parameters, localeItem.parameters)) {
+        if (baseItem.parameters.length != localeItem.parameters.length || !_parametersMatch(baseItem.parameters, localeItem.parameters)) {
           throw ParameterException(
             'Parameter mismatch between locales "${baseLocale.locale}" and "${locale.locale}"',
             key: key,

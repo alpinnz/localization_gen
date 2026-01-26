@@ -1,6 +1,7 @@
 /// Tests for custom exceptions.
 ///
 /// Covers all exception types and their properties.
+library;
 
 import 'package:test/test.dart';
 import 'package:localization_gen/src/exceptions/exceptions.dart';

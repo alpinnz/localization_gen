@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import '../config/config_reader.dart';
 import '../parser/json_parser.dart';
 import '../writer/dart_writer.dart';
+import '../model/localization_item.dart';
 
 /// Main generator that orchestrates the entire process
 class LocalizationGenerator {
@@ -70,8 +71,7 @@ class LocalizationGenerator {
         filePrefix: config.filePrefix,
         strictValidation: config.strictValidation,
       );
-      print(
-          'Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
+      print('Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
 
       if (locales.isEmpty) {
         print('No locales found!');
@@ -97,7 +97,7 @@ class LocalizationGenerator {
       final outputFile = File(
         p.join(
           config.outputDir,
-          '${_toSnakeCase(config.className)}${config.outputFileSuffix}',
+          '${_toSnakeCase(config.className)}${LocalizationConfig.outputFileSuffix}',
         ),
       );
       outputFile.writeAsStringSync(dartCode);

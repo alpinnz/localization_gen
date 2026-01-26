@@ -1,6 +1,7 @@
 /// Tests for DartWriter.
 ///
 /// Covers all Dart code generation functionality.
+library;
 
 import 'package:test/test.dart';
 import 'package:localization_gen/src/writer/dart_writer.dart';

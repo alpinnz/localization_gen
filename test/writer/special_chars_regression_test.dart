@@ -8,7 +8,7 @@ void main() {
     test('emits valid Dart for strings containing apostrophe + double quote + backslash-dollar', () {
       final writer = DartWriter(className: 'TestLocalizations');
 
-      const value = 'Special: @#\$%^&*()_+-=[]{}|;\'\\\",./<>?';
+      const value = 'Special: @#\$%^&*()_+-=[]{}|;\'\\",./<>?';
       // Explanation of the value above:
       // - contains an apostrophe '
       // - contains a double quote "

@@ -11,7 +11,6 @@ import '../model/localization_item.dart';
 /// Configuration options include:
 /// - `input_dir`: Directory containing JSON localization files
 /// - `output_dir`: Directory for generated Dart files
-/// - `output_file_suffix`: Suffix untuk nama file output (default: .gen.dart)
 /// - `class_name`: Name of the generated localization class
 /// - `use_context`: Whether to generate BuildContext helper
 /// - `nullable`: Whether the context helper returns nullable type

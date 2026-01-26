@@ -63,7 +63,9 @@ void main() {
       expect(find.byIcon(Icons.inventory), findsOneWidget);
     });
 
-    testWidgets('Item counter does not go below zero', (WidgetTester tester) async {
+    testWidgets('Item counter does not go below zero', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const DefaultLocalizationApp());
       await tester.pumpAndSettle();
 
@@ -91,7 +93,9 @@ void main() {
       expect(find.text('Cancel'), findsOneWidget);
     });
 
-    testWidgets('Parameterized translations are rendered', (WidgetTester tester) async {
+    testWidgets('Parameterized translations are rendered', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const DefaultLocalizationApp());
       await tester.pumpAndSettle();
 

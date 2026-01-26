@@ -1,10 +1,12 @@
 /// Tests for ConfigReader.
 ///
 /// Covers configuration reading from pubspec.yaml.
+library;
 
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:localization_gen/src/config/config_reader.dart';
+import 'package:localization_gen/src/model/localization_item.dart';
 import '../utils/test_helper.dart';
 
 void main() {
@@ -27,7 +29,6 @@ name: test_app
 localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
-  output_file_suffix: .gen.dart
   class_name: TestLocalizations
   use_context: true
   nullable: false
@@ -38,7 +39,7 @@ localization_gen:
 
         final config = ConfigReader.read(configFile.path);
 
-        expect(config.outputFileSuffix, equals('.gen.dart'));
+        expect(LocalizationConfig.outputFileSuffix, equals('.gen.dart'));
         expect(config.inputDir, equals('assets/localizations'));
         expect(config.outputDir, equals('lib/assets'));
         expect(config.className, equals('TestLocalizations'));
@@ -59,7 +60,7 @@ localization_gen:
 
         final config = ConfigReader.read(configFile.path);
 
-        expect(config.outputFileSuffix, equals('.gen.dart'));
+        expect(LocalizationConfig.outputFileSuffix, equals('.gen.dart'));
         expect(config.className, equals('AppLocalizations'));
         expect(config.outputDir, equals('lib/assets'));
         expect(config.useContext, isTrue);

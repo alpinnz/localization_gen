@@ -49,8 +49,7 @@ void main() {
       final writer = DartWriter(className: 'TestLocalizations');
 
       // Real-world example from the report.
-      const message =
-          'Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in.';
+      const message = 'Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in.';
 
       final locales = [
         LocaleData(

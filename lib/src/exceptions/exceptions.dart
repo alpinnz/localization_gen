@@ -56,9 +56,7 @@ class JsonParseException extends LocalizationException {
   String toString() {
     final buffer = StringBuffer(super.toString());
     if (jsonContent != null) {
-      final truncated = jsonContent!.length > 100
-          ? '${jsonContent!.substring(0, 100)}...'
-          : jsonContent;
+      final truncated = jsonContent!.length > 100 ? '${jsonContent!.substring(0, 100)}...' : jsonContent;
       buffer.write('\n  Content: $truncated');
     }
     return buffer.toString();
@@ -163,8 +161,7 @@ class ParameterException extends LocalizationException {
     buffer.write('\n  Key: $key');
 
     if (expectedParameters != null) {
-      buffer
-          .write('\n  Expected parameters: ${expectedParameters!.join(', ')}');
+      buffer.write('\n  Expected parameters: ${expectedParameters!.join(', ')}');
     }
 
     if (actualParameters != null) {

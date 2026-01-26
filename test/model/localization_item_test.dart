@@ -1,6 +1,7 @@
 /// Tests for LocalizationItem and LocaleData models.
 ///
 /// Covers data model functionality.
+library;
 
 import 'package:test/test.dart';
 import 'package:localization_gen/src/model/localization_item.dart';

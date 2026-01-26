@@ -2,6 +2,7 @@
 ///
 /// This file provides common test utilities, fixtures, and helpers
 /// used across all test files.
+library;
 
 import 'dart:io';
 
@@ -10,8 +11,7 @@ import 'package:path/path.dart' as p;
 /// Test helper utilities
 class TestHelper {
   /// Create a temporary directory for testing
-  static Directory createTempDir([String prefix = 'test_']) =>
-      Directory.systemTemp.createTempSync(prefix);
+  static Directory createTempDir([String prefix = 'test_']) => Directory.systemTemp.createTempSync(prefix);
 
   /// Create a test JSON file with given content
   static File createJsonFile(Directory dir, String filename, String content) {
