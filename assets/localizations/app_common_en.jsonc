@@ -23,7 +23,7 @@
 //  1) @@locale metadata
 //     - Example: @@locale
 //
-//  2) @@module metadata (modular mode only; default: common)
+//  2) @@module metadata (required; default: common)
 //     - Example: @@module
 //
 //  3) Basic strings
@@ -85,13 +85,13 @@
   /// - `"@@locale": "en"`
   "@@locale": "en",
 
-  /// (2) @@module metadata (required, modular-only)
+  /// (2) @@module metadata (required; default: common)
   ///
   /// Summary
   /// - Defines the module name for this file.
   ///
   /// Rules
-  /// - Required in modular mode.
+  /// - Required (this repo is modular-only).
   /// - Recommended values: `common`, `auth`, `home`, `settings`.
   /// - Module name should match your file naming convention.
   ///
@@ -267,7 +267,20 @@
 
     // Legal / brand symbols that may appear in UI copy.
     "copyright_notice": "© 2026 Alpinnz. All rights reserved.",
-    "trademark_notice": "Acme™ is a trademark of Acme Corp."
+    "registered_mark": "Brand®",
+    "trademark_notice": "Acme™ is a trademark of Acme Corp.",
+
+    // Common UI symbol patterns.
+    "currency_and_amount": "Total: $12.50 / Rp 10.000",
+    "percent_like": "Progress: 75%",
+    "math_like": "Range: 10–20 (±2)",
+    "degree_like": "Temperature: 23°C",
+    "arrow_like": "Next →",
+    "pipe_like": "Privacy | Terms",
+    "bullet_list_like": "• Item 1\n• Item 2\n• Item 3",
+
+    // URL / query-string symbols are common for help text.
+    "url_query_like": "Open: https://example.com/?q=a+b&sort=asc"
   },
 
   /// (13) Literal tokens that must NOT be treated as placeholders

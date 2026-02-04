@@ -367,7 +367,7 @@ class JsonLocalizationParser {
   }
 
   /// Extract locale from modular filename like "app_auth_en.json" -> "en"
-  /// or "core_common_id.json" -> "id"
+  /// or "app_common_id.json" -> "id"
   static String _extractLocaleFromModularFilename(String filename, String filePrefix) {
     final base = p.withoutExtension(filename);
     final parts = base.split('_');

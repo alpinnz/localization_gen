@@ -1,15 +1,11 @@
 # Assets (localization examples)
 
-Folder `assets/` berisi dua hal:
+Folder `assets/` berisi **fixture + dokumentasi pola** untuk package ini.
 
-1) **Spec/dataset referensi (JSONC)**
-   - File `.jsonc` dipakai untuk dokumentasi karena bisa punya komentar.
-   - Ini jadi landasan pola, case, dan aturan validasi.
+Saat ini struktur yang tersedia (faktual):
+- `assets/localizations/` — kumpulan file contoh (JSONC) + README
 
-2) **Fixture contoh (folder `assets/localizations/`)**
-   - Folder ini berisi file contoh yang bisa dipakai sebagai dataset/fixture untuk demo & pengujian.
-
-> Catatan: package ini membaca `*.json`. File `.jsonc` hanya untuk dokumentasi/pola.
+> Catatan: package ini membaca `*.json` (JSON murni). File `.jsonc` disediakan untuk dokumentasi karena bisa berisi komentar.
 
 ---
 
@@ -33,8 +29,6 @@ Pola:
 Contoh:
 - `app_common_en.json`
 - `app_common_id.json`
-- `app_auth_en.json`
-- `app_auth_id.json`
 
 ### Constraints penting
 - **Tidak boleh ada collision key** setelah merge antar module.
@@ -43,24 +37,17 @@ Contoh:
 
 ---
 
-## Isi folder ini
+## Dataset contoh yang tersedia (faktual)
+Dataset/case utama saat ini ada di folder `assets/localizations/`:
+- `assets/localizations/app_common_en.jsonc` — canonical dataset (EN), module `common`
+- `assets/localizations/app_common_id.jsonc` — mirror dataset (ID), module `common`
 
-### 1) Spec/dataset (JSONC)
-Referensi utama untuk semua “case” yang didukung library:
-- `assets/app_common_en.jsonc` — canonical spec + dataset (EN) untuk module `common`
-- `assets/app_common_id.jsonc` — mirror dataset (ID) untuk module `common`
+Catatan penting tentang struktur key:
+- Namespace basic string memakai **`strings`** (contoh key path: `strings.app_title`).
+- Semua case dirangkum sebagai `CASE INDEX (all cases appear once)` di masing-masing file JSONC.
 
-File berikut sengaja minimal (pointer) agar tidak redundant:
-- `assets/app_en.jsonc` → menunjuk ke `assets/app_common_en.jsonc`
-- `assets/app_id.jsonc` → menunjuk ke `assets/app_common_id.jsonc`
-
-### 2) `assets/localizations/` (fixture contoh)
-Saat ini folder `assets/localizations/` berisi:
-- `assets/localizations/app_common_en.jsonc`
-- `assets/localizations/app_common_id.jsonc`
-
-Jika kamu ingin fixture yang benar-benar diparse generator (real run), simpan juga versi `.json`
-(tanpa komentar) dengan struktur yang sama.
+Jika kamu ingin dataset ini bisa dipakai untuk real run generator/validator tanpa modifikasi:
+- buat juga versi `.json` (tanpa komentar) dengan struktur yang sama.
 
 ---
 
