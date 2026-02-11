@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:yaml/yaml.dart';
-import '../model/localization_item.dart';
+
+import 'package:localization_gen/src/model/localization_item.dart';
 
 /// Reads and parses localization configuration from pubspec.yaml.
 ///
@@ -9,15 +10,18 @@ import '../model/localization_item.dart';
 /// `localization_gen` section from pubspec.yaml.
 ///
 /// Configuration options include:
-/// - `input_dir`: Directory containing JSON localization files
+/// - `input_dir`: Directory containing JSON localization files (required)
 /// - `output_dir`: Directory for generated Dart files
 /// - `class_name`: Name of the generated localization class
-/// - `use_context`: Whether to generate BuildContext helper
-/// - `nullable`: Whether the context helper returns nullable type
-/// - `modular`: Enable modular file organization
-/// - `file_pattern`: Pattern for modular files
-/// - `file_prefix`: Prefix for modular files
-/// - `strict_validation`: Enable strict locale validation
+/// - `file_pattern`: Pattern for modular files (default: app_{module}_{locale}.json)
+/// - `file_prefix`: Prefix for modular files (default: app)
+/// - `field_rename`: Naming convention for generated identifiers
+///
+/// Mandatory (not configurable):
+/// - BuildContext helper is always generated
+/// - of(context) is always non-nullable
+/// - Modular file mode is always enabled
+/// - Strict validation is always enabled
 ///
 /// Example usage:
 /// ```dart

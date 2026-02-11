@@ -4,28 +4,45 @@ Comprehensive test suite for localization_gen package. The structure mirrors `li
 
 ## Running Tests
 
+Use Flutter tooling (recommended for this repo):
+
 ```bash
 # All tests
-dart test
+
+flutter test
 
 # Single file
-dart test test/parser/json_parser_test.dart
+
+flutter test test/parser/json_parser_test.dart
 
 # By directory
-dart test test/parser/
+
+flutter test test/parser/
+```
+
+If you prefer pure Dart (works for most unit tests):
+
+```bash
+dart test
 ```
 
 ## Coverage
 
 ```bash
+# Collect coverage data
+
 dart test --coverage=coverage
 ```
 
-To render HTML you can use any lcov viewer. Example with `genhtml` (requires lcov):
+To render HTML you can use any lcov viewer.
+
+- If you have `lcov` + `genhtml` installed:
 
 ```bash
 genhtml coverage/lcov.info -o coverage/html
 ```
+
+- Otherwise, you can upload `coverage/lcov.info` to your preferred CI/reporting tool.
 
 Open `coverage/html/index.html` in your browser.
 
@@ -92,7 +109,7 @@ TestHelper.cleanupDir(dir);
 
 ```text
 // Create test JSON file
-TestHelper.createJsonFile(dir, 'app_en.json', jsonContent);
+TestHelper.createJsonFile(dir, 'app_common_en.json', jsonContent);
 ```
 
 ### Pre-made Templates
@@ -234,14 +251,28 @@ Avoid:
 When adding a new source file to lib/src:
 
 1. **Create test directory** if it doesn't exist
-   ```bash
-   mkdir -p test/new_component
-   ```
+
+macOS/Linux (bash/zsh):
+```bash
+mkdir -p test/new_component
+```
+
+Windows (PowerShell):
+```powershell
+New-Item -ItemType Directory -Force -Path test/new_component | Out-Null
+```
 
 2. **Create test file** matching source name
-   ```bash
-   touch test/new_component/new_file_test.dart
-   ```
+
+macOS/Linux (bash/zsh):
+```bash
+touch test/new_component/new_file_test.dart
+```
+
+Windows (PowerShell):
+```powershell
+New-Item -ItemType File -Force -Path test/new_component/new_file_test.dart | Out-Null
+```
 
 3. **Follow the template** shown above
 

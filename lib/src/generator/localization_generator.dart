@@ -1,34 +1,28 @@
 import 'dart:io';
 import 'package:path/path.dart' as p;
-import '../config/config_reader.dart';
-import '../parser/json_parser.dart';
-import '../writer/dart_writer.dart';
-import '../model/localization_item.dart';
+
+import 'package:localization_gen/src/config/config_reader.dart';
+import 'package:localization_gen/src/parser/json_parser.dart';
+import 'package:localization_gen/src/writer/dart_writer.dart';
+import 'package:localization_gen/src/model/localization_item.dart';
+import 'package:localization_gen/src/model/field_rename.dart';
 
 /// Main generator that orchestrates the entire process
 class LocalizationGenerator {
   /// Whether to run in watch mode (reserved for future use)
   final bool watch;
 
-  /// Optional path to the pubspec.yaml configuration file
-  final String? configPath;
-
   /// Creates a new LocalizationGenerator instance
   ///
   /// The [watch] parameter is reserved for future watch mode functionality.
-  /// The [configPath] parameter specifies a custom path to pubspec.yaml.
   ///
   /// Example:
   /// ```dart
-  /// final generator = LocalizationGenerator(
-  ///   watch: false,
-  ///   configPath: 'pubspec.yaml',
-  /// );
+  /// final generator = LocalizationGenerator(watch: false);
   /// generator.generate();
   /// ```
   LocalizationGenerator({
     this.watch = false,
-    this.configPath,
   });
 
   /// Runs the localization generation process
@@ -51,27 +45,23 @@ class LocalizationGenerator {
       print('Starting localization generation...\n');
 
       // Step 1: Read config
-      final config = ConfigReader.read(configPath ?? 'pubspec.yaml');
+      final config = ConfigReader.read();
       print('Config:');
       print('   Input:  ${config.inputDir}');
       print('   Output: ${config.outputDir}');
       print('   Class:  ${config.className}');
-      print('   Modular: ${config.modular}');
-      if (config.modular) {
-        print('   Pattern: ${config.filePattern}');
-        print('   Prefix:  ${config.filePrefix}');
-      }
+      print('   Pattern: ${config.filePattern}');
+      print('   Prefix:  ${config.filePrefix}');
       print('');
 
       // Step 2: Parse JSON files
       print('Scanning JSON localization files...');
       final locales = JsonLocalizationParser.parseDirectory(
         config.inputDir,
-        modular: config.modular,
         filePrefix: config.filePrefix,
-        strictValidation: config.strictValidation,
       );
-      print('Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
+      print(
+          'Found ${locales.length} locale(s): ${locales.map((l) => l.locale).join(', ')}\n');
 
       if (locales.isEmpty) {
         print('No locales found!');
@@ -82,8 +72,7 @@ class LocalizationGenerator {
       print('Generating Dart code...');
       final writer = DartWriter(
         className: config.className,
-        useContext: config.useContext,
-        nullable: config.nullable,
+        fieldRename: FieldRename.fromString(config.fieldRename),
       );
 
       final dartCode = writer.generate(locales);

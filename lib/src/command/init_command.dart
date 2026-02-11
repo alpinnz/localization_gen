@@ -31,24 +31,6 @@ class InitCommand extends BaseCommand {
         help: 'Name for the generated localization class',
         defaultsTo: 'AppLocalizations',
       )
-      ..addOption(
-        'locales',
-        abbr: 'l',
-        help: 'Comma-separated list of locales (e.g., en,es,id)',
-        defaultsTo: 'en',
-      )
-      ..addFlag(
-        'modular',
-        abbr: 'm',
-        help: 'Enable modular organization',
-        negatable: false,
-      )
-      ..addFlag(
-        'strict',
-        abbr: 's',
-        help: 'Enable strict validation',
-        negatable: false,
-      )
       ..addFlag(
         'help',
         abbr: 'h',
@@ -67,11 +49,10 @@ class InitCommand extends BaseCommand {
       final inputDir = results['input-dir'] as String;
       final outputDir = results['output-dir'] as String;
       final className = results['class-name'] as String;
-      final localesString = results['locales'] as String;
-      final modular = results['modular'] as bool;
-      final strict = results['strict'] as bool;
 
-      final locales = localesString.split(',').map((e) => e.trim()).toList();
+      // Fixed recommended starter locales.
+      // Keep the init experience stable and predictable.
+      const locales = ['en', 'id'];
 
       printInfo('Initializing localization setup...\n');
 
@@ -92,9 +73,10 @@ class InitCommand extends BaseCommand {
         printInfo('Output directory already exists: $outputDir');
       }
 
-      // Step 2: Create sample JSON files
+      // Step 2: Create sample JSON files (modular-only)
       for (final locale in locales) {
-        final fileName = modular ? 'app_main_$locale.json' : 'app_$locale.json';
+        // Modular file naming: app_{module}_{locale}.json
+        final fileName = 'app_common_$locale.json';
         final file = File('$inputDir/$fileName');
 
         if (!file.existsSync()) {
@@ -116,14 +98,13 @@ class InitCommand extends BaseCommand {
             inputDir: inputDir,
             outputDir: outputDir,
             className: className,
-            modular: modular,
-            strict: strict,
           );
 
           pubspecFile.writeAsStringSync('$content\n$config');
           printSuccess('Added localization_gen configuration to pubspec.yaml');
         } else {
-          printInfo('localization_gen configuration already exists in pubspec.yaml');
+          printInfo(
+              'localization_gen configuration already exists in pubspec.yaml');
         }
       }
 
@@ -155,63 +136,52 @@ class InitCommand extends BaseCommand {
       'en': '''
 {
   "@@locale": "en",
-  "app": {
-    "title": "My App",
-    "welcome": "Welcome, {name}!"
+  "@@module": "common",
+  "strings": {
+    "app_title": "Demo App"
   },
-  "common": {
-    "ok": "OK",
-    "cancel": "Cancel",
-    "save": "Save"
-  }
-}
-''',
-      'es': '''
-{
-  "@@locale": "es",
-  "app": {
-    "title": "Mi Aplicación",
-    "welcome": "¡Bienvenido, {name}!"
+  "simple": {
+    "hello": "Hello"
   },
-  "common": {
-    "ok": "Aceptar",
-    "cancel": "Cancelar",
-    "save": "Guardar"
+  "placeholders": {
+    "welcome_user": "Welcome, {name}."
   }
 }
 ''',
       'id': '''
 {
   "@@locale": "id",
-  "app": {
-    "title": "Aplikasi Saya",
-    "welcome": "Selamat datang, {name}!"
+  "@@module": "common",
+  "strings": {
+    "app_title": "Aplikasi Demo"
   },
-  "common": {
-    "ok": "OK",
-    "cancel": "Batal",
-    "save": "Simpan"
+  "simple": {
+    "hello": "Halo"
+  },
+  "placeholders": {
+    "welcome_user": "Selamat datang, {name}."
   }
 }
 ''',
     };
 
-    return samples[locale] ?? samples['en']!.replaceAll('"en"', '"$locale"');
+    // Default: copy EN structure and replace locale.
+    // Note: module stays 'common' for the init starter template.
+    return samples[locale] ??
+        samples['en']!.replaceAll('"@@locale": "en"', '"@@locale": "$locale"');
   }
 
   String _generatePubspecConfig({
     required String inputDir,
     required String outputDir,
     required String className,
-    required bool modular,
-    required bool strict,
   }) {
     return '''
 # Localization configuration
 localization_gen:
   input_dir: $inputDir
   output_dir: $outputDir
-  class_name: $className${modular ? '\n  modular: true' : ''}${strict ? '\n  strict_validation: true' : ''}
+  class_name: $className
 ''';
   }
 
@@ -229,8 +199,10 @@ localization_gen:
       );
       pubspecFile.writeAsStringSync(updatedContent);
       printSuccess('Added assets configuration to pubspec.yaml');
-    } else if (content.contains('assets:') && !content.contains('- $inputDir/')) {
-      printInfo('Please manually add "- $inputDir/" to your assets in pubspec.yaml');
+    } else if (content.contains('assets:') &&
+        !content.contains('- $inputDir/')) {
+      printInfo(
+          'Please manually add "- $inputDir/" to your assets in pubspec.yaml');
     }
   }
 
@@ -240,13 +212,11 @@ localization_gen:
   ///
   /// Displays usage, options, and examples for initializing localization.
   void _printHelp(ArgParser parser) {
-    print('Initialize localization setup in your Flutter project\n');
+    print('Initialize localization setup in your project\n');
     print('Usage: $usage\n');
     print('Options:');
     print(parser.usage);
     print('\nExamples:');
     print('  dart run localization_gen init');
-    print('  dart run localization_gen init --locales=en,es,id');
-    print('  dart run localization_gen init --modular --strict');
   }
 }

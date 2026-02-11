@@ -1,51 +1,52 @@
-# Localization Gen Examples
+# Example (canonical)
 
-Working examples demonstrating different usage patterns of `localization_gen`.
+This repository ships a single canonical Flutter example app under `example/`.
 
-Repository: https://github.com/alpinnz/localization_gen/tree/master/example
+Facts:
+- Locales: English (`en`), Indonesian (`id`)
+- Input (strict JSON): `assets/localizations/app_common_<locale>.json` (module: `common`)
+- Output (generated): `lib/assets/app_localizations.gen.dart`
 
-## Available Examples
+## Key casing policy
 
-### Basic Example
+- **JSON/JSONC keys**: recommended `snake_case` (example: `welcome_user`, `invalid_code_errors`).
+- **Generated Dart API** (default `field_rename: camel`): becomes `camelCase`:
+  - JSON `welcome_user` -> Dart `welcomeUser(...)`
+  - JSON `invalid_code_errors` -> Dart `invalidCodeErrors(context: ...)`
 
-Path: `example/basic/`
-
-Single file per locale. Suitable for small to medium applications.
-
-- Locales: English (en), Indonesian (id)
-- Input: `assets/localizations/app_<locale>.json`
-- Output: `lib/assets/app_localizations.gen.dart`
-
-### Modular Example
-
-Path: `example/modular/`
-
-Multiple files per locale. Suitable for feature-based organization.
-
-- Locales: English (en), Indonesian (id)
-- Input: `assets/localizations/<prefix>_<module>_<locale>.json`
-- Output: `lib/assets/app_localizations.gen.dart`
-
-## Run
-
-From the repository root:
+## Generate + run (cross-platform)
 
 ```bash
-# Basic example
-cd example/basic
 flutter pub get
-dart run localization_gen generate
-flutter run
 
-# Modular example
-cd ../modular
-flutter pub get
 dart run localization_gen generate
+
+flutter test
 flutter run
 ```
 
-## Documentation
+## Usage style (recommended)
 
-- Basic: https://github.com/alpinnz/localization_gen/tree/master/example/basic
-- Modular: https://github.com/alpinnz/localization_gen/tree/master/example/modular
-- Main README: https://github.com/alpinnz/localization_gen
+Prefer direct access (no temporary `localization` variable):
+- `AppLocalizations.of(context).strings.appTitle`
+
+### Runtime key lookup (resolveByKey)
+
+If you need to resolve a translation from a dynamic key (e.g. backend-driven):
+- `AppLocalizations.of(context).resolveByKey('strings.app_title')`
+- `AppLocalizations.of(context).resolveByKey('app_title', namespace: 'strings', fallback: '...')`
+
+## What to ignore (recommended)
+
+This example is a normal Flutter project; it produces local build artifacts.
+
+Recommended ignores:
+- `example/.dart_tool/`
+- `example/build/`
+- `example/ios/Flutter/` (generated)
+- `example/macos/Flutter/` (generated)
+- `example/linux/flutter/ephemeral/` (generated)
+- `example/windows/flutter/ephemeral/` (generated)
+- `example/web/.dart_tool/` (generated)
+
+(Keep this list aligned with your platform targets.)

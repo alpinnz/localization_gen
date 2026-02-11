@@ -1,8 +1,0 @@
-{
-  "@@locale": "en",
-  "@@module": "home",
-  "welcome": "Welcome to Localization Gen!",
-  "welcome_user": "Welcome, {name}!",
-  "item_count": "You have {count} items",
-  "discount": "Discount {value}%"
-}

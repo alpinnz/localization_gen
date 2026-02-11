@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as p;
-import '../model/localization_item.dart';
-import '../exceptions/exceptions.dart';
+import 'package:localization_gen/src/model/localization_item.dart';
+import 'package:localization_gen/src/exceptions/exceptions.dart';
 
 /// Parses JSON localization files with nested structure support.
 ///
@@ -18,7 +18,7 @@ import '../exceptions/exceptions.dart';
 /// Example usage:
 /// ```dart
 /// // Parse a single file
-/// final file = File('assets/localizations/app_en.json');
+/// final file = File('assets/localizations/app_common_en.json');
 /// final localeData = JsonLocalizationParser.parse(file);
 ///
 /// // Parse a directory
@@ -36,7 +36,7 @@ class JsonLocalizationParser {
   /// Returns a [LocaleData] object containing the parsed translations.
   ///
   /// The locale is extracted from either the @@locale key in the JSON
-  /// or from the filename (e.g., 'app_en.json' -> 'en').
+  /// or from the filename (e.g., 'app_common_en.json' -> 'en').
   ///
   /// Nested JSON structures are flattened to dot-notation:
   /// ```json
@@ -49,7 +49,7 @@ class JsonLocalizationParser {
   ///
   /// Example:
   /// ```dart
-  /// final file = File('assets/localizations/app_en.json');
+  /// final file = File('assets/localizations/app_common_en.json');
   /// final localeData = JsonLocalizationParser.parse(file);
   /// ```
   static LocaleData parse(File file) {
@@ -92,7 +92,8 @@ class JsonLocalizationParser {
       final json = decoded;
 
       // Extract locale from @@locale or filename
-      String locale = json['@@locale'] as String? ?? _extractLocaleFromFilename(file.path);
+      String locale =
+          json['@@locale'] as String? ?? _extractLocaleFromFilename(file.path);
 
       final items = <String, LocalizationItem>{};
 
@@ -129,7 +130,30 @@ class JsonLocalizationParser {
       final fullKey = prefix.isEmpty ? key : '$prefix.$key';
 
       if (value is Map<String, dynamic>) {
-        // Check for special forms (plural, gender, context)
+        // String value wrapper with inline metadata:
+        // {
+        //   "@value": "Welcome, {name}.",
+        //   "@description": "...",
+        //   "@example": "...",
+        //   "@placeholders": {"name": "..."}
+        // }
+        if (value.containsKey('@value') && value['@value'] is String) {
+          final wrappedValue = value['@value'] as String;
+          final parameters = _extractParameters(wrappedValue);
+          final keyMeta = _readInlineKeyMetadata(value);
+
+          items[fullKey] = LocalizationItem(
+            key: fullKey,
+            value: wrappedValue,
+            parameters: parameters,
+            description: keyMeta.description,
+            example: keyMeta.example,
+            placeholderDocs: keyMeta.placeholderDocs,
+            metadata: keyMeta.additional,
+          );
+          continue;
+        }
+
         if (value.containsKey('@plural')) {
           // Pluralization: {"@plural": {"zero": "...", "one": "...", "other": "..."}}
           final pluralMap = value['@plural'] as Map<String, dynamic>;
@@ -143,19 +167,16 @@ class JsonLocalizationParser {
             }
           }
 
-          // Get description
-          String? description;
-          final metadataKey = '@$key';
-          if (json.containsKey(metadataKey)) {
-            final metadata = json[metadataKey] as Map<String, dynamic>?;
-            description = metadata?['description'] as String?;
-          }
+          final keyMeta = _readInlineKeyMetadata(value);
 
           items[fullKey] = LocalizationItem(
             key: fullKey,
             value: pluralForms['other'] ?? pluralForms.values.first,
             parameters: allParams.toList(),
-            description: description,
+            description: keyMeta.description,
+            example: keyMeta.example,
+            placeholderDocs: keyMeta.placeholderDocs,
+            metadata: keyMeta.additional,
             pluralForms: pluralForms,
           );
         } else if (value.containsKey('@gender')) {
@@ -171,19 +192,16 @@ class JsonLocalizationParser {
             }
           }
 
-          // Get description
-          String? description;
-          final metadataKey = '@$key';
-          if (json.containsKey(metadataKey)) {
-            final metadata = json[metadataKey] as Map<String, dynamic>?;
-            description = metadata?['description'] as String?;
-          }
+          final keyMeta = _readInlineKeyMetadata(value);
 
           items[fullKey] = LocalizationItem(
             key: fullKey,
             value: genderForms['other'] ?? genderForms.values.first,
             parameters: allParams.toList(),
-            description: description,
+            description: keyMeta.description,
+            example: keyMeta.example,
+            placeholderDocs: keyMeta.placeholderDocs,
+            metadata: keyMeta.additional,
             genderForms: genderForms,
           );
         } else if (value.containsKey('@context')) {
@@ -195,23 +213,21 @@ class JsonLocalizationParser {
           for (final contextEntry in contextMap.entries) {
             if (contextEntry.value is String) {
               contextForms[contextEntry.key] = contextEntry.value as String;
-              allParams.addAll(_extractParameters(contextEntry.value as String));
+              allParams
+                  .addAll(_extractParameters(contextEntry.value as String));
             }
           }
 
-          // Get description
-          String? description;
-          final metadataKey = '@$key';
-          if (json.containsKey(metadataKey)) {
-            final metadata = json[metadataKey] as Map<String, dynamic>?;
-            description = metadata?['description'] as String?;
-          }
+          final keyMeta = _readInlineKeyMetadata(value);
 
           items[fullKey] = LocalizationItem(
             key: fullKey,
             value: contextForms.values.first,
             parameters: allParams.toList(),
-            description: description,
+            description: keyMeta.description,
+            example: keyMeta.example,
+            placeholderDocs: keyMeta.placeholderDocs,
+            metadata: keyMeta.additional,
             contextForms: contextForms,
           );
         } else {
@@ -222,53 +238,53 @@ class JsonLocalizationParser {
         // Extract parameters from placeholders like {name}, {count}, etc.
         final parameters = _extractParameters(value);
 
-        // Try to get description from @key metadata
-        String? description;
-        final metadataKey = '@$key';
-        if (json.containsKey(metadataKey)) {
-          final metadata = json[metadataKey] as Map<String, dynamic>?;
-          description = metadata?['description'] as String?;
-        }
+        // Inline metadata is not possible for raw string values.
+        // If you need metadata, wrap the string into an object form.
+        const keyMeta = _KeyMetadata();
 
         items[fullKey] = LocalizationItem(
           key: fullKey,
           value: value,
           parameters: parameters,
-          description: description,
+          description: keyMeta.description,
+          example: keyMeta.example,
+          placeholderDocs: keyMeta.placeholderDocs,
+          metadata: keyMeta.additional,
         );
       } else if (value != null) {
         // Warn about unsupported value types
-        print('Warning: Unsupported value type ${value.runtimeType} for key "$fullKey"${filePath != null ? ' in $filePath' : ''}');
+        print(
+            'Warning: Unsupported value type ${value.runtimeType} for key "$fullKey"${filePath != null ? ' in $filePath' : ''}');
       }
     }
   }
 
-  /// Parses all JSON files in a directory
+  /// Parses all JSON files in a directory.
+  ///
+  /// This package uses **modular-only** localization files.
   ///
   /// The [dirPath] parameter specifies the directory containing JSON files.
-  /// The [modular] parameter enables modular file organization.
   /// The [filePrefix] parameter specifies the prefix for modular files.
   ///
   /// Returns a list of [LocaleData] objects, one per locale.
   ///
-  /// In modular mode, files like 'app_auth_en.json' and 'app_home_en.json'
+  /// Modular files like 'app_auth_en.json' and 'app_home_en.json'
   /// are merged into a single 'en' locale.
   ///
   /// Throws an [Exception] if the directory doesn't exist or contains no JSON files.
   ///
   /// Example:
   /// ```dart
-  /// // Standard mode
-  /// final locales = JsonLocalizationParser.parseDirectory('assets/localizations');
-  ///
-  /// // Modular mode
   /// final locales = JsonLocalizationParser.parseDirectory(
   ///   'assets/localizations',
   ///   modular: true,
   ///   filePrefix: 'app',
   /// );
   /// ```
-  static List<LocaleData> parseDirectory(String dirPath, {bool modular = false, String filePrefix = 'app', bool strictValidation = false}) {
+  static List<LocaleData> parseDirectory(
+    String dirPath, {
+    String filePrefix = 'app',
+  }) {
     final dir = Directory(dirPath);
     if (!dir.existsSync()) {
       throw FileOperationException(
@@ -278,7 +294,11 @@ class JsonLocalizationParser {
       );
     }
 
-    final jsonFiles = dir.listSync().whereType<File>().where((f) => p.extension(f.path).toLowerCase() == '.json').toList();
+    final jsonFiles = dir
+        .listSync()
+        .whereType<File>()
+        .where((f) => p.extension(f.path).toLowerCase() == '.json')
+        .toList();
 
     if (jsonFiles.isEmpty) {
       throw FileOperationException(
@@ -288,19 +308,10 @@ class JsonLocalizationParser {
       );
     }
 
-    List<LocaleData> locales;
+    // Modular-only: merge files by locale.
+    final locales = _parseModularFiles(jsonFiles, filePrefix);
 
-    if (modular) {
-      locales = _parseModularFiles(jsonFiles, filePrefix);
-    } else {
-      locales = jsonFiles.map((file) {
-        print('Parsing: ${file.path}');
-        return parse(file);
-      }).toList();
-    }
-
-    // Validate consistency across locales if strict mode enabled
-    if (strictValidation && locales.length > 1) {
+    if (locales.length > 1) {
       _validateLocaleConsistency(locales);
     }
 
@@ -321,7 +332,8 @@ class JsonLocalizationParser {
   /// app_auth_en.json + app_home_en.json -> merged 'en' locale
   /// app_auth_id.json + app_home_id.json -> merged 'id' locale
   /// ```
-  static List<LocaleData> _parseModularFiles(List<File> jsonFiles, String filePrefix) {
+  static List<LocaleData> _parseModularFiles(
+      List<File> jsonFiles, String filePrefix) {
     final localeMap = <String, Map<String, LocalizationItem>>{};
 
     for (final file in jsonFiles) {
@@ -335,78 +347,115 @@ class JsonLocalizationParser {
       final content = file.readAsStringSync();
       final json = jsonDecode(content) as Map<String, dynamic>;
 
-      // Extract locale from @@locale or filename
-      String locale = json['@@locale'] as String? ?? _extractLocaleFromModularFilename(filename, filePrefix);
-      String? module = json['@@module'] as String?;
+      final locale = json['@@locale'] as String? ??
+          _extractLocaleFromModularFilename(filename, filePrefix);
 
-      if (module != null) {
-        print('  Module: $module, Locale: $locale');
+      final module = json['@@module'] as String?;
+      if (module == null || module.trim().isEmpty) {
+        throw JsonParseException(
+          'Missing required "@@module" metadata (modular-only)',
+          filePath: file.path,
+          jsonContent: content,
+        );
       }
 
-      // Initialize locale map if not exists
+      print('  Module: $module, Locale: $locale');
+
       if (!localeMap.containsKey(locale)) {
         localeMap[locale] = <String, LocalizationItem>{};
       }
 
-      // Flatten and add to locale map
       final items = <String, LocalizationItem>{};
       _flattenJson(json, items, filePath: file.path);
 
-      // Merge items into locale map
       localeMap[locale]!.addAll(items);
     }
 
     // Convert to LocaleData list
-    return localeMap.entries.map((entry) {
-      print('Merged locale "${entry.key}" with ${entry.value.length} translations');
+    final locales = localeMap.entries.map((entry) {
+      print(
+          'Merged locale "${entry.key}" with ${entry.value.length} translations');
       return LocaleData(
         locale: entry.key,
         items: entry.value,
       );
     }).toList();
+
+    locales.sort((a, b) => a.locale.compareTo(b.locale));
+    return locales;
   }
 
-  /// Extract locale from modular filename like "app_auth_en.json" -> "en"
-  /// or "app_common_id.json" -> "id"
-  static String _extractLocaleFromModularFilename(String filename, String filePrefix) {
+  static _KeyMetadata _readInlineKeyMetadata(Map<String, dynamic> value) {
+    // Inline metadata style (no sibling blocks):
+    //
+    //  {
+    //    "@description": "...",
+    //    "@example": "...",
+    //    "@placeholders": {"name": "..."},
+    //    "@since": "1.4.1",
+    //    "@deprecated": false
+    //  }
+    final description = value['@description'] as String?;
+    final example = value['@example'] as String?;
+
+    Map<String, String>? placeholderDocs;
+    final placeholdersRaw = value['@placeholders'];
+    if (placeholdersRaw is Map) {
+      placeholderDocs =
+          placeholdersRaw.map((k, v) => MapEntry(k.toString(), v.toString()));
+    }
+
+    final additional = <String, dynamic>{};
+    for (final e in value.entries) {
+      if (!e.key.startsWith('@')) continue;
+      // reserved translation structures
+      if (e.key == '@plural' || e.key == '@gender' || e.key == '@context') continue;
+      // known doc fields
+      if (e.key == '@description' || e.key == '@example' || e.key == '@placeholders') {
+        continue;
+      }
+      additional[e.key.substring(1)] = e.value;
+    }
+
+    return _KeyMetadata(
+      description: description,
+      example: example,
+      placeholderDocs: placeholderDocs,
+      additional: additional.isEmpty ? null : additional,
+    );
+  }
+
+  /// Extract locale from modular filename like "app_auth_en.json" -> "en".
+  static String _extractLocaleFromModularFilename(
+      String filename, String filePrefix) {
     final base = p.withoutExtension(filename);
     final parts = base.split('_');
     // Pattern: {prefix}_{module}_{locale}.json
     if (parts.length >= 3) {
       return parts.last;
     }
-    return parts.length > 1 ? parts.last : 'en';
+    return parts.isNotEmpty ? parts.last : 'en';
   }
 
-  /// Extract parameters from string like "Welcome {name}" -> ["name"]
+  /// Extract parameters from string like "Welcome {name}" -> ["name"].
   static List<String> _extractParameters(String text) {
     final regex = RegExp(r'\{(\w+)\}');
     final matches = regex.allMatches(text);
     return matches.map((m) => m.group(1)!).toList();
   }
 
-  /// Extract locale from filename like "app_en.json" -> "en"
+  /// Extract locale from filename like "app_common_en.json" -> "en".
   static String _extractLocaleFromFilename(String path) {
     final filename = p.basename(path);
     final base = p.withoutExtension(filename);
     final parts = base.split('_');
-    return parts.length > 1 ? parts.last : 'en';
+    return parts.isNotEmpty ? parts.last : 'en';
   }
 
   /// Validates consistency across multiple locales.
   ///
   /// Ensures all locales have the same keys and matching parameters for
-  /// each translation. This is useful for catching missing or mismatched
-  /// translations early in development.
-  ///
-  /// The [locales] parameter contains all locale data to validate.
-  ///
-  /// Throws [LocaleValidationException] if inconsistencies are found.
-  ///
-  /// Example:
-  /// ```dart
-  /// _validateLocaleConsistency([englishLocale, spanishLocale, indonesianLocale]);
-  /// ```
+  /// each translation.
   static void _validateLocaleConsistency(List<LocaleData> locales) {
     if (locales.isEmpty) return;
 
@@ -417,7 +466,6 @@ class JsonLocalizationParser {
       final locale = locales[i];
       final localeKeys = locale.items.keys.toSet();
 
-      // Check for missing keys
       final missingKeys = baseKeys.difference(localeKeys).toList();
       if (missingKeys.isNotEmpty) {
         throw LocaleValidationException(
@@ -427,7 +475,6 @@ class JsonLocalizationParser {
         );
       }
 
-      // Check for extra keys
       final extraKeys = localeKeys.difference(baseKeys).toList();
       if (extraKeys.isNotEmpty) {
         throw LocaleValidationException(
@@ -437,12 +484,12 @@ class JsonLocalizationParser {
         );
       }
 
-      // Validate parameters match for each key
       for (final key in baseKeys) {
         final baseItem = baseLocale.items[key]!;
         final localeItem = locale.items[key]!;
 
-        if (baseItem.parameters.length != localeItem.parameters.length || !_parametersMatch(baseItem.parameters, localeItem.parameters)) {
+        if (baseItem.parameters.length != localeItem.parameters.length ||
+            !_parametersMatch(baseItem.parameters, localeItem.parameters)) {
           throw ParameterException(
             'Parameter mismatch between locales "${baseLocale.locale}" and "${locale.locale}"',
             key: key,
@@ -454,21 +501,24 @@ class JsonLocalizationParser {
     }
   }
 
-  /// Checks if two parameter lists match.
-  ///
-  /// The [params1] and [params2] parameters are lists of parameter names.
-  ///
-  /// Returns true if both lists contain the same parameters (order-independent).
-  ///
-  /// Example:
-  /// ```dart
-  /// _parametersMatch(['name', 'count'], ['count', 'name']); // Returns true
-  /// _parametersMatch(['name'], ['count']); // Returns false
-  /// ```
   static bool _parametersMatch(List<String> params1, List<String> params2) {
     if (params1.length != params2.length) return false;
     final set1 = params1.toSet();
     final set2 = params2.toSet();
     return set1.length == set2.length && set1.containsAll(set2);
   }
+}
+
+class _KeyMetadata {
+  final String? description;
+  final String? example;
+  final Map<String, String>? placeholderDocs;
+  final Map<String, dynamic>? additional;
+
+  const _KeyMetadata({
+    this.description,
+    this.example,
+    this.placeholderDocs,
+    this.additional,
+  });
 }

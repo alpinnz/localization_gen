@@ -1,39 +1,91 @@
 # Localization fixtures (`assets/localizations/`)
 
-Folder ini berisi **fixture contoh** untuk kebutuhan demo/pengujian.
+This folder contains the **canonical JSONC fixture dataset** for this repository.
 
-Saat ini isinya memang **hanya JSONC** (bukan `.json`), supaya developer bisa membaca komentar dan memahami polanya.
+Why JSONC?
+- JSONC allows comments, so developers can read the supported patterns.
+- JSONC (`.jsonc`) is treated as the canonical spec in this repo.
 
-## Isi folder (faktual)
-- `app_common_en.jsonc` — locale `en`, module `common`
-- `app_common_id.jsonc` — locale `id`, module `common`
+Generator input:
+- The generator reads **`.json`** only (strict JSON).
 
-Kedua file di atas:
-- **wajib modular metadata**: `@@locale` dan `@@module` (default module: `common`)
-- punya namespace basic string bernama **`strings`** (contoh key: `strings.app_title`)
+## Contents (factual)
+- `app_common_en.jsonc` 
+ locale `en`, module `common` (spec + comments)
+- `app_common_id.jsonc` 
+ locale `id`, module `common` (spec + comments)
 
-## Ringkasan case yang ada di file JSONC (faktual)
-Semua case ada di `CASE INDEX (all cases appear once)` dalam file JSONC tersebut. Saat ini mencakup:
+Strict JSON datasets (`.json`) are intentionally **not** stored here.
+They live in the consuming app (see `example/assets/localizations/`).
+
+## Key casing policy
+
+- **JSON/JSONC keys**: recommended `snake_case` (example: `welcome_user`, `invalid_code_errors`).
+- **Generated Dart API** (default `field_rename: camel`): becomes `camelCase`:
+  - JSON `welcome_user` -> Dart `welcomeUser(...)`
+  - JSON `invalid_code_errors` -> Dart `invalidCodeErrors(context: ...)`
+
+This JSONC spec includes the latest cases (including `@context` multi-variant `register/verification`).
+
+Both files:
+- are **modular** and include required metadata: `@@locale` and `@@module`
+- use the basic-string namespace **`strings.*`** (example JSON key path: `strings.app_title` 
+ generated Dart: `strings.appTitle`)
+
+## CASE INDEX (supported cases)
+
+All supported cases are documented once inside each JSONC file under:
+- `CASE INDEX (all cases appear once)`
+
+Currently the dataset covers:
 
 1) `@@locale` metadata
 2) `@@module` metadata
-3) Basic strings (namespace: `strings.*`)
-4) Nested keys (flatten ke dot-keys, max depth 6)
+3) Basic strings (`strings.*`)
+4) Nested keys (flattened dot-keys, recommended max depth 6)
 5) Placeholders `{name}` (named parameters)
-6) Multiple placeholders dalam 1 string
-7) Placeholder reordering antar bahasa
-8) Per-key metadata `@<key>` (dartdoc-friendly)
-9) Newline `\\n`
-10) Quote escaping `\\"`
-11) Unicode punctuation (ellipsis, en-dash, dll)
-12) Simbol di dalam string (URL/email/angka/simbol legal, bullet leader `••••••••`, dll)
-13) Literal tokens yang *bukan* placeholder (mis. `{{...}}`, `[x]`)
-14) Literal braces `{` dan `}`
+6) Multiple placeholders in one message
+7) Placeholder reordering across locales
+8) Per-key metadata (inline-only: `@description/@example/@placeholders` + custom `@<name>`; use `@value` wrapper for string keys)
+9) Newline escaping (`\n`)
+10) Quote escaping (`\"`)
+11) Unicode punctuation
+12) Symbols inside strings (URLs, email, masked bullets, legal symbols, etc.)
+13) Literal tokens that are not placeholders (e.g. `{{...}}`, `[x]`)
+14) Literal braces `{` and `}`
 15) Structured forms: `@plural`, `@gender`, `@context`
 
-## Catatan penting
-- Generator/package ini membaca `*.json` (JSON murni).
-- Jadi, kalau kamu ingin folder ini dipakai untuk **real run** (generate/validate) tanpa modifikasi,
-  buat juga versi `.json` (tanpa komentar) dengan struktur yang sama.
+## Metadata (inline-only)
 
-> Penjelasan lengkap workflow modular-only ada di `assets/README.md`.
+This package supports **inline-only** per-key metadata.
+
+Supported fields:
+- `@description`
+- `@example`
+- `@placeholders`
+- Custom `@<name>` fields (`@since`, `@deprecated`, `@owner`, ...)
+
+### Metadata for string keys
+
+If a translation is a simple string but you want metadata, wrap it as an object and
+store the actual text in `@value`:
+
+```json
+{
+  "placeholders": {
+    "welcome_user": {
+      "@value": "Welcome, {name}.",
+      "@description": "Greets a user by name.",
+      "@example": "Welcome, John.",
+      "@placeholders": { "name": "User display name" }
+    }
+  }
+}
+```
+
+## Using this dataset for real generation
+
+To run `generate`/`validate` against this dataset:
+- create equivalent `.json` files with the same structure (remove comments)
+
+See `assets/README.md` for the modular-only rules and constraints.

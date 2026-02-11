@@ -41,8 +41,10 @@
 //  7) Parameter reordering across locales
 //     - Example: placeholders.items_in_city
 //
-//  8) Per-key metadata via @<key> (dartdoc-friendly)
-//     - Example: placeholders.@welcome_user
+//  8) Per-key metadata (inline-only)
+//     - Inline fields: @value (untuk string), @description, @example, @placeholders
+//     - Ditambah custom @<name> (mis. @since, @deprecated, @owner)
+//     - Example: placeholders.welcome_user.@description
 //
 //  9) Newline escaping (\\n)
 //     - Example: formatting.multiline => "Baris 1\\nBaris 2"
@@ -84,7 +86,6 @@
   /// Contoh
   /// - `"@@locale": "id"`
   "@@locale": "id",
-
   /// (2) @@module metadata (wajib; default: common)
   ///
   /// Ringkasan
@@ -101,7 +102,6 @@
   /// Contoh
   /// - `"@@module": "common"`
   "@@module": "common",
-
   /// (3) Basic strings (tanpa placeholder)
   ///
   /// Ringkasan
@@ -112,7 +112,7 @@
   /// - Gunakan nama key yang singkat dan semantik.
   ///
   /// Penggunaan (Dart)
-  /// - `localizations.strings.app_title`
+  /// - `localization.strings.app_title`
   ///
   /// Contoh key path
   /// - `strings.app_title`
@@ -120,63 +120,82 @@
     "app_title": "Aplikasi Demo",
     "powered_by": "Didukung oleh Alpinnz"
   },
-
-  /// (4) Nested keys (di-flatten jadi dot-keys)
+  /// (4) Nested keys (flatten to dot-keys)
   ///
   /// Ringkasan
-  /// - Object bertingkat akan di-flatten menjadi path key bertitik.
+  /// - Nested object akan di-flatten menjadi key path dengan pemisah titik (dot).
   ///
   /// Aturan
   /// - Kedalaman yang disarankan: 1–6 level.
-  /// - Jika strict validation aktif, semua locale WAJIB punya set flattened key yang sama.
+  /// - Semua locale HARUS punya set key flatten yang sama saat strict validation aktif.
   ///
   /// Penggunaan (Dart)
-  /// - `localizations.simple.app.settings.security.password.change.title`
+  /// - `localization.simple.app.settings.security.password.change.title`
   ///
   /// Contoh key path
   /// - `simple.app.settings.security.password.change.title`
   "simple": {
     "hello": "Halo",
-    "welcome": { "title": "Selamat datang" },
-    "settings": { "profile": { "title": "Profil" } },
+    "welcome": {
+      "title": "Selamat datang"
+    },
+    "settings": {
+      "profile": {
+        "title": "Profil"
+      }
+    },
     "app": {
       "settings": {
         "security": {
           "password": {
-            "change": { "title": "Ubah kata sandi" }
+            "change": {
+              "title": "Ubah kata sandi"
+            }
           }
         }
       }
     }
   },
-
   /// (5) Placeholders (named parameters)
   ///
   /// Ringkasan
-  /// - String dapat berisi token `{name}` yang akan menjadi named parameter di Dart.
+  /// - String dapat berisi token `{name}` yang menjadi named-parameter di Dart.
   ///
   /// Aturan
-  /// - Nama placeholder sebaiknya seperti identifier (snake_case disarankan).
-  /// - Set placeholder harus sama di semua locale untuk key yang sama.
+  /// - Nama placeholder sebaiknya identifier-like (direkomendasikan snake_case).
+  /// - Set placeholder harus sama antar locale untuk key yang sama.
   ///
   /// Penggunaan (Dart)
-  /// - `localizations.placeholders.welcome_user(name: 'John')`
+  /// - `localization.placeholders.welcomeUser(name: 'John')`
   ///
   /// Contoh
   /// - "Selamat datang, {name}."
   "placeholders": {
-    "welcome_user": "Selamat datang, {name}.",
+    "welcome_user": {
+      "@value": "Selamat datang, {name}.",
+      "@description": "Menyapa user berdasarkan nama.",
+      "@example": "Selamat datang, John.",
+      "@placeholders": { "name": "Nama tampilan user" }
+    },
     "attempts_left": "Kamu masih punya {attempts} kesempatan.",
-    "remaining_time": "Coba lagi dalam {remaining_time}.",
     "invalid_character": "Karakter {char} tidak diperbolehkan.",
+
+    "remaining_time": {
+      "@value": "Coba lagi dalam {remaining_time}.",
+      "@description": "Petunjuk retry; {remaining_time} adalah string yang sudah terformat seperti 02:15.",
+      "@example": "Coba lagi dalam 02:15.",
+      "@placeholders": {
+        "remaining_time": "Sisa waktu untuk retry, sudah terformat"
+      }
+    },
 
     /// (6) Multiple parameters
     ///
     /// Ringkasan
-    /// - Satu string bisa memiliki lebih dari satu placeholder.
+    /// - Satu string bisa punya lebih dari satu placeholder.
     ///
     /// Penggunaan (Dart)
-    /// - `localizations.placeholders.full_name(first_name: 'A', last_name: 'B')`
+    /// - `localization.placeholders.fullName(firstName: 'A', lastName: 'B')`
     "full_name": "Halo, {first_name} {last_name}.",
 
     /// (7) Parameter reordering antar bahasa
@@ -190,35 +209,32 @@
     /// Contoh
     /// - EN: "{count} items in {city}."
     /// - ID: "Di {city} ada {count} item."
-    "items_in_city": "Di {city} ada {count} item.",
-
-    /// (8) Per-key metadata via @<key> (dartdoc-friendly)
-    ///
-    /// Ringkasan
-    /// - Tambahkan dokumentasi di samping key dengan membuat sibling `@<key>`.
-    ///
-    /// Aturan
-    /// - Key metadata BUKAN translation.
-    /// - Simpan docs placeholder di `placeholders` agar mudah dipakai tooling.
-    ///
-    /// Penggunaan
-    /// - Bisa di-embed ke dartdoc hasil generate.
-    "@welcome_user": {
-      "description": "Menyapa user berdasarkan nama.",
-      "example": "Selamat datang, John.",
-      "placeholders": { "name": "Nama tampilan user" }
-    },
-    "@remaining_time": {
-      "description": "Petunjuk retry; {remaining_time} adalah string yang sudah terformat seperti 02:15.",
-      "example": "Coba lagi dalam 02:15.",
-      "placeholders": { "remaining_time": "Sisa waktu untuk retry, sudah terformat" }
-    },
-    "@items_in_city": {
-      "description": "Menampilkan jumlah item dan nama kota. Urutan placeholder bisa berbeda antar bahasa.",
-      "example": "Di Jakarta ada 12 item.",
-      "placeholders": { "count": "Jumlah item", "city": "Nama kota" }
+    "items_in_city": {
+      "@value": "Di {city} ada {count} item.",
+      "@description": "Menampilkan jumlah item dan nama kota. Urutan placeholder bisa berbeda antar bahasa.",
+      "@example": "Di Jakarta ada 12 item.",
+      "@placeholders": {
+        "count": "Jumlah item",
+        "city": "Nama kota"
+      }
     }
   },
+  /// (8) Per-key metadata (inline-only)
+  //
+  // Ringkasan
+  // - Tambahkan docs/metadata langsung di dalam object yang sama menggunakan key `@...`.
+  // - Paling pas untuk translation berbentuk object seperti `@context`, `@plural`, `@gender`.
+  //
+  // Inline metadata fields (direkomendasikan)
+  // - `@description`: String
+  // - `@example`: String
+  // - `@placeholders`: Map<String, String>
+  // - Custom `@<name>` lainnya (mis. `@since`, `@deprecated`, `@owner`)
+  //   - Disimpan ke `LocalizationItem.metadata` (key tanpa `@`).
+  //
+  // Contoh
+  // - Structured (inline): `structured.invalid_code_errors.@description`
+  // - Untuk string yang butuh metadata: bungkus string di `@value` (mis. `placeholders.welcome_user.@description`)
 
   /// (9) Newline escaping (\\n)
   ///
@@ -229,20 +245,17 @@
   /// - "Baris 1\\nBaris 2"
   "formatting": {
     "multiline": "Baris 1\nBaris 2",
-
     /// (10) Quote escaping
     ///
     /// Ringkasan
     /// - Escape tanda kutip ganda sebagai `\\"` di dalam string JSON.
     "quotes": "Aktifkan \"remember me\" agar tetap masuk.",
-
     /// (11) Unicode punctuation
     ///
     /// Ringkasan
     /// - Karakter unicode sebaiknya dipertahankan apa adanya (ellipsis, en-dash, dll).
     "unicode": "Jangan khawatir… tidak apa-apa – lanjutkan."
   },
-
   /// (12) Simbol di dalam string
   ///
   /// Ringkasan
@@ -260,16 +273,13 @@
     "email_like": "Kontak: support@example.com",
     "hash_like": "Tiket #12345: dibuka ulang",
     "path_like": "Buka: Pengaturan > Akun > Keamanan",
-
     // Masked values (PIN/OTP). Bullet characters are common in UI.
     "masked_pin": "PIN: ••••",
     "masked_otp": "OTP: ••••••••",
-
     // Legal / brand symbols that may appear in UI copy.
     "copyright_notice": "© 2026 Alpinnz. Hak cipta dilindungi.",
     "registered_mark": "Merek®",
     "trademark_notice": "Acme™ adalah merek dagang milik Acme Corp.",
-
     // Common UI symbol patterns.
     "currency_and_amount": "Total: $12.50 / Rp 10.000",
     "percent_like": "Progres: 75%",
@@ -278,11 +288,9 @@
     "arrow_like": "Lanjut →",
     "pipe_like": "Privasi | Ketentuan",
     "bullet_list_like": "• Item 1\n• Item 2\n• Item 3",
-
     // URL / query-string symbols are common for help text.
     "url_query_like": "Buka: https://example.com/?q=a+b&sort=asc"
   },
-
   /// (13) Token literal yang tidak boleh dianggap placeholder
   ///
   /// Ringkasan
@@ -293,19 +301,17 @@
   "literals": {
     "double_curly": "Contoh nomor tersamarkan: {{08-****-1234}}",
     "square_brackets": "Contoh token literal: [x]",
-
     /// (14) Literal braces "{" dan "}"
     ///
     /// Ringkasan
     /// - Case ini memastikan `{` dan `}` bisa ditulis secara literal.
     "literal_braces": "Gunakan kurung kurawal seperti ini: { dan }"
   },
-
   /// (15) Structured localization forms: @plural / @gender / @context
   ///
   /// Ringkasan
-  /// - Bentuk terstruktur untuk kebutuhan format advanced.
-  /// - Dibuat ter-group agar validasi bisa mendeteksi bentuk datanya.
+  /// - Bentuk terstruktur untuk formatting lanjutan.
+  /// - Disarankan dikelompokkan agar validasi mendeteksi bentuknya.
   "structured": {
     "items": {
       "@plural": {
@@ -315,7 +321,9 @@
       },
       "@items": {
         "description": "Bentuk plural untuk jumlah item.",
-        "placeholders": { "count": "Jumlah item" }
+        "placeholders": {
+          "count": "Jumlah item"
+        }
       }
     },
     "user_title": {
@@ -326,7 +334,9 @@
       },
       "@user_title": {
         "description": "Pemilihan sapaan berdasarkan gender.",
-        "placeholders": { "last_name": "Nama belakang" }
+        "placeholders": {
+          "last_name": "Nama belakang"
+        }
       }
     },
     "greeting": {
@@ -336,8 +346,56 @@
       },
       "@greeting": {
         "description": "Pemilihan greeting berdasarkan context (formal vs santai).",
-        "placeholders": { "name": "Nama tampilan user" }
+        "placeholders": {
+          "name": "Nama tampilan user"
+        }
       }
+    },
+    /// Multi-variant message dalam 1 key (pola yang direkomendasikan)
+    ///
+    /// Ringkasan
+    /// - Gunakan `@context` ketika 1 key butuh beberapa variasi.
+    /// - Context key harus konsisten antar locale: `register` / `verification`.
+    ///
+    /// Kenapa ada inline metadata?
+    /// - Field metadata diawali `@` dan berada di dalam object yang sama.
+    /// - Metadata diabaikan sebagai nilai terjemahan, tapi bisa dipakai tooling/dartdoc.
+    ///
+    /// Penggunaan (Dart)
+    /// - `localization.structured.invalidCodeErrors(context: 'register')`
+    /// - `localization.structured.invalidCodeErrors(context: 'verification')`
+    ///
+    /// Contoh key path
+    /// - `structured.invalid_code_errors`
+    "invalid_code_errors": {
+      "@context": {
+        "register": "Kode registrasi salah",
+        "verification": "Kadarluasa verifikasi OTP"
+      },
+      "@description": "Varian error kode invalid (register/verification).",
+      "@example": "Kode registrasi salah",
+      "@placeholders": {},
+      "@since": "1.4.1",
+      "@deprecated": false
+    },
+    /// Case yang sama (`@context`) tapi key berbeda (agar mudah lihat perbedaannya)
+    ///
+    /// Ringkasan
+    /// - Contoh ini menunjukkan beberapa key bisa memakai bentuk terstruktur yang sama
+    ///   selama set context konsisten antar locale.
+    ///
+    /// Penggunaan (Dart)
+    /// - `localization.structured.actionLabel(context: 'primary')`
+    /// - `localization.structured.actionLabel(context: 'secondary')`
+    "action_label": {
+      "@context": {
+        "primary": "Lanjut",
+        "secondary": "Nanti"
+      },
+      "@description": "Varian label tombol berdasarkan context (primary/secondary).",
+      "@example": "Lanjut",
+      "@placeholders": {},
+      "@owner": "design-system"
     }
   }
 }

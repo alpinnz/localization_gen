@@ -11,7 +11,8 @@ import 'package:path/path.dart' as p;
 /// Test helper utilities
 class TestHelper {
   /// Create a temporary directory for testing
-  static Directory createTempDir([String prefix = 'test_']) => Directory.systemTemp.createTempSync(prefix);
+  static Directory createTempDir([String prefix = 'test_']) =>
+      Directory.systemTemp.createTempSync(prefix);
 
   /// Create a test JSON file with given content
   static File createJsonFile(Directory dir, String filename, String content) {
@@ -31,12 +32,11 @@ class TestHelper {
   static String basicEnglishJson() => '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "hello": "Hello",
   "welcome": "Welcome, {name}!",
-  "common": {
-    "ok": "OK",
-    "cancel": "Cancel"
-  }
+  "ok": "OK",
+  "cancel": "Cancel"
 }
 ''';
 
@@ -44,12 +44,11 @@ class TestHelper {
   static String basicIndonesianJson() => '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "hello": "Halo",
   "welcome": "Selamat datang, {name}!",
-  "common": {
-    "ok": "OK",
-    "cancel": "Batal"
-  }
+  "ok": "OK",
+  "cancel": "Batal"
 }
 ''';
 
@@ -57,6 +56,7 @@ class TestHelper {
   static String jsonWithParameters() => '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "greeting": "Hello, {name}!",
   "itemCount": "You have {count} items",
   "multiParam": "{user} sent {count} messages"
@@ -67,6 +67,7 @@ class TestHelper {
   static String jsonWithPluralization() => '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "items": {
     "@plural": {
       "zero": "No items",
@@ -81,6 +82,7 @@ class TestHelper {
   static String nestedJson() => '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "app": {
     "auth": {
       "login": {
@@ -139,6 +141,7 @@ class TestHelper {
   static String incompleteJson() => '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "hello": "Halo"
 }
 ''';

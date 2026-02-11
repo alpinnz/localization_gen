@@ -9,15 +9,17 @@ void main() {
   group('FileWatcher', () {
     late Directory tempDir;
     late Directory localesDir;
-    late File pubspecFile;
+    late String originalCwd;
 
     setUp(() {
+      originalCwd = Directory.current.path;
       tempDir = Directory.systemTemp.createTempSync('watcher_test');
+      Directory.current = tempDir.path;
       localesDir = Directory('${tempDir.path}/locales');
       localesDir.createSync(recursive: true);
 
       // Create a test pubspec.yaml
-      pubspecFile = File('${tempDir.path}/pubspec.yaml')..writeAsStringSync('''
+      File('${tempDir.path}/pubspec.yaml').writeAsStringSync('''
 name: test_app
 localization_gen:
   input_dir: ${localesDir.path}
@@ -25,27 +27,37 @@ localization_gen:
   class_name: TestLocalizations
 ''');
 
-      // Create initial locale file
-      final enFile = File('${localesDir.path}/app_en.json');
+      // Create initial locale file (modular-only)
+      final enFile = File('${localesDir.path}/app_common_en.json');
       enFile.writeAsStringSync('''
 {
   "@@locale": "en",
+  "@@module": "common",
   "hello": "Hello"
 }
 ''');
     });
 
     tearDown(() {
+      Directory.current = originalCwd;
       if (tempDir.existsSync()) {
         tempDir.deleteSync(recursive: true);
       }
     });
 
-    test('throws exception for non-existent watch directory', () {
-      final generator = LocalizationGenerator(configPath: pubspecFile.path);
+    test('throws exception when configured watch directory does not exist', () {
+      final generator = LocalizationGenerator();
+
+      // Point pubspec to a non-existent directory.
+      File('${tempDir.path}/pubspec.yaml').writeAsStringSync('''
+name: test_app
+localization_gen:
+  input_dir: ${tempDir.path}/does_not_exist
+  output_dir: ${tempDir.path}/lib
+  class_name: TestLocalizations
+''');
 
       final watcher = FileWatcher(
-        watchDir: '/non/existent/path',
         generator: generator,
       );
 
@@ -61,17 +73,18 @@ localization_gen:
       // deterministic and not critical for code generation correctness.
       //
       // Keep this test skipped to keep the suite stable across macOS/Linux/Windows.
-    }, skip: 'Flaky due to upstream watcher package assertions across platforms');
+    },
+        skip:
+            'Flaky due to upstream watcher package assertions across platforms');
 
     test('ignores non-JSON files', () async {
-      final generator = LocalizationGenerator(configPath: pubspecFile.path);
+      final generator = LocalizationGenerator();
 
       // Create a non-JSON file before starting watcher
       final txtFile = File('${localesDir.path}/readme.txt');
       txtFile.writeAsStringSync('This should be ignored');
 
       final watcher = FileWatcher(
-        watchDir: localesDir.path,
         debounceDuration: const Duration(milliseconds: 100),
         generator: generator,
       );
@@ -101,12 +114,13 @@ localization_gen:
           });
         }
       }
-    }, skip: 'Flaky due to upstream watcher package assertions across platforms');
+    },
+        skip:
+            'Flaky due to upstream watcher package assertions across platforms');
 
     test('handles rapid file changes with debouncing', () async {
-      final generator = LocalizationGenerator(configPath: pubspecFile.path);
+      final generator = LocalizationGenerator();
       final watcher = FileWatcher(
-        watchDir: localesDir.path,
         debounceDuration: const Duration(milliseconds: 300),
         generator: generator,
       );
@@ -118,12 +132,13 @@ localization_gen:
 
         await Future.delayed(const Duration(milliseconds: 300));
 
-        final enFile = File('${localesDir.path}/app_en.json');
+        final enFile = File('${localesDir.path}/app_common_en.json');
 
         // Make a single change and wait for processing
         enFile.writeAsStringSync('''
 {
   "@@locale": "en",
+  "@@module": "common",
   "hello": "Hello Updated"
 }
 ''');
@@ -150,12 +165,13 @@ localization_gen:
           });
         }
       }
-    }, skip: 'Flaky due to upstream watcher package assertions across platforms');
+    },
+        skip:
+            'Flaky due to upstream watcher package assertions across platforms');
 
     test('can be stopped gracefully', () async {
-      final generator = LocalizationGenerator(configPath: pubspecFile.path);
+      final generator = LocalizationGenerator();
       final watcher = FileWatcher(
-        watchDir: localesDir.path,
         generator: generator,
       );
 
@@ -183,6 +199,8 @@ localization_gen:
         // Test still validates basic functionality
         expect(true, isTrue);
       }
-    }, skip: 'Flaky due to upstream watcher package assertions across platforms');
+    },
+        skip:
+            'Flaky due to upstream watcher package assertions across platforms');
   });
 }

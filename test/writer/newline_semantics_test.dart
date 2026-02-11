@@ -5,7 +5,9 @@ import 'package:localization_gen/src/writer/dart_writer.dart';
 
 void main() {
   group('Newline semantics', () {
-    test('keeps newline escape as \\n in generated Dart source when input contains a newline character', () {
+    test(
+        'keeps newline escape as \\n in generated Dart source when input contains a newline character',
+        () {
       final writer = DartWriter(className: 'TestLocalizations');
 
       // This string contains a real newline character.
@@ -15,7 +17,8 @@ void main() {
         LocaleData(
           locale: 'en',
           items: {
-            'msg': LocalizationItem(key: 'msg', value: valueWithNewlineChar, parameters: []),
+            'msg': LocalizationItem(
+                key: 'msg', value: valueWithNewlineChar, parameters: []),
           },
         ),
       ];
@@ -25,7 +28,9 @@ void main() {
       expect(output, contains("return 'Line1\\nLine2';"));
     });
 
-    test('keeps literal backslash-n as \\\\n in generated Dart source when input contains two characters \\\\ + n', () {
+    test(
+        'keeps literal backslash-n as \\\\n in generated Dart source when input contains two characters \\\\ + n',
+        () {
       final writer = DartWriter(className: 'TestLocalizations');
 
       // This string contains two characters: backslash and n.
@@ -35,7 +40,8 @@ void main() {
         LocaleData(
           locale: 'en',
           items: {
-            'msg': LocalizationItem(key: 'msg', value: valueWithLiteralBackslashN, parameters: []),
+            'msg': LocalizationItem(
+                key: 'msg', value: valueWithLiteralBackslashN, parameters: []),
           },
         ),
       ];
@@ -49,13 +55,15 @@ void main() {
       final writer = DartWriter(className: 'TestLocalizations');
 
       // Real-world example from the report.
-      const message = 'Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in.';
+      const message =
+          'Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in.';
 
       final locales = [
         LocaleData(
           locale: 'en',
           items: {
-            'locked': LocalizationItem(key: 'locked', value: message, parameters: []),
+            'locked':
+                LocalizationItem(key: 'locked', value: message, parameters: []),
           },
         ),
       ];

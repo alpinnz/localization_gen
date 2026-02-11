@@ -11,12 +11,16 @@ import '../utils/test_helper.dart';
 void main() {
   group('LocalizationGenerator', () {
     late Directory tempDir;
+    late String originalCwd;
 
     setUp(() {
+      originalCwd = Directory.current.path;
       tempDir = TestHelper.createTempDir('generator_test_');
+      Directory.current = tempDir.path;
     });
 
     tearDown(() {
+      Directory.current = originalCwd;
       TestHelper.cleanupDir(tempDir);
     });
 
@@ -30,12 +34,12 @@ void main() {
 
         TestHelper.createJsonFile(
           localizationsDir,
-          'app_en.json',
+          'app_common_en.json',
           TestHelper.basicEnglishJson(),
         );
         TestHelper.createJsonFile(
           localizationsDir,
-          'app_id.json',
+          'app_common_id.json',
           TestHelper.basicIndonesianJson(),
         );
 
@@ -49,13 +53,12 @@ localization_gen:
 ''');
 
         // Act
-        final generator = LocalizationGenerator(
-          configPath: configFile.path,
-        );
+        final generator = LocalizationGenerator();
         generator.generate();
 
         // Assert
-        final outputFile = File('${tempDir.path}/lib/app_localizations.gen.dart');
+        final outputFile =
+            File('${tempDir.path}/lib/app_localizations.gen.dart');
         expect(outputFile.existsSync(), isTrue);
 
         final content = outputFile.readAsStringSync();
@@ -70,7 +73,7 @@ localization_gen:
 
         TestHelper.createJsonFile(
           localizationsDir,
-          'app_en.json',
+          'app_common_en.json',
           TestHelper.basicEnglishJson(),
         );
 
@@ -83,15 +86,14 @@ localization_gen:
   class_name: AppLocalizations
 ''');
 
-        final generator = LocalizationGenerator(
-          configPath: configFile.path,
-        );
+        final generator = LocalizationGenerator();
         generator.generate();
 
         final outputDir = Directory('${tempDir.path}/lib/generated');
         expect(outputDir.existsSync(), isTrue);
 
-        final outputFile = File('${tempDir.path}/lib/generated/app_localizations.gen.dart');
+        final outputFile =
+            File('${tempDir.path}/lib/generated/app_localizations.gen.dart');
         expect(outputFile.existsSync(), isTrue);
       });
 
@@ -105,9 +107,7 @@ localization_gen:
   class_name: AppLocalizations
 ''');
 
-        final generator = LocalizationGenerator(
-          configPath: configFile.path,
-        );
+        final generator = LocalizationGenerator();
 
         expect(() => generator.generate(), throwsException);
       });
@@ -120,7 +120,7 @@ localization_gen:
 
         TestHelper.createJsonFile(
           localizationsDir,
-          'app_en.json',
+          'app_common_en.json',
           TestHelper.basicEnglishJson(),
         );
 
@@ -133,12 +133,11 @@ localization_gen:
   class_name: MyCustomLocalizations
 ''');
 
-        final generator = LocalizationGenerator(
-          configPath: configFile.path,
-        );
+        final generator = LocalizationGenerator();
         generator.generate();
 
-        final outputFile = File('${tempDir.path}/lib/my_custom_localizations.gen.dart');
+        final outputFile =
+            File('${tempDir.path}/lib/my_custom_localizations.gen.dart');
         expect(outputFile.existsSync(), isTrue);
       });
 

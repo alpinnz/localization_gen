@@ -41,8 +41,10 @@
 //  7) Parameter reordering across locales
 //     - Example: placeholders.items_in_city
 //
-//  8) Per-key metadata via @<key> (dartdoc-friendly)
-//     - Example: placeholders.@welcome_user
+//  8) Per-key metadata (inline-only)
+//     - Inline fields: @value (for wrapping strings), @description, @example, @placeholders
+//     - Plus any custom @<name> fields (e.g. @since, @deprecated, @owner)
+//     - Example: placeholders.welcome_user.@description
 //
 //  9) Newline escaping (\\n)
 //     - Example: formatting.multiline => "Line 1\\nLine 2"
@@ -112,7 +114,7 @@
   /// - Keep them short and semantic.
   ///
   /// Usage (Dart)
-  /// - `localizations.strings.app_title`
+  /// - `localization.strings.app_title`
   ///
   /// Example key path
   /// - `strings.app_title`
@@ -131,7 +133,7 @@
   /// - All locales MUST have the exact same flattened key set when strict validation is enabled.
   ///
   /// Usage (Dart)
-  /// - `localizations.simple.app.settings.security.password.change.title`
+  /// - `localization.simple.app.settings.security.password.change.title`
   ///
   /// Example key path
   /// - `simple.app.settings.security.password.change.title`
@@ -160,15 +162,28 @@
   /// - Placeholder *set* must match across locales for the same key.
   ///
   /// Usage (Dart)
-  /// - `localizations.placeholders.welcome_user(name: 'John')`
+  /// - `localization.placeholders.welcomeUser(name: 'John')`
   ///
   /// Example
   /// - "Welcome, {name}."
   "placeholders": {
-    "welcome_user": "Welcome, {name}.",
+    "welcome_user": {
+      "@value": "Welcome, {name}.",
+      "@description": "Greets a user by name.",
+      "@example": "Welcome, John.",
+      "@placeholders": { "name": "User display name" }
+    },
     "attempts_left": "You still have {attempts} attempts left.",
-    "remaining_time": "Try again in {remaining_time}.",
     "invalid_character": "Character {char} is not allowed.",
+
+    "remaining_time": {
+      "@value": "Try again in {remaining_time}.",
+      "@description": "Retry hint; {remaining_time} is a preformatted string like 02:15.",
+      "@example": "Try again in 02:15.",
+      "@placeholders": {
+        "remaining_time": "Time left until retry, already formatted"
+      }
+    },
 
     /// (6) Multiple parameters
     ///
@@ -176,7 +191,7 @@
     /// - A single string may contain more than one placeholder.
     ///
     /// Usage (Dart)
-    /// - `localizations.placeholders.full_name(first_name: 'A', last_name: 'B')`
+    /// - `localization.placeholders.fullName(firstName: 'A', lastName: 'B')`
     "full_name": "Hello, {first_name} {last_name}.",
 
     /// (7) Parameter reordering across locales
@@ -190,34 +205,18 @@
     /// Example
     /// - EN: "{count} items in {city}."
     /// - ID: "Di {city} ada {count} item."
-    "items_in_city": "{count} items in {city}.",
-
-    /// (8) Per-key metadata via @<key> (dartdoc-friendly)
-    ///
-    /// Summary
-    /// - Attach docs next to a key by adding `@<key>` as a sibling.
-    ///
-    /// Rules
-    /// - Metadata keys should NOT be treated as translations.
-    /// - Keep placeholder docs in `placeholders` for tooling.
-    ///
-    /// Usage
-    /// - Can be embedded into generated dartdoc.
-    "@welcome_user": {
-      "description": "Greets a user by name.",
-      "example": "Welcome, John.",
-      "placeholders": { "name": "User display name" }
-    },
-    "@remaining_time": {
-      "description": "Retry hint; {remaining_time} is a preformatted string like 02:15.",
-      "example": "Try again in 02:15.",
-      "placeholders": { "remaining_time": "Time left until retry, already formatted" }
-    },
-    "@items_in_city": {
-      "description": "Shows count of items and a city. Locales may reorder placeholders.",
-      "example": "12 items in Jakarta.",
-      "placeholders": { "count": "Item count", "city": "City name" }
+    "items_in_city": {
+      "@value": "{count} items in {city}.",
+      "@description": "Shows count of items and a city. Locales may reorder placeholders.",
+      "@example": "12 items in Jakarta.",
+      "@placeholders": {
+        "count": "Item count",
+        "city": "City name"
+      }
     }
+
+    // (8) Inline metadata is demonstrated above using @value/@description/@example/@placeholders.
+
   },
 
   /// (9) Newline escaping (\\n)
@@ -338,6 +337,54 @@
         "description": "Greeting selection by context (formal vs casual).",
         "placeholders": { "name": "User display name" }
       }
+    },
+
+    /// Multi-variant message in one key (recommended)
+    ///
+    /// Summary
+    /// - Use `@context` when 1 key needs multiple variants.
+    /// - Context keys must be consistent across locales: `register` / `verification`.
+    ///
+    /// Why is there inline metadata?
+    /// - Metadata fields start with `@` and live inside the same object as the translation.
+    /// - They are ignored as translation values and can be used for tooling/dartdoc.
+    ///
+    /// Usage (Dart)
+    /// - `localization.structured.invalidCodeErrors(context: 'register')`
+    /// - `localization.structured.invalidCodeErrors(context: 'verification')`
+    ///
+    /// Example key path
+    /// - `structured.invalid_code_errors`
+    "invalid_code_errors": {
+      "@context": {
+        "register": "Wrong Register Code",
+        "verification": "Verification OTP expired"
+      },
+      "@description": "Invalid code error variants (register/verification).",
+      "@example": "Wrong Register Code",
+      "@placeholders": {},
+      "@since": "1.4.1",
+      "@deprecated": false
+    },
+
+    /// Same *case type* (`@context`) but different key (to show differences)
+    ///
+    /// Summary
+    /// - This demonstrates that multiple keys can use the same structured form,
+    ///   as long as the context-set is consistent across locales.
+    ///
+    /// Usage (Dart)
+    /// - `localization.structured.actionLabel(context: 'primary')`
+    /// - `localization.structured.actionLabel(context: 'secondary')`
+    "action_label": {
+      "@context": {
+        "primary": "Continue",
+        "secondary": "Later"
+      },
+      "@description": "Button label variants by context (primary/secondary).",
+      "@example": "Continue",
+      "@placeholders": {},
+      "@owner": "design-system"
     }
   }
 }

@@ -12,7 +12,8 @@ void main() {
         items: {
           'passwordMismatch': LocalizationItem(
             key: 'passwordMismatch',
-            value: 'Your password doesn’t match yet. You still have {attempts} more tries within 15 minutes.',
+            value:
+                'Your password doesn’t match yet. You still have {attempts} more tries within 15 minutes.',
             parameters: const ['attempts'],
           ),
         },
@@ -25,7 +26,10 @@ void main() {
     expect(code, contains('required String attempts'));
 
     // Should use Dart interpolation, not an escaped literal dollar.
-    expect(code, contains(r"'Your password doesn’t match yet. You still have ${attempts} more tries within 15 minutes.'"));
+    expect(
+        code,
+        contains(
+            r"'Your password doesn’t match yet. You still have ${attempts} more tries within 15 minutes.'"));
     expect(code, isNot(contains(r'\\$attempts')));
   });
 }

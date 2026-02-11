@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart' as p;
+
+import 'package:localization_gen/src/config/config_reader.dart';
+import 'package:localization_gen/src/model/localization_item.dart';
+
 import 'base_command.dart';
-import '../config/config_reader.dart';
-import '../model/localization_item.dart';
 
 /// Command to clean generated localization files.
 ///
@@ -13,8 +15,6 @@ import '../model/localization_item.dart';
 /// Usage:
 /// ```bash
 /// dart run localization_gen clean
-/// dart run localization_gen clean --dry-run
-/// dart run localization_gen clean --config=my_pubspec.yaml
 /// ```
 class CleanCommand extends BaseCommand {
   @override
@@ -28,26 +28,12 @@ class CleanCommand extends BaseCommand {
   /// Removes generated localization files based on configuration.
   ///
   /// Supports the following options:
-  /// - `--config` or `-c`: Path to pubspec.yaml
-  /// - `--dry-run` or `-d`: Preview files to delete without actually deleting
   /// - `--help` or `-h`: Show help information
   ///
   /// Returns 0 on success, 1 on error.
   @override
   Future<int> execute(List<String> args) async {
     final parser = ArgParser()
-      ..addOption(
-        'config',
-        abbr: 'c',
-        help: 'Path to pubspec.yaml',
-        defaultsTo: 'pubspec.yaml',
-      )
-      ..addFlag(
-        'dry-run',
-        abbr: 'd',
-        help: 'Show what would be deleted without actually deleting',
-        negatable: false,
-      )
       ..addFlag(
         'help',
         abbr: 'h',
@@ -63,16 +49,9 @@ class CleanCommand extends BaseCommand {
         return 0;
       }
 
-      final configPath = results['config'] as String;
-      final dryRun = results['dry-run'] as bool;
+      printInfo('Cleaning generated files...\n');
 
-      if (dryRun) {
-        printInfo('Running in dry-run mode (no files will be deleted)\n');
-      } else {
-        printInfo('Cleaning generated files...\n');
-      }
-
-      final config = ConfigReader.read(configPath);
+      final config = ConfigReader.read();
 
       // Find generated file
       final outputDir = Directory(config.outputDir);
@@ -81,45 +60,36 @@ class CleanCommand extends BaseCommand {
         return 0;
       }
 
-      final fileName = _toSnakeCase(config.className) + LocalizationConfig.outputFileSuffix;
+      final fileName =
+          _toSnakeCase(config.className) + LocalizationConfig.outputFileSuffix;
       final generatedFile = File(p.join(config.outputDir, fileName));
 
       // Also clean legacy outputs that used ".dart" without ".gen".
       final legacyFileName = '${_toSnakeCase(config.className)}.dart';
-      final legacyGeneratedFile = File(p.join(config.outputDir, legacyFileName));
+      final legacyGeneratedFile =
+          File(p.join(config.outputDir, legacyFileName));
 
       int deletedCount = 0;
 
       // Delete current configured output first.
       if (generatedFile.existsSync()) {
-        if (dryRun) {
-          printInfo('Would delete: ${generatedFile.path}');
-        } else {
-          generatedFile.deleteSync();
-          printSuccess('Deleted: ${generatedFile.path}');
-        }
+        generatedFile.deleteSync();
+        printSuccess('Deleted: ${generatedFile.path}');
         deletedCount++;
       } else {
         printInfo('No generated file found at: ${generatedFile.path}');
       }
 
       // Delete legacy output if it exists and is different.
-      if (legacyGeneratedFile.path != generatedFile.path && legacyGeneratedFile.existsSync()) {
-        if (dryRun) {
-          printInfo('Would delete legacy: ${legacyGeneratedFile.path}');
-        } else {
-          legacyGeneratedFile.deleteSync();
-          printSuccess('Deleted legacy: ${legacyGeneratedFile.path}');
-        }
+      if (legacyGeneratedFile.path != generatedFile.path &&
+          legacyGeneratedFile.existsSync()) {
+        legacyGeneratedFile.deleteSync();
+        printSuccess('Deleted legacy: ${legacyGeneratedFile.path}');
         deletedCount++;
       }
 
       print('');
-      if (dryRun) {
-        printInfo('Dry run complete. $deletedCount file(s) would be deleted.');
-      } else {
-        printSuccess('Clean complete. $deletedCount file(s) deleted.');
-      }
+      printSuccess('Clean complete. $deletedCount file(s) deleted.');
 
       return 0;
     } catch (e) {
@@ -157,6 +127,5 @@ class CleanCommand extends BaseCommand {
     print(parser.usage);
     print('\nExamples:');
     print('  dart run localization_gen clean');
-    print('  dart run localization_gen clean --dry-run');
   }
 }

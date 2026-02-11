@@ -23,17 +23,19 @@ void main() {
 
     group('Key Consistency', () {
       test('passes with identical keys across locales', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_en.json', '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "hello": "Hello",
   "welcome": "Welcome"
 }
 ''');
 
-        TestHelper.createJsonFile(tempDir, 'app_id.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_id.json', '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "hello": "Halo",
   "welcome": "Selamat datang"
 }
@@ -42,25 +44,26 @@ void main() {
         expect(
           () => JsonLocalizationParser.parseDirectory(
             tempDir.path,
-            strictValidation: true,
           ),
           returnsNormally,
         );
       });
 
       test('throws on missing keys in secondary locale', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_en.json', '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "hello": "Hello",
   "welcome": "Welcome",
   "goodbye": "Goodbye"
 }
 ''');
 
-        TestHelper.createJsonFile(tempDir, 'app_id.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_id.json', '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "hello": "Halo",
   "welcome": "Selamat datang"
 }
@@ -69,25 +72,26 @@ void main() {
         expect(
           () => JsonLocalizationParser.parseDirectory(
             tempDir.path,
-            strictValidation: true,
           ),
           throwsA(isA<LocaleValidationException>()),
         );
       });
 
       test('provides list of missing keys', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_en.json', '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "key1": "Value 1",
   "key2": "Value 2",
   "key3": "Value 3"
 }
 ''');
 
-        TestHelper.createJsonFile(tempDir, 'app_id.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_id.json', '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "key1": "Nilai 1"
 }
 ''');
@@ -95,7 +99,6 @@ void main() {
         try {
           JsonLocalizationParser.parseDirectory(
             tempDir.path,
-            strictValidation: true,
           );
           fail('Should throw LocaleValidationException');
         } on LocaleValidationException catch (e) {
@@ -106,16 +109,18 @@ void main() {
       });
 
       test('throws on extra keys in secondary locale', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_en.json', '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "hello": "Hello"
 }
 ''');
 
-        TestHelper.createJsonFile(tempDir, 'app_id.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_id.json', '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "hello": "Halo",
   "extra1": "Extra translation",
   "extra2": "Another extra"
@@ -125,7 +130,6 @@ void main() {
         expect(
           () => JsonLocalizationParser.parseDirectory(
             tempDir.path,
-            strictValidation: true,
           ),
           throwsA(isA<LocaleValidationException>()),
         );
@@ -134,16 +138,18 @@ void main() {
 
     group('Parameter Consistency', () {
       test('throws on parameter mismatch between locales', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_en.json', '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "greeting": "Hello, {name}!"
 }
 ''');
 
-        TestHelper.createJsonFile(tempDir, 'app_id.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_id.json', '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "greeting": "Halo, {name} dan {title}!"
 }
 ''');
@@ -151,23 +157,24 @@ void main() {
         expect(
           () => JsonLocalizationParser.parseDirectory(
             tempDir.path,
-            strictValidation: true,
           ),
           throwsA(isA<ParameterException>()),
         );
       });
 
       test('passes with matching parameters', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_en.json', '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "greeting": "Hello, {name}!"
 }
 ''');
 
-        TestHelper.createJsonFile(tempDir, 'app_id.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_id.json', '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "greeting": "Halo, {name}!"
 }
 ''');
@@ -175,23 +182,24 @@ void main() {
         expect(
           () => JsonLocalizationParser.parseDirectory(
             tempDir.path,
-            strictValidation: true,
           ),
           returnsNormally,
         );
       });
 
       test('allows different parameter order', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_en.json', '''
 {
   "@@locale": "en",
+  "@@module": "common",
   "message": "{user} sent {count} messages"
 }
 ''');
 
-        TestHelper.createJsonFile(tempDir, 'app_id.json', '''
+        TestHelper.createJsonFile(tempDir, 'app_common_id.json', '''
 {
   "@@locale": "id",
+  "@@module": "common",
   "message": "{count} pesan dari {user}"
 }
 ''');
@@ -199,35 +207,6 @@ void main() {
         expect(
           () => JsonLocalizationParser.parseDirectory(
             tempDir.path,
-            strictValidation: true,
-          ),
-          returnsNormally,
-        );
-      });
-    });
-
-    group('Without Strict Validation', () {
-      test('allows missing keys when strict validation disabled', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', '''
-{
-  "@@locale": "en",
-  "hello": "Hello",
-  "welcome": "Welcome",
-  "extra": "Extra"
-}
-''');
-
-        TestHelper.createJsonFile(tempDir, 'app_id.json', '''
-{
-  "@@locale": "id",
-  "hello": "Halo"
-}
-''');
-
-        expect(
-          () => JsonLocalizationParser.parseDirectory(
-            tempDir.path,
-            strictValidation: false,
           ),
           returnsNormally,
         );

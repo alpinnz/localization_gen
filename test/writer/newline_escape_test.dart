@@ -27,10 +27,12 @@ void main() {
 
       // The generated Dart source must contain a single escaped \n, not \\n.
       expect(output, contains(r"temporarily locked.\\nYou can try again."));
-      expect(output, isNot(contains(r"temporarily locked.\\\\nYou can try again.")));
+      expect(output,
+          isNot(contains(r"temporarily locked.\\\\nYou can try again.")));
     });
 
-    test('converts real newline characters to \\n escape in generated Dart', () {
+    test('converts real newline characters to \\n escape in generated Dart',
+        () {
       final writer = DartWriter(className: 'TestLocalizations');
 
       const value = 'Line1\nLine2'; // actual newline character

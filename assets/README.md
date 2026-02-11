@@ -1,61 +1,108 @@
-# Assets (localization examples)
+# Assets (localization fixtures)
 
-Folder `assets/` berisi **fixture + dokumentasi pola** untuk package ini.
+The `assets/` folder contains a **developer-readable fixture dataset** used to document and test this package.
 
-Saat ini struktur yang tersedia (faktual):
-- `assets/localizations/` — kumpulan file contoh (JSONC) + README
+Current structure (factual):
+- `assets/localizations/` 
+ JSONC fixtures + a short README
 
-> Catatan: package ini membaca `*.json` (JSON murni). File `.jsonc` disediakan untuk dokumentasi karena bisa berisi komentar.
+## JSONC vs JSON
+
+- **JSONC (`.jsonc`)** is the canonical spec in this repo (commented, developer-readable).
+- The generator consumes **strict JSON (`.json`)**.
+
+## Key casing policy
+
+- **JSON/JSONC keys** should be `snake_case` (example: `welcome_user`, `invalid_code_errors`).
+- The **generated Dart API** uses `camelCase` by default (`field_rename: camel`):
+  - JSON `welcome_user` -> Dart `welcomeUser(...)`
+  - JSON `invalid_code_errors` -> Dart `invalidCodeErrors(context: ...)`
 
 ---
 
-## Kebijakan proyek: modular-only localization
-Repo ini memakai **modular-only** agar konsisten dan menghindari migrasi “tricky” dari non-modular → modular.
+## Project policy: modular-only localization
 
-### Aturan file modular
-Setiap file modular **WAJIB** punya:
-- `@@locale` (contoh: `"en"`, `"id"`)
-- `@@module` (contoh: `"common"`, `"auth"`, `"home"`)
+This repo is **modular-only**.
 
-Generator akan:
-- membaca semua file input
-- mengelompokkan berdasarkan `@@locale`
-- merge semua module untuk locale yang sama menjadi 1 map translation
+### Required metadata (per file)
+Every localization file **must** include:
+- `@@locale` (e.g. `"en"`, `"id"`)
+- `@@module` (e.g. `"common"`, `"auth"`, `"home"`)
 
-### Penamaan file (rekomendasi)
-Pola:
+Files are:
+1. grouped by `@@locale`
+2. merged across modules into one locale map
+
+### Recommended file naming
+Pattern:
 - `<prefix>_<module>_<locale>.json`
 
-Contoh:
+Examples:
 - `app_common_en.json`
 - `app_common_id.json`
 
-### Constraints penting
-- **Tidak boleh ada collision key** setelah merge antar module.
-- Untuk 1 key yang sama di semua bahasa, **placeholder set harus sama** (urutan boleh beda).
-- Nested keys disarankan **maksimal depth 6**.
+### Important constraints
+- After merge, **no key collisions** are allowed.
+- For the same key across locales, the **placeholder set** must match (order may differ).
+- Recommended nesting depth: **1–6**.
 
 ---
 
-## Dataset contoh yang tersedia (faktual)
-Dataset/case utama saat ini ada di folder `assets/localizations/`:
-- `assets/localizations/app_common_en.jsonc` — canonical dataset (EN), module `common`
-- `assets/localizations/app_common_id.jsonc` — mirror dataset (ID), module `common`
+## Canonical fixture dataset (CASE 1–15)
 
-Catatan penting tentang struktur key:
-- Namespace basic string memakai **`strings`** (contoh key path: `strings.app_title`).
-- Semua case dirangkum sebagai `CASE INDEX (all cases appear once)` di masing-masing file JSONC.
+The canonical dataset lives under `assets/localizations/`:
+- `assets/localizations/app_common_en.jsonc` 
+ canonical dataset (EN), module `common`
+- `assets/localizations/app_common_id.jsonc` 
+ mirrored dataset (ID), module `common`
 
-Jika kamu ingin dataset ini bisa dipakai untuk real run generator/validator tanpa modifikasi:
-- buat juga versi `.json` (tanpa komentar) dengan struktur yang sama.
+Key conventions used by the fixtures:
+- Basic strings use the namespace **`strings.*`** (example key path: `strings.app_title`).
+- All supported cases are listed once as `CASE INDEX (all cases appear once)` inside the JSONC files.
+
+If you want to run the generator/validator against the same dataset:
+- create equivalent `.json` files (same structure, without comments).
 
 ---
 
-## Metadata blocks (`@<key>`)
-Pada object yang sama dengan key translation, kamu boleh menambahkan metadata untuk docs.
+## Per-key metadata (inline-only)
 
-Contoh:
-- `"welcome_user": "Welcome, {name}."`
-- `"@welcome_user": { "description": "...", "example": "..." }`
+This repo uses **inline-only metadata**.
 
-Metadata ini berguna untuk tooling/dokumentasi dan bisa di-embed ke dartdoc hasil generate.
+### Inline metadata fields
+
+- `@description`: String
+- `@example`: String
+- `@placeholders`: Map<String, String>
+- Custom `@<name>` fields (e.g. `@since`, `@deprecated`, `@owner`)
+
+### How to document a string key
+
+JSON strings can't hold extra fields, so if you need documentation for a string key,
+wrap it using `@value`:
+
+```json
+{
+  "welcome_user": {
+    "@value": "Welcome, {name}.",
+    "@description": "Greets a user by name.",
+    "@example": "Welcome, John.",
+    "@placeholders": { "name": "User display name" }
+  }
+}
+```
+
+### Structured forms
+
+Structured translations remain object-based and can carry inline metadata directly:
+
+- `@plural`
+- `@gender`
+- `@context`
+
+---
+
+## Defaults (source of truth)
+
+Some config values have defaults. Notably:
+- `field_rename` default is **`camel`**.

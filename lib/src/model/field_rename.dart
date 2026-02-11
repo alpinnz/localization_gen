@@ -40,27 +40,37 @@ enum FieldRename {
   /// FieldRename.kebab.convert('userName'); // Returns 'user-name'
   /// ```
   String convert(String input) {
+    final normalized = _normalizeToWords(input);
+
     switch (this) {
       case FieldRename.none:
         return input;
       case FieldRename.kebab:
-        return _toKebabCase(input);
+        return _toKebabCase(normalized);
       case FieldRename.snake:
-        return _toSnakeCase(input);
+        return _toSnakeCase(normalized);
       case FieldRename.pascal:
-        return _toPascalCase(input);
+        return _toPascalCase(normalized);
       case FieldRename.camel:
-        return _toCamelCase(input);
+        return _toCamelCase(normalized);
       case FieldRename.screamingSnake:
-        return _toScreamingSnakeCase(input);
+        return _toScreamingSnakeCase(normalized);
     }
   }
 
-  /// Parses a string to FieldRename enum.
+  /// Parses a string to [FieldRename].
   ///
-  /// Returns [FieldRename.none] if the string doesn't match any enum value.
+  /// Supported values (case-insensitive):
+  /// - none
+  /// - kebab, kebab-case
+  /// - snake, snake_case
+  /// - pascal, pascalcase
+  /// - camel, camelcase
+  /// - screaming_snake, screamingsnake, screaming-snake
+  ///
+  /// Returns [FieldRename.none] for unknown values.
   static FieldRename fromString(String value) {
-    switch (value.toLowerCase()) {
+    switch (value.trim().toLowerCase()) {
       case 'kebab':
       case 'kebab-case':
         return FieldRename.kebab;
@@ -77,46 +87,90 @@ enum FieldRename {
       case 'screamingsnake':
       case 'screaming-snake':
         return FieldRename.screamingSnake;
+      case 'none':
       default:
         return FieldRename.none;
     }
   }
 
-  static String _toKebabCase(String input) {
-    return input
+  static String _normalizeToWords(String input) {
+    if (input.isEmpty) return input;
+
+    // 1) Convert obvious separators to spaces.
+    // Examples:
+    // - "first_name"  -> "first name"
+    // - "first-name"  -> "first name"
+    // - "first.name"  -> "first name"
+    final withSpaces = input.replaceAll(RegExp(r'[\s_\-.]+'), ' ');
+
+    // 2) Insert spaces on case transitions so "userName" becomes "user Name".
+    // This keeps acronyms intact as much as possible.
+    // - "UserName"   -> "User Name"
+    // - "userName"   -> "user Name"
+    // - "USERNAME"   -> "USERNAME" (no transitions)
+    final withCaseBoundaries = withSpaces
+        // fooBar -> foo Bar
         .replaceAllMapped(
-          RegExp(r'([A-Z])'),
-          (match) => '-${match.group(1)!.toLowerCase()}',
+          RegExp(r'([a-z0-9])([A-Z])'),
+          (m) => '${m.group(1)} ${m.group(2)}',
         )
+        // XMLParser -> XML Parser
+        .replaceAllMapped(
+          RegExp(r'([A-Z]+)([A-Z][a-z])'),
+          (m) => '${m.group(1)} ${m.group(2)}',
+        );
+
+    // 3) Split and rejoin to collapse repeated spaces.
+    final parts = withCaseBoundaries
+        .split(' ')
+        .where((p) => p.trim().isNotEmpty)
+        .toList(growable: false);
+
+    return parts.join(' ');
+  }
+
+  static String _toKebabCase(String input) {
+    final parts = input.split(' ').where((p) => p.isNotEmpty).toList();
+    if (parts.isEmpty) return '';
+
+    final first = parts.first.toLowerCase();
+    final rest = parts.skip(1).map((p) => p.isEmpty ? '' : p.toLowerCase());
+
+    return [first, ...rest]
+        .where((p) => p.isNotEmpty)
+        .join('-')
         .replaceFirst(RegExp(r'^-'), '');
   }
 
   static String _toSnakeCase(String input) {
-    return input
-        .replaceAllMapped(
-          RegExp(r'([A-Z])'),
-          (match) => '_${match.group(1)!.toLowerCase()}',
-        )
+    final parts = input.split(' ').where((p) => p.isNotEmpty).toList();
+    if (parts.isEmpty) return '';
+
+    final first = parts.first.toLowerCase();
+    final rest = parts.skip(1).map((p) => p.isEmpty ? '' : p.toLowerCase());
+
+    return [first, ...rest]
+        .where((p) => p.isNotEmpty)
+        .join('_')
         .replaceFirst(RegExp(r'^_'), '');
   }
 
   static String _toPascalCase(String input) {
     if (input.isEmpty) return input;
-    return input[0].toUpperCase() + input.substring(1);
+    final parts = input.split(' ').where((p) => p.isNotEmpty).toList();
+    return parts
+        .map((part) => part[0].toUpperCase() + part.substring(1).toLowerCase())
+        .join();
   }
 
   static String _toCamelCase(String input) {
     if (input.isEmpty) return input;
-    return input[0].toLowerCase() + input.substring(1);
+    final pascal = _toPascalCase(input);
+    return pascal[0].toLowerCase() + pascal.substring(1);
   }
 
   static String _toScreamingSnakeCase(String input) {
-    return input
-        .replaceAllMapped(
-          RegExp(r'([A-Z])'),
-          (match) => '_${match.group(1)!}',
-        )
-        .replaceFirst(RegExp(r'^_'), '')
-        .toUpperCase();
+    final snake = _toSnakeCase(input);
+    return snake.toUpperCase();
   }
 }

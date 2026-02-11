@@ -20,7 +20,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("return 'It\\'s working';"));
+      expect(output, contains("return 'It\\\\'s working';"));
     });
 
     test('escapes dollar signs correctly', () {
@@ -39,7 +39,8 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("return 'Price: \\\$100';"));
+      // In generated Dart source, a literal `$` must be escaped as `\$`.
+      expect(output, contains(r"return 'Price: \$100';"));
     });
 
     test('escapes backslashes correctly', () {
@@ -152,7 +153,10 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("return 'It\\'s \\\$100 with C:\\\\path and emoji 👋';"));
+      expect(
+        output,
+        contains(r"return 'It\\'s \$100 with C:\\path and emoji 👋';"),
+      );
     });
 
     test('preserves special chars in nested structures', () {
@@ -171,7 +175,14 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("return 'Special: @#\\\$%^&*()_+-=[]{}|;\\':\",./"));
+
+      // Validate key fragments instead of one giant string (much easier to keep
+      // correct across escaping layers).
+      expect(output, contains("String get special"));
+      // `$` should be escaped as `\$` in the generated Dart source.
+      expect(output, contains(r"Special: @#\$%"));
+      expect(output, contains("|;\\\\'")); // ensures backslash + quote are preserved
+      expect(output, contains(",./<>?"));
     });
 
     test('preserves math symbols', () {

@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:args/args.dart';
+
+import 'package:localization_gen/src/const/constants.dart';
+import 'package:localization_gen/src/generator/localization_generator.dart';
+import 'package:localization_gen/src/watcher/file_watcher.dart';
+
 import 'base_command.dart';
-import '../generator/localization_generator.dart';
-import '../watcher/file_watcher.dart';
-import '../config/config_reader.dart';
 
 /// Command to generate localization code from JSON files.
 ///
@@ -15,7 +17,6 @@ import '../config/config_reader.dart';
 /// ```bash
 /// dart run localization_gen generate
 /// dart run localization_gen generate --watch
-/// dart run localization_gen generate --config=my_pubspec.yaml
 /// ```
 class GenerateCommand extends BaseCommand {
   @override
@@ -29,8 +30,6 @@ class GenerateCommand extends BaseCommand {
   /// Supports the following options:
   /// - `--help` or `-h`: Display help information
   /// - `--watch` or `-w`: Enable watch mode for auto-regeneration
-  /// - `--config` or `-c`: Specify path to pubspec.yaml
-  /// - `--debounce` or `-d`: Set debounce delay in milliseconds for watch mode
   ///
   /// Returns 0 on success, 1 on error.
   @override
@@ -47,18 +46,6 @@ class GenerateCommand extends BaseCommand {
         abbr: 'w',
         negatable: false,
         help: 'Watch for changes and regenerate automatically',
-      )
-      ..addOption(
-        'config',
-        abbr: 'c',
-        help: 'Path to pubspec.yaml',
-        defaultsTo: 'pubspec.yaml',
-      )
-      ..addOption(
-        'debounce',
-        abbr: 'd',
-        help: 'Debounce delay in milliseconds for watch mode',
-        defaultsTo: '300',
       );
 
     try {
@@ -69,13 +56,10 @@ class GenerateCommand extends BaseCommand {
         return 0;
       }
 
-      final configPath = results['config'] as String;
       final watchMode = results['watch'] as bool;
-      final debounceMs = int.parse(results['debounce'] as String);
 
       final generator = LocalizationGenerator(
         watch: watchMode,
-        configPath: configPath,
       );
 
       // Initial generation
@@ -83,10 +67,8 @@ class GenerateCommand extends BaseCommand {
 
       // Start watch mode if requested
       if (watchMode) {
-        final config = ConfigReader.read(configPath);
         final watcher = FileWatcher(
-          watchDir: config.inputDir,
-          debounceDuration: Duration(milliseconds: debounceMs),
+          debounceDuration: const Duration(milliseconds: kWatchDebounceMs),
           generator: generator,
         );
 
@@ -119,7 +101,5 @@ class GenerateCommand extends BaseCommand {
     print('\nExamples:');
     print('  dart run localization_gen');
     print('  dart run localization_gen --watch');
-    print('  dart run localization_gen --watch --debounce=500');
-    print('  dart run localization_gen --config=my_pubspec.yaml');
   }
 }

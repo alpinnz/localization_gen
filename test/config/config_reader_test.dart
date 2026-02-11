@@ -30,11 +30,7 @@ localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
   class_name: TestLocalizations
-  use_context: true
-  nullable: false
-  modular: true
   file_prefix: test
-  strict_validation: true
 ''');
 
         final config = ConfigReader.read(configFile.path);
@@ -43,11 +39,7 @@ localization_gen:
         expect(config.inputDir, equals('assets/localizations'));
         expect(config.outputDir, equals('lib/assets'));
         expect(config.className, equals('TestLocalizations'));
-        expect(config.useContext, isTrue);
-        expect(config.nullable, isFalse);
-        expect(config.modular, isTrue);
         expect(config.filePrefix, equals('test'));
-        expect(config.strictValidation, isTrue);
       });
 
       test('uses default values when options not specified', () {
@@ -63,10 +55,8 @@ localization_gen:
         expect(LocalizationConfig.outputFileSuffix, equals('.gen.dart'));
         expect(config.className, equals('AppLocalizations'));
         expect(config.outputDir, equals('lib/assets'));
-        expect(config.useContext, isTrue);
-        expect(config.nullable, isFalse);
-        expect(config.modular, isFalse);
-        expect(config.strictValidation, isFalse);
+        expect(config.filePrefix, equals('app'));
+        expect(config.filePattern, equals('app_{module}_{locale}.json'));
       });
 
       test('throws on missing input_dir', () {
