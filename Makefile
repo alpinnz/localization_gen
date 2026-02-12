@@ -23,9 +23,8 @@ help:
 	@echo "  make validate         - Validate localization files"
 	@echo ""
 	@echo "Examples:"
-	@echo "  make example-basic    - Run basic example"
-	@echo "  make example-modular  - Run modular example"
-	@echo "  make examples-setup   - Setup all examples"
+	@echo "  make example          - Run the example app"
+	@echo "  make examples-setup   - Setup the example app"
 	@echo ""
 	@echo "Cleanup:"
 	@echo "  make clean            - Remove build artifacts"
@@ -53,10 +52,9 @@ install:
 
 # Install dependencies for all examples
 examples-setup:
-	@echo "Setting up examples..."
-	@cd example/basic && flutter pub get || (echo "ERROR: Failed to install basic example dependencies" && exit 1)
-	@cd example/modular && flutter pub get || (echo "ERROR: Failed to install modular example dependencies" && exit 1)
-	@echo "SUCCESS: All examples setup complete"
+	@echo "Setting up example..."
+	@cd example && flutter pub get || (echo "ERROR: Failed to install example dependencies" && exit 1)
+	@echo "SUCCESS: Example setup complete"
 
 # Run all tests
 test:
@@ -66,17 +64,9 @@ test:
 
 # Run tests for all examples
 test-examples:
-	@echo "Running tests for examples..."
-	@echo ""
-	@echo "Testing basic example..."
-	@cd example/basic && flutter test || (echo "ERROR: Basic example tests failed" && exit 1)
-	@echo "SUCCESS: Basic example tests passed"
-	@echo ""
-	@echo "Testing modular example..."
-	@cd example/modular && flutter test || (echo "ERROR: Modular example tests failed" && exit 1)
-	@echo "SUCCESS: Modular example tests passed"
-	@echo ""
-	@echo "SUCCESS: All example tests passed"
+	@echo "Running tests for example..."
+	@cd example && flutter test || (echo "ERROR: Example tests failed" && exit 1)
+	@echo "SUCCESS: Example tests passed"
 
 # Run specific test file
 test-file:
@@ -153,10 +143,8 @@ clean:
 	@rm -rf build/
 	@rm -rf coverage/
 	@rm -rf .dart_tool/
-	@rm -rf example/basic/build/
-	@rm -rf example/basic/.dart_tool/
-	@rm -rf example/modular/build/
-	@rm -rf example/modular/.dart_tool/
+	@rm -rf example/build/
+	@rm -rf example/.dart_tool/
 	@echo "SUCCESS: Clean complete"
 
 # Deep clean including cache
@@ -218,15 +206,10 @@ validate:
 	@dart run bin/localization_gen.dart validate || (echo "ERROR: Validation failed" && exit 1)
 	@echo "SUCCESS: Validation passed"
 
-# Run basic example
-example-basic:
-	@echo "Running basic example..."
-	@cd example/basic && flutter pub get && dart run localization_gen && flutter run || (echo "ERROR: Basic example failed" && exit 1)
-
-# Run modular example
-example-modular:
-	@echo "Running modular example..."
-	@cd example/modular && flutter pub get && dart run localization_gen && flutter run || (echo "ERROR: Modular example failed" && exit 1)
+# Run example
+example:
+	@echo "Running example..."
+	@cd example && flutter pub get && dart run localization_gen generate && flutter run || (echo "ERROR: Example failed" && exit 1)
 
 # Update dependencies
 update:

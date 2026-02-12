@@ -1,7 +1,6 @@
 /// Tests for FieldRename enum.
 ///
 /// Covers field naming convention conversions.
-library;
 
 import 'package:test/test.dart';
 import 'package:localization_gen/src/model/field_rename.dart';
@@ -35,13 +34,31 @@ void main() {
       test('camel - converts to camelCase', () {
         expect(FieldRename.camel.convert('UserName'), equals('userName'));
         expect(FieldRename.camel.convert('userName'), equals('userName'));
-        expect(FieldRename.camel.convert('USERNAME'), equals('uSERNAME'));
+        // All-caps input is treated as a single word.
+        expect(FieldRename.camel.convert('USERNAME'), equals('username'));
       });
 
       test('screamingSnake - converts to SCREAMING_SNAKE_CASE', () {
-        expect(FieldRename.screamingSnake.convert('userName'), equals('USER_NAME'));
-        expect(FieldRename.screamingSnake.convert('UserName'), equals('USER_NAME'));
+        expect(FieldRename.screamingSnake.convert('userName'),
+            equals('USER_NAME'));
+        expect(FieldRename.screamingSnake.convert('UserName'),
+            equals('USER_NAME'));
         expect(FieldRename.screamingSnake.convert('user'), equals('USER'));
+      });
+
+      test('camel - converts snake_case and kebab-case inputs to camelCase',
+          () {
+        expect(FieldRename.camel.convert('first_name'), equals('firstName'));
+        expect(FieldRename.camel.convert('first-name'), equals('firstName'));
+        expect(FieldRename.camel.convert('first.name'), equals('firstName'));
+      });
+
+      test('pascal - converts snake_case inputs to PascalCase', () {
+        expect(FieldRename.pascal.convert('first_name'), equals('FirstName'));
+      });
+
+      test('snake - keeps snake_case', () {
+        expect(FieldRename.snake.convert('first_name'), equals('first_name'));
       });
     });
 
@@ -60,7 +77,8 @@ void main() {
 
       test('parses pascal variants', () {
         expect(FieldRename.fromString('pascal'), equals(FieldRename.pascal));
-        expect(FieldRename.fromString('pascalcase'), equals(FieldRename.pascal));
+        expect(
+            FieldRename.fromString('pascalcase'), equals(FieldRename.pascal));
         expect(FieldRename.fromString('PASCAL'), equals(FieldRename.pascal));
       });
 
@@ -71,9 +89,12 @@ void main() {
       });
 
       test('parses screaming_snake variants', () {
-        expect(FieldRename.fromString('screaming_snake'), equals(FieldRename.screamingSnake));
-        expect(FieldRename.fromString('screamingsnake'), equals(FieldRename.screamingSnake));
-        expect(FieldRename.fromString('screaming-snake'), equals(FieldRename.screamingSnake));
+        expect(FieldRename.fromString('screaming_snake'),
+            equals(FieldRename.screamingSnake));
+        expect(FieldRename.fromString('screamingsnake'),
+            equals(FieldRename.screamingSnake));
+        expect(FieldRename.fromString('screaming-snake'),
+            equals(FieldRename.screamingSnake));
       });
 
       test('returns none for invalid input', () {

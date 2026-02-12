@@ -5,7 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] - 2026-02-11
+
+### Changed
+- **Defaults**
+  - `field_rename` default is now **`camel`** (generated API uses camelCase like `welcomeUser`).
+
+- **Inline-only per-key metadata**
+  - Removed legacy sibling metadata blocks (`@<key>`).
+  - Added support for documenting string translations via the `@value` wrapper object.
+
+- **Docs: consistent key casing + JSONC policy**
+  - Standardized documentation to clearly separate:
+    - JSON/JSONC keys: `snake_case` (e.g. `welcome_user`, `invalid_code_errors`)
+    - Generated Dart API: `camelCase` by default (e.g. `welcomeUser(...)`, `invalidCodeErrors(context: ...)`)
+  - Clarified repo policy:
+    - JSONC (`.jsonc`) is the canonical spec (commented, developer-readable).
+    - Generator input remains strict JSON (`.json`).
+
+- **Assets localization fixtures + documentation**
+  - Standardized `assets/` and `assets/localizations/` docs to reflect a **modular-only** workflow.
+  - Updated fixtures to be a developer-readable JSONC spec (CASE 1–15) and aligned EN/ID examples.
+
+- **Example app alignment + test stability**
+  - Synced example JSON (`example/assets/localizations/`) to match the JSONC spec.
+  - Updated the example UI to show snake_case key paths while using the camelCase generated API.
+  - Stabilized example widget tests by scrolling long `ListView` content before asserting text.
+
+### Added
+- **String wrapper for metadata (`@value`)**
+  - Enables per-key metadata (`@description/@example/@placeholders` + custom `@<name>`) for string translations.
+
+- **More real-world symbol coverage in fixtures**
+  - Added `symbols.*` samples to cover common UI strings containing punctuation and Unicode symbols, including:
+    - masked PIN/OTP bullet leaders (`••••`, `••••••••`)
+    - copyright/trademark/registered marks (`©`, `™`, `®`)
+    - currency/percent/math/degree/arrows/pipes, bullet lists, and URL query strings.
 
 ## [1.3.3] - 2026-01-26
 
@@ -33,8 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Examples**
-  - Added a large HTML + newline sample (`terms_and_conditions_html`) to both `example/basic` and `example/modular` assets.
-  - Regenerated `lib/assets/*.gen.dart` in both examples and validated they compile.
+  - Added a large HTML + newline sample (`terms_and_conditions_html`) to the modular example assets.
+  - Regenerated `lib/assets/*.gen.dart` in the modular example and validated they compile.
 
 ### Fixed
 - **String escaping stability**
@@ -63,8 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Examples**
   - Regenerated localization output files in Flutter examples and updated widget tests so the example apps compile and tests are stable.
-  - Validated generation for both:
-    - `example/basic`
+  - Validated generation for:
     - `example/modular`
 
 ### Notes
@@ -99,15 +133,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Converts JSON keys to desired Dart naming convention
   - Supports consistent code style across projects
   - Fully tested with 18 comprehensive tests
-
-- **Makefile for Development**: Convenient commands for common tasks
-  - `make help` - Show all available commands
-  - `make install` - Install dependencies
-  - `make test` - Run all tests
-  - `make check` - Run all checks (analyze + format + test)
-  - `make coverage` - Generate test coverage report
-  - `make publish-dry` - Test publication
-  - And more (see `make help` for complete list)
 
 - **Enhanced Documentation**:
   - Consolidated all markdown files (23 → 7 files, 70% reduction)
@@ -157,29 +182,18 @@ localization_gen:
   field_rename: snake  # Choose: none, kebab, snake, pascal, camel, screamingSnake
 ```
 
-### Notes
-
-This release focuses on:
-- Adding flexible naming convention support
-- Improving documentation quality and navigation
-- Expanding test coverage
-- Maintaining backward compatibility
-
 ## [1.0.6] - 2025-12-16
 
 ### Added
 - **Watch Mode**: Auto-regenerate localization files when JSON files change
   - `--watch` flag for continuous development
-  - `--debounce` option to customize regeneration delay (default: 300ms)
   - Monitors only `.json` files for changes
   - Clear console output showing file changes and regeneration status
   - Graceful shutdown with Ctrl+C
 
 - **Strict Validation**: Ensure locale consistency across all translation files
-  - `strict_validation: true` in config to enable
+  - Strict validation
   - Validates all locales have identical translation keys
-  - Verifies parameters match across locales (order-independent)
-  - Detailed error messages with missing/extra keys listed
 
 - **Enhanced Error Handling**: Custom exception classes with detailed information
   - `LocalizationException` base class for all errors
@@ -228,7 +242,7 @@ No migration needed - all existing code works without changes.
 
 To use new features:
 1. Enable watch mode: `dart run localization_gen --watch`
-2. Enable strict validation: Add `strict_validation: true` to config
+2. Strict validation is now enabled by default (no config needed)
 
 ## [1.0.5] - 2025-12-15
 

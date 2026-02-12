@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import '../model/localization_item.dart';
+import 'package:localization_gen/src/model/field_rename.dart';
+import 'package:localization_gen/src/model/localization_item.dart';
 
 /// Generates strongly-typed Dart code with nested structure support.
 ///
@@ -16,8 +17,6 @@ import '../model/localization_item.dart';
 /// ```dart
 /// final writer = DartWriter(
 ///   className: 'AppLocalizations',
-///   useContext: true,
-///   nullable: false,
 /// );
 /// final dartCode = writer.generate(locales);
 /// ```
@@ -31,47 +30,19 @@ class DartWriter {
   /// ```
   final String className;
 
-  /// Whether to generate a static of(BuildContext) method.
-  ///
-  /// When true, generates a convenience method for accessing localizations
-  /// from a BuildContext:
-  /// ```dart
-  /// static AppLocalizations of(BuildContext context) {
-  ///   return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
-  /// }
-  /// ```
-  final bool useContext;
-
-  /// Whether the of(BuildContext) method should return a nullable type.
-  ///
-  /// When true, the generated of() method returns `AppLocalizations?` instead
-  /// of `AppLocalizations`. Set to false for apps where localizations are
-  /// always available.
-  final bool nullable;
+  /// Controls how JSON key segments are converted into Dart identifiers.
+  final FieldRename fieldRename;
 
   /// Creates a new DartWriter instance.
   ///
   /// The [className] parameter specifies the name of the generated class
   /// (typically 'AppLocalizations').
   ///
-  /// The [useContext] parameter controls whether to generate the static of()
-  /// method for convenient access from BuildContext.
-  ///
-  /// The [nullable] parameter controls the return type nullability of the
-  /// of() method. Set to false if localizations are always available.
-  ///
-  /// Example:
-  /// ```dart
-  /// final writer = DartWriter(
-  ///   className: 'AppLocalizations',
-  ///   useContext: true,
-  ///   nullable: false,
-  /// );
-  /// ```
+  /// The [fieldRename] parameter controls identifier naming. It defaults to
+  /// [FieldRename.camel].
   DartWriter({
     required this.className,
-    this.useContext = true,
-    this.nullable = false,
+    this.fieldRename = FieldRename.camel,
   });
 
   /// Generates complete Dart file content from locale data.
@@ -109,7 +80,8 @@ class DartWriter {
     buffer.writeln();
 
     // Main class
-    buffer.writeln("/// Strongly-typed localization class for application translations.");
+    buffer.writeln(
+        "/// Strongly-typed localization class for application translations.");
     buffer.writeln("///");
     buffer.writeln("/// Access translations using:");
     buffer.writeln("/// ```dart");
@@ -117,26 +89,26 @@ class DartWriter {
     buffer.writeln("/// final text = appLocalizations.hello;");
     buffer.writeln("/// ```");
     buffer.writeln("class $className {");
-    buffer.writeln("  /// Creates a new $className instance for the specified locale.");
+    buffer.writeln(
+        "  /// Creates a new $className instance for the specified locale.");
     buffer.writeln("  $className(this.locale);");
     buffer.writeln();
     buffer.writeln("  /// The locale for this localization instance.");
     buffer.writeln("  final Locale locale;");
     buffer.writeln();
 
-    // Static of() method
-    if (useContext) {
-      buffer.writeln("  /// Gets the localization instance from BuildContext.");
-      buffer.writeln("  ///");
-      buffer.writeln("  /// Example:");
-      buffer.writeln("  /// ```dart");
-      buffer.writeln("  /// final appLocalizations = $className.of(context);");
-      buffer.writeln("  /// ```");
-      buffer.writeln("  static $className${nullable ? '?' : ''} of(BuildContext context) {");
-      buffer.writeln("    return Localizations.of<$className>(context, $className)${nullable ? '' : '!'};");
-      buffer.writeln("  }");
-      buffer.writeln();
-    }
+    // Static of() method (mandatory)
+    buffer.writeln("  /// Gets the localization instance from BuildContext.");
+    buffer.writeln("  ///");
+    buffer.writeln("  /// Example:");
+    buffer.writeln("  /// ```dart");
+    buffer.writeln("  /// final appLocalizations = $className.of(context);");
+    buffer.writeln("  /// ```");
+    buffer.writeln("  static $className of(BuildContext context) {");
+    buffer.writeln(
+        "    return Localizations.of<$className>(context, $className)!;");
+    buffer.writeln("  }");
+    buffer.writeln();
 
     // Supported locales
     buffer.writeln("  /// All supported locales for this application.");
@@ -145,6 +117,55 @@ class DartWriter {
       buffer.writeln("    Locale('${locale.locale}'),");
     }
     buffer.writeln("  ];");
+    buffer.writeln();
+
+    // Runtime resolver (optional namespace + fallback)
+    buffer.writeln('  /// Resolves a translation by its **flattened key path** at runtime.');
+    buffer.writeln('  ///');
+    buffer.writeln('  /// Summary');
+    buffer.writeln('  /// - Useful for dynamic lookups (e.g. received keys from backend).');
+    buffer.writeln('  /// - Supports an optional [namespace] prefix to reduce repetition.');
+    buffer.writeln('  /// - Returns [fallback] if the key is missing for the current locale.');
+    buffer.writeln('  ///');
+    buffer.writeln('  /// Usage');
+    buffer.writeln('  /// ```dart');
+    buffer.writeln("  /// $className.of(context).resolveByKey('app.title');");
+    buffer.writeln("  /// $className.of(context).resolveByKey('title', namespace: 'app', fallback: '...');");
+    buffer.writeln('  /// ```');
+    buffer.writeln('  ///');
+    buffer.writeln('  /// Notes');
+    buffer.writeln('  /// - This does not do placeholder interpolation. For placeholders, prefer the typed API.');
+    buffer.writeln('  String? resolveByKey(');
+    buffer.writeln('    String key, {');
+    buffer.writeln('    String? namespace,');
+    buffer.writeln('    String? fallback,');
+    buffer.writeln('  }) {');
+    buffer.writeln('    final normalizedKey = (namespace == null || namespace.trim().isEmpty)');
+    buffer.writeln('        ? key.trim()');
+    buffer.writeln("        : '\${namespace.trim()}.\${key.trim()}';");
+    buffer.writeln();
+    buffer.writeln('    switch (locale.languageCode) {');
+
+    // Build per-locale map cases.
+    for (final locale in locales) {
+      buffer.writeln("      case '${locale.locale}': {");
+      buffer.writeln('        const map = <String, String>{');
+      final entries = locale.items.entries.toList()
+        ..sort((a, b) => a.key.compareTo(b.key));
+      for (final entry in entries) {
+        final item = entry.value;
+        // Only include plain string values. For plurals/gender/context, resolve to the stored `value`.
+        buffer.writeln('          ${jsonEncode(entry.key)}: ${_dartStringLiteral(item.value)},');
+      }
+      buffer.writeln('        };');
+      buffer.writeln('        return map[normalizedKey] ?? fallback;');
+      buffer.writeln('      }');
+    }
+
+    buffer.writeln('      default:');
+    buffer.writeln('        return fallback;');
+    buffer.writeln('    }');
+    buffer.writeln('  }');
     buffer.writeln();
 
     // Build nested structure
@@ -157,9 +178,10 @@ class DartWriter {
 
       if (value is Map) {
         // This is a namespace, create a getter for nested class
-        final nestedClassName = '_${_toPascalCase(key)}';
+        final nestedClassName = '_${_toPascalCase(_renameSegment(key))}';
         buffer.writeln("  /// Translations for the $key namespace.");
-        buffer.writeln("  $nestedClassName get $key => $nestedClassName(locale);");
+        buffer.writeln(
+            "  $nestedClassName get ${_renameSegment(key)} => $nestedClassName(this);");
         buffer.writeln();
       }
     }
@@ -173,7 +195,8 @@ class DartWriter {
     }
 
     // Add helper methods if any locale has plurals, genders, or contexts
-    final hasAnySpecialForms = baseLocale.items.values.any((item) => item.hasPlurals || item.hasGenders || item.hasContexts);
+    final hasAnySpecialForms = baseLocale.items.values
+        .any((item) => item.hasPlurals || item.hasGenders || item.hasContexts);
     if (hasAnySpecialForms) {
       buffer.writeln(_generateHelperMethods());
     }
@@ -182,7 +205,8 @@ class DartWriter {
     buffer.writeln();
 
     // Generate nested classes
-    buffer.write(_generateNestedClasses(nestedStructure, locales, baseLocale.items));
+    buffer.write(
+        _generateNestedClasses(nestedStructure, locales, baseLocale.items));
 
     // Generate delegate
     buffer.writeln(_generateDelegate(locales));
@@ -207,7 +231,8 @@ class DartWriter {
   /// // Output:
   /// {"auth": {"login": {"title": LocalizationItem(...)}}}
   /// ```
-  Map<String, dynamic> _buildNestedStructure(Map<String, LocalizationItem> items) {
+  Map<String, dynamic> _buildNestedStructure(
+      Map<String, LocalizationItem> items) {
     final result = <String, dynamic>{};
 
     for (final item in items.values) {
@@ -282,14 +307,16 @@ class DartWriter {
       if (value is Map) {
         // Build class name from parent path
         final currentPath = parentPath.isEmpty ? key : '${parentPath}_$key';
-        final className = '_${_pathToPascalCase(currentPath)}';
+        final className =
+            '_${_pathToPascalCase(_renameUnderscorePath(currentPath))}';
         final displayPath = currentPath.replaceAll('_', '.');
 
         buffer.writeln("/// Translations for $displayPath namespace");
         buffer.writeln("class $className {");
-        buffer.writeln("  $className(this.locale);");
+        buffer.writeln("  $className(this._root);");
         buffer.writeln();
-        buffer.writeln("  final Locale locale;");
+        buffer.writeln("  final AppLocalizations _root;");
+        buffer.writeln("  Locale get locale => _root.locale;");
         buffer.writeln();
 
         // Convert to Map<String, dynamic> for type safety
@@ -302,9 +329,12 @@ class DartWriter {
 
           if (nestedValue is Map) {
             final nestedPath = '${currentPath}_$nestedKey';
-            final nestedClassName = '_${_pathToPascalCase(nestedPath)}';
+            final nestedClassName =
+                '_${_pathToPascalCase(_renameUnderscorePath(nestedPath))}';
+            final renamedNestedKey = _renameSegment(nestedKey);
             buffer.writeln("  /// App $displayPath.$nestedKey translations");
-            buffer.writeln("  $nestedClassName get $nestedKey => $nestedClassName(locale);");
+            buffer.writeln(
+                "  $nestedClassName get $renamedNestedKey => $nestedClassName(_root);");
             buffer.writeln();
           }
         }
@@ -312,7 +342,11 @@ class DartWriter {
         // Generate methods for leaf nodes in this namespace
         for (final nestedEntry in valueMap.entries) {
           if (nestedEntry.value is LocalizationItem) {
-            buffer.writeln(_generateMethod(nestedEntry.value as LocalizationItem, locales, isNested: true));
+            buffer.writeln(_generateMethod(
+              nestedEntry.value as LocalizationItem,
+              locales,
+              isNested: true,
+            ));
           }
         }
 
@@ -356,75 +390,155 @@ class DartWriter {
   ///   }
   /// }
   /// ```
-  String _generateMethod(LocalizationItem item, List<LocaleData> locales, {bool isNested = false}) {
+  String _generateMethod(LocalizationItem item, List<LocaleData> locales,
+      {bool isNested = false}) {
     final buffer = StringBuffer();
 
-    // Get the simple key (last part after dots)
     final simpleKey = item.key.split('.').last;
-
-    // Add description as doc comment
-    if (item.description != null) {
-      buffer.writeln("  /// ${item.description}");
-    }
+    final methodName = _renameSegment(simpleKey);
 
     // Handle pluralization
     if (item.hasPlurals) {
-      return _generatePluralMethod(item, locales, simpleKey);
+      return _generatePluralMethod(item, locales, methodName);
     }
 
     // Handle gender forms
     if (item.hasGenders) {
-      return _generateGenderMethod(item, locales, simpleKey);
+      return _generateGenderMethod(item, locales, methodName);
     }
 
     // Handle context forms
     if (item.hasContexts) {
-      return _generateContextMethod(item, locales, simpleKey);
+      return _generateContextMethod(item, locales, methodName);
     }
 
-    // Generate method signature
     if (item.hasParameters) {
-      // Method with parameters: welcomeUser({required String name})
-      final params = item.parameters.map((p) => 'required String $p').join(', ');
-      buffer.writeln("  String $simpleKey({$params}) {");
+      final placeholderMap = _buildPlaceholderMap(item.parameters);
+      final signatureParams = placeholderMap.values.toList(growable: false);
+
+      final params =
+          signatureParams.map((p) => 'required String $p').join(', ');
+      buffer.writeln("  String $methodName({$params}) {");
       buffer.writeln("    switch (locale.languageCode) {");
 
-      // Generate switch cases for each locale
       for (final locale in locales) {
         final localeItem = locale.items[item.key];
         if (localeItem != null) {
           buffer.write("      case '${locale.locale}': return ");
-          buffer.write(_interpolateString(localeItem.value, localeItem.parameters));
+          buffer.write(
+              _interpolateWithPlaceholderMap(localeItem.value, placeholderMap));
           buffer.writeln(";");
         }
       }
 
-      // Default case
       buffer.write("      default: return ");
-      buffer.write(_dartStringLiteral(item.value));
+      buffer.write(_interpolateWithPlaceholderMap(item.value, placeholderMap));
       buffer.writeln(";");
 
       buffer.writeln("    }");
       buffer.writeln("  }");
     } else {
-      // Simple getter: String get hello
-      buffer.writeln("  String get $simpleKey {");
+      buffer.writeln("  String get $methodName {");
       buffer.writeln("    switch (locale.languageCode) {");
 
       for (final locale in locales) {
         final localeItem = locale.items[item.key];
         if (localeItem != null) {
-          buffer.writeln("      case '${locale.locale}': return ${_dartStringLiteral(localeItem.value)};");
+          buffer.writeln(
+              "      case '${locale.locale}': return ${_dartStringLiteral(localeItem.value)};");
         }
       }
 
-      buffer.writeln("      default: return ${_dartStringLiteral(item.value)};");
+      buffer
+          .writeln("      default: return ${_dartStringLiteral(item.value)};");
       buffer.writeln("    }");
       buffer.writeln("  }");
     }
 
     buffer.writeln();
     return buffer.toString();
+  }
+
+  /// Builds a stable mapping from JSON placeholder token name -> Dart identifier.
+  ///
+  /// Example:
+  /// - JSON placeholder: `first_name`
+  /// - Dart identifier (camel): `firstName`
+  Map<String, String> _buildPlaceholderMap(List<String> placeholders) {
+    final map = <String, String>{};
+    for (final p in placeholders) {
+      map[p] = _renameSegment(p);
+    }
+    return map;
+  }
+
+  /// Interpolates a translation template using a placeholder mapping.
+  ///
+  /// - Rewrites `{token}` -> `${dartIdentifier}`.
+  /// - Escapes all other characters safely.
+  String _interpolateWithPlaceholderMap(
+    String template,
+    Map<String, String> placeholderMap,
+  ) {
+    return _dartInterpolatedStringLiteralWithMap(template, placeholderMap);
+  }
+
+  String _dartInterpolatedStringLiteralWithMap(
+    String text,
+    Map<String, String> placeholderMap,
+  ) {
+    // Mark placeholders with a sentinel so we can escape literal '$' safely.
+    const sentinelPrefix = '__LG_INTERP_START__';
+    const sentinelSuffix = '__LG_INTERP_END__';
+
+    var withSentinels = text;
+    placeholderMap.forEach((token, dartName) {
+      withSentinels = withSentinels.replaceAll(
+        '{$token}',
+        '$sentinelPrefix$dartName$sentinelSuffix',
+      );
+    });
+
+    var encoded = jsonEncode(withSentinels);
+    // Escape '$' for Dart string literals (avoid accidental interpolation).
+    // Dart expects the literal sequence: \$ (one backslash before the dollar sign).
+    encoded = encoded.replaceAll(r'$', r'\$');
+
+    final inner =
+        encoded.substring(1, encoded.length - 1).replaceAll(r'\\"', '"');
+    final withEscapedSingleQuotes = inner.replaceAll("'", r"\\'");
+
+    var restored = withEscapedSingleQuotes;
+    placeholderMap.forEach((token, dartName) {
+      restored = restored.replaceAll(
+        '$sentinelPrefix$dartName$sentinelSuffix',
+        r'${' '$dartName' r'}',
+      );
+    });
+
+    return "'$restored'";
+  }
+
+  /// Produces a Dart string literal that is always syntactically valid.
+  ///
+  /// This generator uses single-quoted Dart string literals.
+  /// It escapes:
+  /// - backslashes
+  /// - control characters (\r, \n, \t)
+  /// - dollar signs (to prevent interpolation)
+  /// - single quotes
+  String _dartStringLiteral(String text) {
+    var encoded = jsonEncode(text);
+    // Escape '$' for Dart string literals (avoid accidental interpolation).
+    // Dart expects the literal sequence: \$ (one backslash before the dollar sign).
+    encoded = encoded.replaceAll(r'$', r'\$');
+
+    final inner =
+        encoded.substring(1, encoded.length - 1).replaceAll(r'\\"', '"');
+
+    final withEscapedSingleQuotes = inner.replaceAll("'", r"\\'");
+
+    return "'$withEscapedSingleQuotes'";
   }
 
   /// Generates a method for pluralization support.
@@ -437,10 +551,21 @@ class DartWriter {
   /// The [simpleKey] parameter is the method name to generate.
   ///
   /// Returns a string containing the generated pluralization method.
-  String _generatePluralMethod(LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+  String _generatePluralMethod(
+      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
     final buffer = StringBuffer();
-    final params = item.parameters.where((p) => p != 'count').toList();
-    final paramStr = params.isEmpty ? '{required int count}' : '{required int count, ${params.map((p) => 'required String $p').join(', ')}}';
+
+    final placeholderMap = _buildPlaceholderMap(item.parameters);
+
+    // Always require count, but rename any additional placeholders.
+    final extraParams = item.parameters
+        .where((p) => p != 'count')
+        .map((p) => placeholderMap[p] ?? _renameSegment(p))
+        .toList(growable: false);
+
+    final paramStr = extraParams.isEmpty
+        ? '{required int count}'
+        : '{required int count, ${extraParams.map((p) => 'required String $p').join(', ')}}';
 
     buffer.writeln("  String $simpleKey($paramStr) {");
     buffer.writeln("    switch (locale.languageCode) {");
@@ -449,12 +574,13 @@ class DartWriter {
       final localeItem = locale.items[item.key];
       if (localeItem != null && localeItem.hasPlurals) {
         buffer.writeln("      case '${locale.locale}':");
-        buffer.writeln("        return _selectPlural(count, {");
+        buffer.writeln("        return _root._selectPlural(count, {");
 
         for (final entry in localeItem.pluralForms!.entries) {
           final form = entry.key;
           final value = entry.value;
-          final interpolated = _interpolateStringForPlural(value, item.parameters);
+          final interpolated =
+              _interpolateWithPlaceholderMap(value, placeholderMap);
           buffer.writeln("          '$form': $interpolated,");
         }
 
@@ -462,14 +588,14 @@ class DartWriter {
       }
     }
 
-    // Default case
     if (item.pluralForms != null) {
       buffer.writeln("      default:");
-      buffer.writeln("        return _selectPlural(count, {");
+      buffer.writeln("        return _root._selectPlural(count, {");
       for (final entry in item.pluralForms!.entries) {
         final form = entry.key;
         final value = entry.value;
-        final interpolated = _interpolateStringForPlural(value, item.parameters);
+        final interpolated =
+            _interpolateWithPlaceholderMap(value, placeholderMap);
         buffer.writeln("          '$form': $interpolated,");
       }
       buffer.writeln("        });");
@@ -491,10 +617,20 @@ class DartWriter {
   /// The [simpleKey] parameter is the method name to generate.
   ///
   /// Returns a string containing the generated gender-based method.
-  String _generateGenderMethod(LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+  String _generateGenderMethod(
+      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
     final buffer = StringBuffer();
-    final params = item.parameters.where((p) => p != 'gender').toList();
-    final paramStr = params.isEmpty ? '{required String gender}' : '{required String gender, ${params.map((p) => 'required String $p').join(', ')}}';
+
+    final placeholderMap = _buildPlaceholderMap(item.parameters);
+
+    final extraParams = item.parameters
+        .where((p) => p != 'gender')
+        .map((p) => placeholderMap[p] ?? _renameSegment(p))
+        .toList(growable: false);
+
+    final paramStr = extraParams.isEmpty
+        ? '{required String gender}'
+        : '{required String gender, ${extraParams.map((p) => 'required String $p').join(', ')}}';
 
     buffer.writeln("  String $simpleKey($paramStr) {");
     buffer.writeln("    switch (locale.languageCode) {");
@@ -503,12 +639,13 @@ class DartWriter {
       final localeItem = locale.items[item.key];
       if (localeItem != null && localeItem.hasGenders) {
         buffer.writeln("      case '${locale.locale}':");
-        buffer.writeln("        return _selectGender(gender, {");
+        buffer.writeln("        return _root._selectGender(gender, {");
 
         for (final entry in localeItem.genderForms!.entries) {
           final form = entry.key;
           final value = entry.value;
-          final interpolated = _interpolateStringForPlural(value, item.parameters);
+          final interpolated =
+              _interpolateWithPlaceholderMap(value, placeholderMap);
           buffer.writeln("          '$form': $interpolated,");
         }
 
@@ -516,14 +653,14 @@ class DartWriter {
       }
     }
 
-    // Default case
     if (item.genderForms != null) {
       buffer.writeln("      default:");
-      buffer.writeln("        return _selectGender(gender, {");
+      buffer.writeln("        return _root._selectGender(gender, {");
       for (final entry in item.genderForms!.entries) {
         final form = entry.key;
         final value = entry.value;
-        final interpolated = _interpolateStringForPlural(value, item.parameters);
+        final interpolated =
+            _interpolateWithPlaceholderMap(value, placeholderMap);
         buffer.writeln("          '$form': $interpolated,");
       }
       buffer.writeln("        });");
@@ -545,10 +682,20 @@ class DartWriter {
   /// The [simpleKey] parameter is the method name to generate.
   ///
   /// Returns a string containing the generated context-based method.
-  String _generateContextMethod(LocalizationItem item, List<LocaleData> locales, String simpleKey) {
+  String _generateContextMethod(
+      LocalizationItem item, List<LocaleData> locales, String simpleKey) {
     final buffer = StringBuffer();
-    final params = item.parameters.where((p) => p != 'context').toList();
-    final paramStr = params.isEmpty ? '{required String context}' : '{required String context, ${params.map((p) => 'required String $p').join(', ')}}';
+
+    final placeholderMap = _buildPlaceholderMap(item.parameters);
+
+    final extraParams = item.parameters
+        .where((p) => p != 'context')
+        .map((p) => placeholderMap[p] ?? _renameSegment(p))
+        .toList(growable: false);
+
+    final paramStr = extraParams.isEmpty
+        ? '{required String context}'
+        : '{required String context, ${extraParams.map((p) => 'required String $p').join(', ')}}';
 
     buffer.writeln("  String $simpleKey($paramStr) {");
     buffer.writeln("    switch (locale.languageCode) {");
@@ -557,12 +704,13 @@ class DartWriter {
       final localeItem = locale.items[item.key];
       if (localeItem != null && localeItem.hasContexts) {
         buffer.writeln("      case '${locale.locale}':");
-        buffer.writeln("        return _selectContext(context, {");
+        buffer.writeln("        return _root._selectContext(context, {");
 
         for (final entry in localeItem.contextForms!.entries) {
           final form = entry.key;
           final value = entry.value;
-          final interpolated = _interpolateStringForPlural(value, item.parameters);
+          final interpolated =
+              _interpolateWithPlaceholderMap(value, placeholderMap);
           buffer.writeln("          '$form': $interpolated,");
         }
 
@@ -570,14 +718,14 @@ class DartWriter {
       }
     }
 
-    // Default case
     if (item.contextForms != null) {
       buffer.writeln("      default:");
-      buffer.writeln("        return _selectContext(context, {");
+      buffer.writeln("        return _root._selectContext(context, {");
       for (final entry in item.contextForms!.entries) {
         final form = entry.key;
         final value = entry.value;
-        final interpolated = _interpolateStringForPlural(value, item.parameters);
+        final interpolated =
+            _interpolateWithPlaceholderMap(value, placeholderMap);
         buffer.writeln("          '$form': $interpolated,");
       }
       buffer.writeln("        });");
@@ -587,6 +735,20 @@ class DartWriter {
     buffer.writeln("  }");
     buffer.writeln();
     return buffer.toString();
+  }
+
+  // Helpers for renaming
+  String _renameSegment(String segment) {
+    // Preserve already-valid identifiers when mode is none.
+    // For other modes, rely on FieldRename.convert.
+    return fieldRename.convert(segment);
+  }
+
+  String _renameUnderscorePath(String underscorePath) {
+    // Used for class names built from underscore paths.
+    // Convert each underscore-separated segment then rejoin with underscores
+    // so existing PascalCase builders can still work.
+    return underscorePath.split('_').map(_renameSegment).join('_');
   }
 
   /// Converts a string to PascalCase.
@@ -605,117 +767,11 @@ class DartWriter {
   /// Converts a path to PascalCase for class names.
   ///
   /// Handles underscores in nested paths to create appropriate class names.
-  ///
-  /// Example:
-  /// ```dart
-  /// _pathToPascalCase('level1_level2'); // Returns 'Level1Level2'
-  /// _pathToPascalCase('auth_login');    // Returns 'AuthLogin'
-  /// ```
   String _pathToPascalCase(String path) {
     return path.split('_').map((part) {
       if (part.isEmpty) return '';
       return part[0].toUpperCase() + part.substring(1);
     }).join('');
-  }
-
-  /// Interpolates parameters into a string template.
-  ///
-  /// Converts template placeholders like {name} into Dart string interpolation
-  /// syntax like $name.
-  ///
-  /// The [template] parameter is the string with {placeholder} syntax.
-  /// The [params] parameter lists all parameters to interpolate.
-  ///
-  /// Returns a quoted string with Dart interpolation syntax.
-  ///
-  /// Example:
-  /// ```dart
-  /// _interpolateString('Welcome {name}', ['name']);
-  /// // Returns "'Welcome \$name'"
-  /// ```
-  String _interpolateString(String template, List<String> params) {
-    // Turn JSON placeholders like "{name}" into Dart interpolation while still
-    // escaping any *literal* dollar signs from the translation text.
-    //
-    // We generate a single-quoted Dart string literal that may include
-    // interpolation segments (e.g. 'Hello ${name}').
-    return _dartInterpolatedStringLiteral(template, params);
-  }
-
-  String _interpolateStringForPlural(String template, List<String> params) {
-    return _dartInterpolatedStringLiteral(template, params);
-  }
-
-  /// Produces a Dart string literal that may contain interpolation.
-  ///
-  /// - Replaces occurrences of `{param}` with `${param}`.
-  /// - Escapes *literal* `$` characters not part of an interpolation.
-  /// - Escapes backslashes, quotes, and control characters.
-  String _dartInterpolatedStringLiteral(String text, List<String> params) {
-    // Mark placeholders with a sentinel so we can escape literal '$' safely.
-    const sentinelPrefix = '__LG_INTERP_START__';
-    const sentinelSuffix = '__LG_INTERP_END__';
-
-    var withSentinels = text;
-    for (final param in params) {
-      withSentinels = withSentinels.replaceAll(
-        '{$param}',
-        '$sentinelPrefix$param$sentinelSuffix',
-      );
-    }
-
-    // Escape everything as a normal Dart literal first.
-    var encoded = jsonEncode(withSentinels);
-
-    // Escape dollars to prevent unintended interpolation.
-    encoded = encoded.replaceAll(r'$', r'\$');
-
-    // Convert JSON double-quoted string to single-quoted Dart string.
-    final inner = encoded.substring(1, encoded.length - 1).replaceAll(r'\"', '"');
-    final withEscapedSingleQuotes = inner.replaceAll("'", r"\'");
-
-    // Restore interpolation segments.
-    var restored = withEscapedSingleQuotes;
-    for (final param in params) {
-      restored = restored.replaceAll(
-        '$sentinelPrefix$param$sentinelSuffix',
-        r'${' '$param' r'}',
-      );
-    }
-
-    return "'$restored'";
-  }
-
-  /// Produces a Dart string literal that is always syntactically valid.
-  ///
-  /// This generator always uses single-quoted Dart string literals for
-  /// consistency and to avoid edge cases when input contains `"` sequences.
-  ///
-  /// It escapes:
-  /// - backslashes
-  /// - control characters (\r, \n, \t)
-  /// - dollar signs (to prevent interpolation)
-  /// - single quotes
-  String _dartStringLiteral(String text) {
-    // NOTE: We intentionally do NOT transform literal `\\n` sequences.
-    // If the JSON contains the two characters "\\" + "n", then the generated
-    // Dart source must preserve them as a literal backslash-n.
-    // Real newline characters are still escaped by jsonEncode.
-
-    // Use JSON encoding as a robust baseline (handles control chars and quotes).
-    // jsonEncode() returns a double-quoted JSON string literal.
-    var encoded = jsonEncode(text);
-
-    // Prevent Dart interpolation by escaping dollars.
-    // encoded contains no raw newlines; they're escaped as \n already.
-    encoded = encoded.replaceAll(r'$', r'\$');
-
-    // Convert the JSON double-quoted literal into a single-quoted Dart literal.
-    final inner = encoded.substring(1, encoded.length - 1).replaceAll(r'\"', '"');
-
-    final withEscapedSingleQuotes = inner.replaceAll("'", r"\'");
-
-    return "'$withEscapedSingleQuotes'";
   }
 
   /// Generates helper methods for plural, gender, and context selection.
@@ -754,7 +810,7 @@ class DartWriter {
   /// Generates the LocalizationsDelegate implementation.
   ///
   /// Creates a delegate class that Flutter uses to load localization instances.
-  /// Also generates an extension for convenient access to the delegate.
+  /// Also generates an extension for convenient access.
   ///
   /// The [locales] parameter contains all supported locale data.
   ///
@@ -769,7 +825,8 @@ class DartWriter {
     final buffer = StringBuffer();
 
     buffer.writeln("/// Localization delegate for $className");
-    buffer.writeln("class ${className}Delegate extends LocalizationsDelegate<$className> {");
+    buffer.writeln(
+        "class ${className}Delegate extends LocalizationsDelegate<$className> {");
     buffer.writeln("  const ${className}Delegate();");
     buffer.writeln();
     buffer.writeln("  @override");

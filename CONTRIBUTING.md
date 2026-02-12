@@ -5,36 +5,60 @@ Repository: https://github.com/alpinnz/localization_gen
 ## Quick Start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/localization_gen.git
+git clone https://github.com/alpinnz/localization_gen.git
 cd localization_gen
+
+# Install deps
 
 dart pub get
 
+# Format + analyze
+
 dart format .
 dart analyze
-dart test
+
+# Run tests (recommended)
+
+flutter test
+
+# Example app tests
+
+(cd example && flutter test)
 ```
 
 ## Development Standards
 
 ### Code Style
 
-Follow Dart conventions and prefer clear variable names.
+Follow Dart conventions and prefer clear, consistent naming.
 
 ### Documentation
 
-All public APIs should be documented with examples when helpful.
+- Keep documentation factual and consistent.
+- JSON/JSONC keys should remain `snake_case`.
+- Generated Dart API uses `camelCase` by default (`field_rename: camel`).
+
+### Localization fixtures
+
+This repo stores canonical fixtures as **JSONC** under `assets/localizations/`:
+- JSONC is the canonical spec (commented, developer-readable).
+- The generator consumes strict JSON (`.json`).
+
+Repo policy is **modular-only**:
+- Every localization file must include `@@locale` and `@@module`.
 
 ### Testing
 
 - Add tests for new behavior and edge cases.
 - Prefer fast unit tests.
+- If you run pure Dart tests locally, `dart test` should also work for most cases.
 
 ## Pull Request Checklist
 
 - Code is formatted (`dart format .`)
 - No analyzer issues (`dart analyze`)
-- Tests pass (`dart test`)
+- Tests pass (`flutter test`)
+- Example tests pass (`cd example && flutter test`)
 - Documentation updated when behavior or configuration changes
 - `CHANGELOG.md` updated for user-facing changes
 

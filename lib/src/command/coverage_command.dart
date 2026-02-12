@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:args/args.dart';
+
+import 'package:localization_gen/src/config/config_reader.dart';
+import 'package:localization_gen/src/parser/json_parser.dart';
+
 import 'base_command.dart';
-import '../config/config_reader.dart';
-import '../parser/json_parser.dart';
 
 /// Command to generate translation coverage report.
 ///
@@ -29,7 +31,6 @@ class CoverageCommand extends BaseCommand {
   /// Analyzes all localization files and generates a coverage report.
   ///
   /// Supports the following options:
-  /// - `--config` or `-c`: Path to pubspec.yaml
   /// - `--format` or `-f`: Output format (text, json, html)
   /// - `--output` or `-o`: Output file (stdout if not specified)
   /// - `--help` or `-h`: Show help information
@@ -38,12 +39,6 @@ class CoverageCommand extends BaseCommand {
   @override
   Future<int> execute(List<String> args) async {
     final parser = ArgParser()
-      ..addOption(
-        'config',
-        abbr: 'c',
-        help: 'Path to pubspec.yaml',
-        defaultsTo: 'pubspec.yaml',
-      )
       ..addOption(
         'format',
         abbr: 'f',
@@ -71,18 +66,16 @@ class CoverageCommand extends BaseCommand {
         return 0;
       }
 
-      final configPath = results['config'] as String;
       final format = results['format'] as String;
       final outputPath = results['output'] as String?;
 
       printInfo('Generating coverage report...\n');
 
-      final config = ConfigReader.read(configPath);
+      final config = ConfigReader.read();
 
       // Parse all locales
       final locales = JsonLocalizationParser.parseDirectory(
         config.inputDir,
-        modular: config.modular,
         filePrefix: config.filePrefix,
       );
 
@@ -131,7 +124,8 @@ class CoverageCommand extends BaseCommand {
 
       final missingKeys = baseKeys.difference(localeKeys);
       final extraKeys = localeKeys.difference(baseKeys);
-      final coveragePercent = (localeKeys.length / totalKeys * 100).toStringAsFixed(2);
+      final coveragePercent =
+          (localeKeys.length / totalKeys * 100).toStringAsFixed(2);
 
       coverage[localeCode] = {
         'total': totalKeys,
@@ -188,7 +182,8 @@ class CoverageCommand extends BaseCommand {
       final info = entry.value as Map<String, dynamic>;
 
       buffer.writeln('Locale: $locale');
-      buffer.writeln('  Translated: ${info['translated']}/$totalKeys (${info['percentage']}%)');
+      buffer.writeln(
+          '  Translated: ${info['translated']}/$totalKeys (${info['percentage']}%)');
 
       if (info['missing'] > 0) {
         buffer.writeln('  Missing: ${info['missing']} key(s)');
@@ -239,19 +234,25 @@ class CoverageCommand extends BaseCommand {
     buffer.writeln('<head>');
     buffer.writeln('  <title>Translation Coverage Report</title>');
     buffer.writeln('  <style>');
-    buffer.writeln('    body { font-family: Arial, sans-serif; margin: 20px; }');
+    buffer
+        .writeln('    body { font-family: Arial, sans-serif; margin: 20px; }');
     buffer.writeln('    h1 { color: #333; }');
-    buffer.writeln('    table { border-collapse: collapse; width: 100%; margin-top: 20px; }');
-    buffer.writeln('    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }');
+    buffer.writeln(
+        '    table { border-collapse: collapse; width: 100%; margin-top: 20px; }');
+    buffer.writeln(
+        '    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }');
     buffer.writeln('    th { background-color: #4CAF50; color: white; }');
     buffer.writeln('    tr:nth-child(even) { background-color: #f2f2f2; }');
-    buffer.writeln('    .progress-bar { background-color: #ddd; border-radius: 10px; overflow: hidden; }');
-    buffer.writeln('    .progress-fill { height: 20px; background-color: #4CAF50; text-align: center; color: white; line-height: 20px; }');
+    buffer.writeln(
+        '    .progress-bar { background-color: #ddd; border-radius: 10px; overflow: hidden; }');
+    buffer.writeln(
+        '    .progress-fill { height: 20px; background-color: #4CAF50; text-align: center; color: white; line-height: 20px; }');
     buffer.writeln('  </style>');
     buffer.writeln('</head>');
     buffer.writeln('<body>');
     buffer.writeln('  <h1>Translation Coverage Report</h1>');
-    buffer.writeln('  <p>Total translation keys: <strong>$totalKeys</strong></p>');
+    buffer.writeln(
+        '  <p>Total translation keys: <strong>$totalKeys</strong></p>');
     buffer.writeln('  <table>');
     buffer.writeln('    <tr>');
     buffer.writeln('      <th>Locale</th>');
@@ -270,7 +271,8 @@ class CoverageCommand extends BaseCommand {
       buffer.writeln('      <td>${info['missing']}</td>');
       buffer.writeln('      <td>');
       buffer.writeln('        <div class="progress-bar">');
-      buffer.writeln('          <div class="progress-fill" style="width: ${info['percentage']}%">${info['percentage']}%</div>');
+      buffer.writeln(
+          '          <div class="progress-fill" style="width: ${info['percentage']}%">${info['percentage']}%</div>');
       buffer.writeln('        </div>');
       buffer.writeln('      </td>');
       buffer.writeln('    </tr>');
@@ -296,6 +298,7 @@ class CoverageCommand extends BaseCommand {
     print('\nExamples:');
     print('  dart run localization_gen coverage');
     print('  dart run localization_gen coverage --format=json');
-    print('  dart run localization_gen coverage --format=html --output=coverage.html');
+    print(
+        '  dart run localization_gen coverage --format=html --output=coverage.html');
   }
 }

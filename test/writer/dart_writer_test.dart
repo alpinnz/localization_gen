@@ -6,6 +6,7 @@ library;
 import 'package:test/test.dart';
 import 'package:localization_gen/src/writer/dart_writer.dart';
 import 'package:localization_gen/src/model/localization_item.dart';
+import 'package:localization_gen/src/model/field_rename.dart';
 
 void main() {
   group('DartWriter', () {
@@ -14,8 +15,7 @@ void main() {
     setUp(() {
       writer = DartWriter(
         className: 'TestLocalizations',
-        useContext: true,
-        nullable: false,
+        fieldRename: FieldRename.camel,
       );
     });
 
@@ -209,45 +209,6 @@ void main() {
       });
     });
 
-    group('Configuration', () {
-      test('respects useContext = true', () {
-        final writerWithContext = DartWriter(
-          className: 'TestLocalizations',
-          useContext: true,
-        );
-
-        final locales = [LocaleData(locale: 'en', items: {})];
-        final code = writerWithContext.generate(locales);
-
-        expect(code, contains('static TestLocalizations of(BuildContext'));
-      });
-
-      test('respects useContext = false', () {
-        final writerWithoutContext = DartWriter(
-          className: 'TestLocalizations',
-          useContext: false,
-        );
-
-        final locales = [LocaleData(locale: 'en', items: {})];
-        final code = writerWithoutContext.generate(locales);
-
-        expect(code, isNot(contains('static TestLocalizations of(')));
-      });
-
-      test('respects nullable = true', () {
-        final writerNullable = DartWriter(
-          className: 'TestLocalizations',
-          nullable: true,
-          useContext: true,
-        );
-
-        final locales = [LocaleData(locale: 'en', items: {})];
-        final code = writerNullable.generate(locales);
-
-        expect(code, contains('TestLocalizations?'));
-      });
-    });
-
     group('Delegate Generation', () {
       test('generates delegate class', () {
         final locales = [LocaleData(locale: 'en', items: {})];
@@ -262,6 +223,127 @@ void main() {
         final code = writer.generate(locales);
 
         expect(code, contains('Future<TestLocalizations> load'));
+      });
+    });
+
+    group('Dartdoc Metadata', () {
+      test(
+          'does not emit per-key metadata into generated output (currently skipped)',
+          () {
+        final locales = [
+          LocaleData(
+            locale: 'en',
+            items: {
+              'welcome_user': LocalizationItem(
+                key: 'welcome_user',
+                value: 'Welcome, {name}.',
+                parameters: ['name'],
+                description: 'Greets a user by name.',
+                example: 'Welcome, John.',
+                placeholderDocs: const {
+                  'name': 'User display name',
+                },
+              ),
+            },
+          ),
+        ];
+
+        final code = writer.generate(locales);
+
+        // Should still generate the API.
+        expect(code, contains('String welcomeUser({required String name})'));
+
+        // But should not embed metadata text into dartdoc yet.
+        expect(code, isNot(contains('Greets a user by name.')));
+        expect(code, isNot(contains('Placeholders:')));
+        expect(code, isNot(contains('User display name')));
+        expect(code, isNot(contains('Welcome, John.')));
+      });
+    });
+
+    group('Field Rename', () {
+      test('applies fieldRename to simple keys (camelCase)', () {
+        final locales = [
+          LocaleData(
+            locale: 'en',
+            items: {
+              'first_name': LocalizationItem(
+                key: 'first_name',
+                value: 'First Name',
+                parameters: [],
+              ),
+            },
+          ),
+        ];
+
+        final code = writer.generate(locales);
+
+        expect(code, contains('String get firstName'));
+      });
+
+      test('applies fieldRename to nested keys (camelCase)', () {
+        final locales = [
+          LocaleData(
+            locale: 'en',
+            items: {
+              'user_profile.first_name': LocalizationItem(
+                key: 'user_profile.first_name',
+                value: 'First Name',
+                parameters: [],
+              ),
+            },
+          ),
+        ];
+
+        final code = writer.generate(locales);
+
+        expect(code, contains('get userProfile'));
+        expect(code, contains('String get firstName'));
+      });
+    });
+
+    group('Runtime key resolver', () {
+      test('generates resolveByKey with namespace and fallback', () {
+        final writer = DartWriter(className: 'TestLocalizations');
+        final locales = [
+          LocaleData(
+            locale: 'en',
+            items: {
+              'app.title': LocalizationItem(
+                key: 'app.title',
+                value: 'Demo',
+              ),
+            },
+          ),
+          LocaleData(
+            locale: 'id',
+            items: {
+              'app.title': LocalizationItem(
+                key: 'app.title',
+                value: 'Demo',
+              ),
+            },
+          ),
+        ];
+
+        final code = writer.generate(locales);
+
+        expect(code, contains('String? resolveByKey('));
+        expect(code, contains('String? namespace'));
+        expect(code, contains('String? fallback'));
+
+        // Preferred direct-call usage style in docs (must match exactly)
+        expect(
+          code,
+          contains("TestLocalizations.of(context).resolveByKey('app.title');"),
+        );
+
+        // Implementation
+        expect(code, contains("? key.trim()"));
+        expect(code, contains(r": '${namespace.trim()}.${key.trim()}';"));
+        expect(code, contains("const map = <String, String>{"));
+        expect(code, contains("'app.title'"));
+        expect(code, contains('return map[normalizedKey] ?? fallback;'));
       });
     });
   });

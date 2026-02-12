@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:test/test.dart';
-
 import 'package:localization_gen/src/parser/json_parser.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Windows path handling', () {
@@ -12,27 +11,33 @@ void main() {
         if (dir.existsSync()) dir.deleteSync(recursive: true);
       });
 
-      final file = File('${dir.path}${Platform.pathSeparator}app_en.JSON');
-      file.writeAsStringSync('{"hello":"Hi"}');
+      final file =
+          File('${dir.path}${Platform.pathSeparator}app_common_en.JSON');
+      file.writeAsStringSync(
+          '{"@@locale":"en","@@module":"common","hello":"Hi"}');
 
-      final locales = JsonLocalizationParser.parseDirectory(dir.path, modular: false);
-      expect(locales, hasLength(1));
+      final locales = JsonLocalizationParser.parseDirectory(
+        dir.path,
+        filePrefix: 'app',
+      );
       expect(locales.first.locale, equals('en'));
       expect(locales.first.items['hello']?.value, equals('Hi'));
     });
 
     test('locale extraction is separator-independent', () {
-      // We can't call the private extractor directly, so validate via parse().
       final dir = Directory.systemTemp.createTempSync('localization_gen_sep_');
       addTearDown(() {
         if (dir.existsSync()) dir.deleteSync(recursive: true);
       });
 
-      final file = File('${dir.path}${Platform.pathSeparator}app_id.json');
-      file.writeAsStringSync('{"hello":"Halo"}');
+      final file =
+          File('${dir.path}${Platform.pathSeparator}app_common_en.JSON');
+      file.writeAsStringSync(
+          '{"@@locale":"en","@@module":"common","hello":"Hi"}');
 
-      final locale = JsonLocalizationParser.parse(file);
-      expect(locale.locale, equals('id'));
+      final localeData = JsonLocalizationParser.parse(file);
+      expect(localeData.locale, equals('en'));
+      expect(localeData.items['hello']?.value, equals('Hi'));
     });
   });
 }

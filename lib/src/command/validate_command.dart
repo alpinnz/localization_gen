@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart' as p;
+
+import 'package:localization_gen/src/config/config_reader.dart';
+
 import 'base_command.dart';
-import '../config/config_reader.dart';
 
 /// Command to validate localization files without generating code.
 ///
@@ -13,7 +15,6 @@ import '../config/config_reader.dart';
 /// ```bash
 /// dart run localization_gen validate
 /// dart run localization_gen validate --verbose
-/// dart run localization_gen validate --config=my_pubspec.yaml
 /// ```
 class ValidateCommand extends BaseCommand {
   @override
@@ -30,7 +31,6 @@ class ValidateCommand extends BaseCommand {
   /// - Non-empty content
   ///
   /// Supports the following options:
-  /// - `--config` or `-c`: Path to pubspec.yaml
   /// - `--verbose` or `-v`: Show detailed validation results
   /// - `--help` or `-h`: Show help information
   ///
@@ -38,12 +38,6 @@ class ValidateCommand extends BaseCommand {
   @override
   Future<int> execute(List<String> args) async {
     final parser = ArgParser()
-      ..addOption(
-        'config',
-        abbr: 'c',
-        help: 'Path to pubspec.yaml',
-        defaultsTo: 'pubspec.yaml',
-      )
       ..addFlag(
         'verbose',
         abbr: 'v',
@@ -65,12 +59,11 @@ class ValidateCommand extends BaseCommand {
         return 0;
       }
 
-      final configPath = results['config'] as String;
       final verbose = results['verbose'] as bool;
 
       printInfo('Validating localization files...\n');
 
-      final config = ConfigReader.read(configPath);
+      final config = ConfigReader.read();
 
       // Check if input directory exists
       final inputDir = Directory(config.inputDir);
@@ -80,7 +73,11 @@ class ValidateCommand extends BaseCommand {
       }
 
       // Find all JSON files
-      final jsonFiles = inputDir.listSync().whereType<File>().where((f) => f.path.endsWith('.json')).toList();
+      final jsonFiles = inputDir
+          .listSync()
+          .whereType<File>()
+          .where((f) => f.path.endsWith('.json'))
+          .toList();
 
       if (jsonFiles.isEmpty) {
         printWarning('No JSON files found in ${config.inputDir}');
@@ -124,7 +121,8 @@ class ValidateCommand extends BaseCommand {
         printWarning('Validation completed with $warningCount warning(s)');
         return 0;
       } else {
-        printWarning('Validation failed with $errorCount error(s) and $warningCount warning(s)');
+        printWarning(
+            'Validation failed with $errorCount error(s) and $warningCount warning(s)');
         return 1;
       }
     } catch (e) {

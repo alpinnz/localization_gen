@@ -5,7 +5,9 @@ import 'package:localization_gen/src/writer/dart_writer.dart';
 
 void main() {
   group('Writer regression: special chars', () {
-    test('emits valid Dart for strings containing apostrophe + double quote + backslash-dollar', () {
+    test(
+        'emits valid Dart for strings containing apostrophe + double quote + backslash-dollar',
+        () {
       final writer = DartWriter(className: 'TestLocalizations');
 
       const value = 'Special: @#\$%^&*()_+-=[]{}|;\'\\",./<>?';

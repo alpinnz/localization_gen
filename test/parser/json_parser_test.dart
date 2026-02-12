@@ -6,6 +6,7 @@ library;
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:localization_gen/src/parser/json_parser.dart';
+import 'package:localization_gen/src/exceptions/exceptions.dart';
 import '../utils/test_helper.dart';
 
 void main() {
@@ -24,8 +25,8 @@ void main() {
       test('parses simple flat JSON', () {
         final file = TestHelper.createJsonFile(
           tempDir,
-          'app_en.json',
-          '{"@@locale": "en", "hello": "Hello"}',
+          'app_common_en.json',
+          '{"@@locale": "en", "@@module": "common", "hello": "Hello"}',
         );
 
         final result = JsonLocalizationParser.parse(file);
@@ -38,7 +39,7 @@ void main() {
       test('parses nested JSON structure', () {
         final file = TestHelper.createJsonFile(
           tempDir,
-          'app_en.json',
+          'app_common_en.json',
           TestHelper.nestedJson(),
         );
 
@@ -51,7 +52,7 @@ void main() {
       test('extracts locale from @@locale field', () {
         final file = TestHelper.createJsonFile(
           tempDir,
-          'app_en.json',
+          'app_common_en.json',
           '{"@@locale": "en", "test": "Test"}',
         );
 
@@ -62,8 +63,8 @@ void main() {
       test('extracts locale from filename when @@locale missing', () {
         final file = TestHelper.createJsonFile(
           tempDir,
-          'app_en.json',
-          '{"test": "Test"}',
+          'app_common_en.json',
+          '{"@@module": "common", "test": "Test"}',
         );
 
         final result = JsonLocalizationParser.parse(file);
@@ -73,7 +74,7 @@ void main() {
       test('extracts single parameter', () {
         final file = TestHelper.createJsonFile(
           tempDir,
-          'app_en.json',
+          'app_common_en.json',
           '{"@@locale": "en", "greeting": "Hello, {name}!"}',
         );
 
@@ -84,18 +85,19 @@ void main() {
       test('extracts multiple parameters', () {
         final file = TestHelper.createJsonFile(
           tempDir,
-          'app_en.json',
+          'app_common_en.json',
           TestHelper.jsonWithParameters(),
         );
 
         final result = JsonLocalizationParser.parse(file);
-        expect(result.items['multiParam']?.parameters, equals(['user', 'count']));
+        expect(
+            result.items['multiParam']?.parameters, equals(['user', 'count']));
       });
 
       test('handles text without parameters', () {
         final file = TestHelper.createJsonFile(
           tempDir,
-          'app_en.json',
+          'app_common_en.json',
           '{"@@locale": "en", "hello": "Hello"}',
         );
 
@@ -106,14 +108,35 @@ void main() {
 
     group('parseDirectory()', () {
       test('parses multiple JSON files', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', TestHelper.basicEnglishJson());
-        TestHelper.createJsonFile(tempDir, 'app_id.json', TestHelper.basicIndonesianJson());
+        TestHelper.createJsonFile(
+            tempDir, 'app_common_en.json', TestHelper.basicEnglishJson());
+        TestHelper.createJsonFile(
+            tempDir, 'app_common_id.json', TestHelper.basicIndonesianJson());
 
-        final results = JsonLocalizationParser.parseDirectory(tempDir.path);
+        final results = JsonLocalizationParser.parseDirectory(
+          tempDir.path,
+          filePrefix: 'app',
+        );
 
         expect(results.length, equals(2));
         expect(results.any((r) => r.locale == 'en'), isTrue);
         expect(results.any((r) => r.locale == 'id'), isTrue);
+      });
+
+      test('throws when @@module missing in modular file', () {
+        TestHelper.createJsonFile(
+          tempDir,
+          'app_common_en.json',
+          '{"@@locale":"en","hello":"Hello"}',
+        );
+
+        expect(
+          () => JsonLocalizationParser.parseDirectory(
+            tempDir.path,
+            filePrefix: 'app',
+          ),
+          throwsA(isA<JsonParseException>()),
+        );
       });
 
       test('throws on empty directory', () {
@@ -124,10 +147,14 @@ void main() {
       });
 
       test('ignores non-JSON files', () {
-        TestHelper.createJsonFile(tempDir, 'app_en.json', TestHelper.basicEnglishJson());
+        TestHelper.createJsonFile(
+            tempDir, 'app_common_en.json', TestHelper.basicEnglishJson());
         File('${tempDir.path}/readme.txt').writeAsStringSync('test');
 
-        final results = JsonLocalizationParser.parseDirectory(tempDir.path);
+        final results = JsonLocalizationParser.parseDirectory(
+          tempDir.path,
+          filePrefix: 'app',
+        );
         expect(results.length, equals(1));
       });
     });
@@ -138,7 +165,6 @@ void main() {
 
         final results = JsonLocalizationParser.parseDirectory(
           tempDir.path,
-          modular: true,
           filePrefix: 'app',
         );
 

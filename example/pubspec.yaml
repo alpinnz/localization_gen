@@ -1,16 +1,44 @@
 name: localization_gen_example
-description: Examples for localization_gen package
-publish_to: none
+
+description: Canonical Flutter example for localization_gen
+
+version: 1.0.0+1
 
 environment:
   sdk: ^3.10.3
 
-# This is a parent directory for examples
-# Each subdirectory is a standalone example:
-# - basic/    : Basic single-file localization
-# - modular/  : Modular multi-file organization
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  localization_gen:
+    path: ../
 
-# To run examples:
-# cd basic && flutter run
-# cd modular && flutter run
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
 
+# Localization configuration
+#
+# NOTE: `dart run localization_gen generate` reads the `localization_gen:`
+# section from THIS pubspec.yaml (the consuming app), not from the package
+# dependency.
+localization_gen:
+  input_dir: assets/localizations
+  output_dir: lib/assets
+  class_name: AppLocalizations
+
+  # Naming
+  field_rename: camel
+
+  # Defaults (you can omit these unless you want to customize naming)
+  # - file_pattern default: app_{module}_{locale}.json
+  # - file_prefix  default: app
+  file_pattern: app_{module}_{locale}.json
+  file_prefix: app
+
+flutter:
+  uses-material-design: true

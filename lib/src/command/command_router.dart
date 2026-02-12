@@ -44,7 +44,8 @@ class CommandRouter {
       return await _executeCommand(commandName, commandArgs);
     } else {
       stderr.writeln('Unknown command: $commandName');
-      stderr.writeln('Run "dart run localization_gen --help" for usage information.');
+      stderr.writeln(
+          'Run "dart run localization_gen --help" for usage information.');
       return 1;
     }
   }
@@ -72,7 +73,8 @@ class CommandRouter {
     print('Usage: dart run localization_gen <command> [options]\n');
     print('Available commands:');
 
-    final maxNameLength = _commands.keys.map((k) => k.length).reduce((a, b) => a > b ? a : b);
+    final maxNameLength =
+        _commands.keys.map((k) => k.length).reduce((a, b) => a > b ? a : b);
 
     for (final entry in _commands.entries) {
       final name = entry.key.padRight(maxNameLength + 2);
@@ -96,6 +98,7 @@ class CommandRouter {
     print('  dart run localization_gen <command> --help');
 
     print('\nBackward compatibility:');
-    print('  dart run localization_gen [options]    # Same as "generate" command');
+    print(
+        '  dart run localization_gen [options]    # Same as "generate" command');
   }
 }

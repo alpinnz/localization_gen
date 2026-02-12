@@ -1,0 +1,390 @@
+// /// Common module (English)
+// ///
+// /// Summary
+// /// - This JSONC file is a **developer-readable spec + example dataset** for module `common`.
+// /// - All examples in this file are **modular-only**: it includes `@@locale` and `@@module`.
+// ///
+// /// Usage (recommended)
+// /// 1) Read this file to understand supported localization cases.
+// /// 2) Copy the patterns into real `.json` files under your localization directory.
+// ///
+// /// Rules / Conventions
+// /// - Keys are API: avoid renaming existing keys.
+// /// - Placeholders are `{name}` tokens.
+// /// - JSONC supports comments; the generator reads `.json`.
+// ///
+// /// Modular policy
+// /// - Every file MUST have `@@locale` and `@@module`.
+// /// - `@@module` default here is `common`.
+// ///
+// ─────────────────────────────────────────────────────────────────────────────
+// CASE INDEX (all cases appear once)
+//
+//  1) @@locale metadata
+//     - Example: @@locale
+//
+//  2) @@module metadata (required; default: common)
+//     - Example: @@module
+//
+//  3) Basic strings
+//     - Example: strings.app_title
+//
+//  4) Nested keys (flatten to dot-keys)
+//     - Example: simple.app.settings.security.password.change.title
+//
+//  5) Placeholders (named parameters)
+//     - Example: placeholders.welcome_user => "Welcome, {name}."
+//
+//  6) Multiple parameters in one message
+//     - Example: placeholders.full_name => "Hello, {first_name} {last_name}."
+//
+//  7) Parameter reordering across locales
+//     - Example: placeholders.items_in_city
+//
+//  8) Per-key metadata (inline-only)
+//     - Inline fields: @value (for wrapping strings), @description, @example, @placeholders
+//     - Plus any custom @<name> fields (e.g. @since, @deprecated, @owner)
+//     - Example: placeholders.welcome_user.@description
+//
+//  9) Newline escaping (\\n)
+//     - Example: formatting.multiline => "Line 1\\nLine 2"
+//
+// 10) Quote escaping (\\")
+//     - Example: formatting.quotes
+//
+// 11) Unicode punctuation
+//     - Example: formatting.unicode
+//
+// 12) Symbols inside strings (dot/slash/colon/@/#/etc.)
+//     - Example: symbols.version_tag
+//
+// 13) Literal tokens that must NOT be treated as placeholders
+//     - Example: literals.double_curly, literals.square_brackets
+//
+// 14) Literal braces "{" and "}" (edge-case for tokenizers)
+//     - Example: literals.literal_braces
+//
+// 15) Structured localization forms: @plural / @gender / @context
+//     - Example: structured.items.@plural
+//
+// Terminology
+// - "Key path" means the flattened key produced by nesting.
+// - "Placeholder" means a named token in `{name}` form.
+{
+  /// (1) @@locale metadata (required)
+  ///
+  /// Summary
+  /// - Defines the locale for this file.
+  ///
+  /// Rules
+  /// - Must be a BCP-47-ish language tag your app supports (e.g. `en`, `id`, `en-US`).
+  /// - All modular files for the same locale are merged together.
+  ///
+  /// Usage
+  /// - Used by the parser to group files by locale.
+  ///
+  /// Example
+  /// - `"@@locale": "en"`
+  "@@locale": "en",
+
+  /// (2) @@module metadata (required; default: common)
+  ///
+  /// Summary
+  /// - Defines the module name for this file.
+  ///
+  /// Rules
+  /// - Required (this repo is modular-only).
+  /// - Recommended values: `common`, `auth`, `home`, `settings`.
+  /// - Module name should match your file naming convention.
+  ///
+  /// Usage
+  /// - Used for organizing files and preventing key collisions during merge.
+  ///
+  /// Example
+  /// - `"@@module": "common"`
+  "@@module": "common",
+
+  /// (3) Basic strings (no placeholders)
+  ///
+  /// Summary
+  /// - Plain text values with no `{placeholder}`.
+  ///
+  /// Rules
+  /// - These keys should remain stable (treat them as public API).
+  /// - Keep them short and semantic.
+  ///
+  /// Usage (Dart)
+  /// - `localization.strings.app_title`
+  ///
+  /// Example key path
+  /// - `strings.app_title`
+  "strings": {
+    "app_title": "Demo App",
+    "powered_by": "Powered by Alpinnz"
+  },
+
+  /// (4) Nested keys (flatten to dot-keys)
+  ///
+  /// Summary
+  /// - Nested objects are flattened into a dot-separated key path.
+  ///
+  /// Rules
+  /// - Recommended depth: 1–6 levels.
+  /// - All locales MUST have the exact same flattened key set when strict validation is enabled.
+  ///
+  /// Usage (Dart)
+  /// - `localization.simple.app.settings.security.password.change.title`
+  ///
+  /// Example key path
+  /// - `simple.app.settings.security.password.change.title`
+  "simple": {
+    "hello": "Hello",
+    "welcome": { "title": "Welcome" },
+    "settings": { "profile": { "title": "Profile" } },
+    "app": {
+      "settings": {
+        "security": {
+          "password": {
+            "change": { "title": "Change password" }
+          }
+        }
+      }
+    }
+  },
+
+  /// (5) Placeholders (named parameters)
+  ///
+  /// Summary
+  /// - Strings can contain `{name}` tokens that become named parameters in Dart.
+  ///
+  /// Rules
+  /// - Placeholder names should be identifier-like (snake_case recommended).
+  /// - Placeholder *set* must match across locales for the same key.
+  ///
+  /// Usage (Dart)
+  /// - `localization.placeholders.welcomeUser(name: 'John')`
+  ///
+  /// Example
+  /// - "Welcome, {name}."
+  "placeholders": {
+    "welcome_user": {
+      "@value": "Welcome, {name}.",
+      "@description": "Greets a user by name.",
+      "@example": "Welcome, John.",
+      "@placeholders": { "name": "User display name" }
+    },
+    "attempts_left": "You still have {attempts} attempts left.",
+    "invalid_character": "Character {char} is not allowed.",
+
+    "remaining_time": {
+      "@value": "Try again in {remaining_time}.",
+      "@description": "Retry hint; {remaining_time} is a preformatted string like 02:15.",
+      "@example": "Try again in 02:15.",
+      "@placeholders": {
+        "remaining_time": "Time left until retry, already formatted"
+      }
+    },
+
+    /// (6) Multiple parameters
+    ///
+    /// Summary
+    /// - A single string may contain more than one placeholder.
+    ///
+    /// Usage (Dart)
+    /// - `localization.placeholders.fullName(firstName: 'A', lastName: 'B')`
+    "full_name": "Hello, {first_name} {last_name}.",
+
+    /// (7) Parameter reordering across locales
+    ///
+    /// Summary
+    /// - Locales may reorder placeholders inside the sentence.
+    ///
+    /// Rules
+    /// - Validation should compare placeholder *sets*, not order.
+    ///
+    /// Example
+    /// - EN: "{count} items in {city}."
+    /// - ID: "Di {city} ada {count} item."
+    "items_in_city": {
+      "@value": "{count} items in {city}.",
+      "@description": "Shows count of items and a city. Locales may reorder placeholders.",
+      "@example": "12 items in Jakarta.",
+      "@placeholders": {
+        "count": "Item count",
+        "city": "City name"
+      }
+    }
+
+    // (8) Inline metadata is demonstrated above using @value/@description/@example/@placeholders.
+
+  },
+
+  /// (9) Newline escaping (\\n)
+  ///
+  /// Summary
+  /// - Use `\\n` to represent a newline in the rendered string.
+  ///
+  /// Example
+  /// - "Line 1\\nLine 2"
+  "formatting": {
+    "multiline": "Line 1\nLine 2",
+
+    /// (10) Quote escaping
+    ///
+    /// Summary
+    /// - Escape double quotes as `\\"` inside JSON strings.
+    "quotes": "Enable \"remember me\" to stay signed in.",
+
+    /// (11) Unicode punctuation
+    ///
+    /// Summary
+    /// - Unicode characters should be preserved as-is (ellipsis, en-dash, etc.).
+    "unicode": "Don’t worry… it’s fine – keep going."
+  },
+
+  /// (12) Symbols inside strings
+  ///
+  /// Summary
+  /// - Translation values may contain punctuation/symbols like `.`, `:`, `/`, `@`, `#`, `&`, `()`.
+  /// - This case helps ensure escaping/serialization doesn't lose or misinterpret them.
+  ///
+  /// Rules
+  /// - These are plain strings (NOT placeholders) unless they match `{name}`.
+  /// - If you need a backslash `\`, ensure it is escaped correctly in JSON.
+  ///
+  /// Example
+  /// - "v1.2.3 (build: 45) / api: https://example.com"
+  "symbols": {
+    "version_tag": "v1.2.3 (build: 45) / api: https://example.com",
+    "email_like": "Contact: support@example.com",
+    "hash_like": "Ticket #12345: reopened",
+    "path_like": "Open: Settings > Account > Security",
+
+    // Masked values (PIN/OTP). Bullet characters are common in UI.
+    "masked_pin": "PIN: ••••",
+    "masked_otp": "OTP: ••••••••",
+
+    // Legal / brand symbols that may appear in UI copy.
+    "copyright_notice": "© 2026 Alpinnz. All rights reserved.",
+    "registered_mark": "Brand®",
+    "trademark_notice": "Acme™ is a trademark of Acme Corp.",
+
+    // Common UI symbol patterns.
+    "currency_and_amount": "Total: $12.50 / Rp 10.000",
+    "percent_like": "Progress: 75%",
+    "math_like": "Range: 10–20 (±2)",
+    "degree_like": "Temperature: 23°C",
+    "arrow_like": "Next →",
+    "pipe_like": "Privacy | Terms",
+    "bullet_list_like": "• Item 1\n• Item 2\n• Item 3",
+
+    // URL / query-string symbols are common for help text.
+    "url_query_like": "Open: https://example.com/?q=a+b&sort=asc"
+  },
+
+  /// (13) Literal tokens that must NOT be treated as placeholders
+  ///
+  /// Summary
+  /// - Some UIs need to display characters that look like tokens.
+  ///
+  /// Rules
+  /// - Tokenizers/validators must not treat these as `{placeholder}`.
+  "literals": {
+    "double_curly": "Masked phone example: {{08-****-1234}}",
+    "square_brackets": "Literal token example: [x]",
+
+    /// (14) Literal braces "{" and "}"
+    ///
+    /// Summary
+    /// - Use this case to ensure `{` and `}` can be expressed literally.
+    "literal_braces": "Use braces like this: { and }"
+  },
+
+  /// (15) Structured localization forms: @plural / @gender / @context
+  ///
+  /// Summary
+  /// - Structured payloads reserved for advanced formatting.
+  /// - Keep them grouped so validation can detect the shape.
+  "structured": {
+    "items": {
+      "@plural": {
+        "zero": "No items",
+        "one": "One item",
+        "other": "{count} items"
+      },
+      "@items": {
+        "description": "Pluralized item count.",
+        "placeholders": { "count": "Item count" }
+      }
+    },
+    "user_title": {
+      "@gender": {
+        "male": "Mr. {last_name}",
+        "female": "Ms. {last_name}",
+        "other": "Mx. {last_name}"
+      },
+      "@user_title": {
+        "description": "Title selection by gender.",
+        "placeholders": { "last_name": "Family name" }
+      }
+    },
+    "greeting": {
+      "@context": {
+        "formal": "Good morning, {name}.",
+        "casual": "Hi, {name}!"
+      },
+      "@greeting": {
+        "description": "Greeting selection by context (formal vs casual).",
+        "placeholders": { "name": "User display name" }
+      }
+    },
+
+    /// Multi-variant message in one key (recommended)
+    ///
+    /// Summary
+    /// - Use `@context` when 1 key needs multiple variants.
+    /// - Context keys must be consistent across locales: `register` / `verification`.
+    ///
+    /// Why is there inline metadata?
+    /// - Metadata fields start with `@` and live inside the same object as the translation.
+    /// - They are ignored as translation values and can be used for tooling/dartdoc.
+    ///
+    /// Usage (Dart)
+    /// - `localization.structured.invalidCodeErrors(context: 'register')`
+    /// - `localization.structured.invalidCodeErrors(context: 'verification')`
+    ///
+    /// Example key path
+    /// - `structured.invalid_code_errors`
+    "invalid_code_errors": {
+      "@context": {
+        "register": "Wrong Register Code",
+        "verification": "Verification OTP expired"
+      },
+      "@description": "Invalid code error variants (register/verification).",
+      "@example": "Wrong Register Code",
+      "@placeholders": {},
+      "@since": "1.4.1",
+      "@deprecated": false
+    },
+
+    /// Same *case type* (`@context`) but different key (to show differences)
+    ///
+    /// Summary
+    /// - This demonstrates that multiple keys can use the same structured form,
+    ///   as long as the context-set is consistent across locales.
+    ///
+    /// Usage (Dart)
+    /// - `localization.structured.actionLabel(context: 'primary')`
+    /// - `localization.structured.actionLabel(context: 'secondary')`
+    "action_label": {
+      "@context": {
+        "primary": "Continue",
+        "secondary": "Later"
+      },
+      "@description": "Button label variants by context (primary/secondary).",
+      "@example": "Continue",
+      "@placeholders": {},
+      "@owner": "design-system"
+    }
+  }
+}

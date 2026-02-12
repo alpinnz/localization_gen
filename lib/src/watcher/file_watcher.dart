@@ -2,62 +2,54 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:watcher/watcher.dart';
-import '../generator/localization_generator.dart';
 
-/// Watches localization files for changes and triggers regeneration
+import 'package:localization_gen/src/config/config_reader.dart';
+import 'package:localization_gen/src/const/constants.dart';
+import 'package:localization_gen/src/generator/localization_generator.dart';
+
+/// Watches localization files for changes and triggers regeneration.
+///
+/// The watch directory is always taken from `pubspec.yaml` via [ConfigReader].
 class FileWatcher {
-  /// Directory to watch for changes
-  final String watchDir;
-
-  /// Debounce duration to prevent multiple rapid regenerations
+  /// Debounce duration to prevent multiple rapid regenerations.
   final Duration debounceDuration;
 
-  /// Generator instance for regeneration
+  /// Generator instance for regeneration.
   final LocalizationGenerator generator;
 
-  /// Completer to control the watch lifecycle
+  /// Completer to control the watch lifecycle.
   Completer<void>? _completer;
 
-  /// Timer for debouncing
+  /// Timer for debouncing.
   Timer? _debounceTimer;
 
-  /// Creates a new FileWatcher instance
+  /// Creates a new FileWatcher instance.
   ///
-  /// The [watchDir] parameter specifies the directory to watch.
-  /// The [debounceDuration] parameter controls the debounce delay.
-  /// The [generator] parameter is used to regenerate files on changes.
+  /// The watcher always listens to the configured input directory.
   ///
   /// Example:
   /// ```dart
   /// final watcher = FileWatcher(
-  ///   watchDir: 'assets/localizations',
-  ///   debounceDuration: Duration(milliseconds: 300),
+  ///   debounceDuration: Duration(milliseconds: kWatchDebounceMs),
   ///   generator: generator,
   /// );
   /// await watcher.start();
   /// ```
   FileWatcher({
-    required this.watchDir,
-    this.debounceDuration = const Duration(milliseconds: 300),
+    this.debounceDuration = const Duration(milliseconds: kWatchDebounceMs),
     required this.generator,
   });
 
-  /// Starts watching the directory for changes
+  /// Starts watching the configured input directory for changes.
   ///
   /// Returns a [Future] that completes when watching is stopped.
   /// The watcher will continue running until [stop] is called.
   ///
-  /// Throws an [Exception] if the watch directory doesn't exist.
-  ///
-  /// Example:
-  /// ```dart
-  /// final watcher = FileWatcher(
-  ///   watchDir: 'assets/localizations',
-  ///   generator: generator,
-  /// );
-  /// await watcher.start();
-  /// ```
+  /// Throws an [Exception] if the configured watch directory doesn't exist.
   Future<void> start() async {
+    final config = ConfigReader.read();
+    final watchDir = config.inputDir;
+
     final dir = Directory(watchDir);
     if (!dir.existsSync()) {
       throw Exception('Watch directory not found: $watchDir');
@@ -113,7 +105,9 @@ class FileWatcher {
       return false;
     }
 
-    return event.type == ChangeType.ADD || event.type == ChangeType.MODIFY || event.type == ChangeType.REMOVE;
+    return event.type == ChangeType.ADD ||
+        event.type == ChangeType.MODIFY ||
+        event.type == ChangeType.REMOVE;
   }
 
   /// Handles file changes with debouncing.
