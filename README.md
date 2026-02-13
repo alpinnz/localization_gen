@@ -28,7 +28,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  localization_gen: ^1.3.1
+  localization_gen: ^2.1.0
 
 dependencies:
   flutter_localizations:
@@ -207,6 +207,10 @@ class HomePage extends StatelessWidget {
 
           // JSON: placeholders.welcome_user
           Text(AppLocalizations.of(context).placeholders.welcomeUser(name: 'John')),
+
+          // Runtime lookup (no placeholder interpolation; use typed API for placeholders)
+          Text(AppLocalizations.of(context).resolveByKey('strings.app_title', fallback: '<missing>') ?? '<missing>'),
+          Text(AppLocalizations.of(context).resolveByKey('app_title', namespace: 'strings', fallback: '<missing>') ?? '<missing>'),
         ],
       ),
     );
@@ -322,7 +326,7 @@ JSON:
 Generated (with camelCase):
 
 ```text
-appLocalizations.userProfile.firstName;
+AppLocalizations.of(context).userProfile.firstName;
 ```
 
 ## Advanced Features
@@ -337,8 +341,8 @@ appLocalizations.userProfile.firstName;
 ```
 
 ```text
-appLocalizations.greeting(name: 'John');
-appLocalizations.items(count: '5');
+AppLocalizations.of(context).greeting(name: 'John');
+AppLocalizations.of(context).items(count: '5');
 ```
 
 ### Pluralization
@@ -397,7 +401,7 @@ appLocalizations.items(count: '5');
 ```
 
 ```text
-appLocalizations.level1.level2.level3.message;
+AppLocalizations.of(context).level1.level2.level3.message;
 ```
 
 ### Watch Mode
@@ -441,10 +445,10 @@ Named parameters are now required:
 
 ```text
 // Before
-appLocalizations.welcome('John');
+AppLocalizations.of(context).welcome('John');
 
 // After
-appLocalizations.welcome(name: 'John');
+AppLocalizations.of(context).welcome(name: 'John');
 ```
 
 ## Troubleshooting
@@ -468,7 +472,7 @@ The generator preserves the parsed string value. If you want a real newline in t
 
 ## Best Practices
 
-1. Use consistent naming: `appLocalizations` as variable name
+1. Prefer direct access: `AppLocalizations.of(context).<namespace>.<key>`
 2. Group related translations in nested structure
 3. Use descriptive parameter names
 4. Strict validation is always enabled

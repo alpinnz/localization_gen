@@ -25,11 +25,20 @@ void main() {
     // Should generate a method with a required String attempts parameter.
     expect(code, contains('required String attempts'));
 
-    // Should use Dart interpolation, not an escaped literal dollar.
+    // Template stays as `{attempts}` in translation table, and formatting happens at runtime.
     expect(
-        code,
-        contains(
-            r"'Your password doesn’t match yet. You still have ${attempts} more tries within 15 minutes.'"));
+      code,
+      contains(
+        "'Your password doesn’t match yet. You still have {attempts} more tries within 15 minutes.'",
+      ),
+    );
+    expect(
+      code,
+      contains(
+          'return _root._tf("passwordMismatch", {\'attempts\': attempts});'),
+    );
+
+    // Dollar escaping shouldn't accidentally appear for params.
     expect(code, isNot(contains(r'\\$attempts')));
   });
 }

@@ -409,9 +409,12 @@ class JsonLocalizationParser {
     for (final e in value.entries) {
       if (!e.key.startsWith('@')) continue;
       // reserved translation structures
-      if (e.key == '@plural' || e.key == '@gender' || e.key == '@context') continue;
+      if (e.key == '@plural' || e.key == '@gender' || e.key == '@context')
+        continue;
       // known doc fields
-      if (e.key == '@description' || e.key == '@example' || e.key == '@placeholders') {
+      if (e.key == '@description' ||
+          e.key == '@example' ||
+          e.key == '@placeholders') {
         continue;
       }
       additional[e.key.substring(1)] = e.value;

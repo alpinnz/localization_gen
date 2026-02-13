@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-02-13
+
+### Added
+- **Runtime key lookup (`resolveByKey`)**
+  - Restored/standardized `resolveByKey(key, {namespace, fallback})` in generated output for dynamic lookups.
+
+### Changed
+- **Generated output: fully dictionary-first (no per-key locale switches)**
+  - Simple translations already used locale tables; now **plural/gender/context** variants are also emitted into per-locale const tables and resolved via shared runtime helpers.
+  - Structured APIs (`plural/gender/context`) are now thin wrappers that pick forms from the active tables and apply formatting, improving maintainability and reducing output redundancy.
+
+- **Placeholder formatting policy**
+  - Placeholders are treated as templates (`{token}`) in the translation tables and formatted at runtime via shared helpers.
+
+- **Docs + examples**
+  - Updated generated dartdoc usage snippet to match namespaced access patterns (e.g. `AppLocalizations.of(context).simple.hello`).
+  - Synced the checked-in example generated file to include the latest helpers.
+
+### Fixed
+- **Test stability after generator refactor**
+  - Updated writer tests and example widget tests to align with the dictionary-first output + escape semantics.
+
 ## [2.0.0] - 2026-02-11
 
 ### Changed

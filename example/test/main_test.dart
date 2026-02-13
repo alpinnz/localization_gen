@@ -17,9 +17,30 @@ Future<void> _scrollUntilVisible(
     await tester.pumpAndSettle();
   }
 
-  // Final check with a clearer failure.
-  expect(target, findsWidgets,
-      reason: 'Target widget not found after scrolling.');
+  expect(
+    target,
+    findsWidgets,
+    reason: 'Target widget not found after scrolling.',
+  );
+}
+
+Finder _primaryScrollable() {
+  // Prefer the main ListView's Scrollable over any nested/implicit Scrollables.
+  return find.byType(Scrollable).first;
+}
+
+Finder _languageMenuButton() {
+  return find.descendant(
+    of: find.byType(AppBar),
+    matching: find.byType(PopupMenuButton<Locale>),
+  );
+}
+
+Future<void> _switchToIndonesian(WidgetTester tester) async {
+  await tester.tap(_languageMenuButton());
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Indonesia'));
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -39,50 +60,46 @@ void main() {
         await tester.pumpWidget(const LocalizationExampleApp());
         await tester.pumpAndSettle();
 
-        final languageButton = find.descendant(
-          of: find.byType(AppBar),
-          matching: find.byType(PopupMenuButton<Locale>),
-        );
-        await tester.tap(languageButton);
-        await tester.pumpAndSettle();
+        // English baseline
+        expect(find.textContaining('Demo App'), findsAtLeastNWidgets(1));
+        expect(find.textContaining('Hello'), findsAtLeastNWidgets(1));
 
-        await tester.tap(find.text('Indonesia'));
-        await tester.pumpAndSettle();
+        await _switchToIndonesian(tester);
 
-        // Text widgets in the list include these substrings after switching.
+        // Indonesian content should appear
         expect(find.textContaining('Aplikasi Demo'), findsAtLeastNWidgets(1));
         expect(find.textContaining('Halo'), findsAtLeastNWidgets(1));
       },
     );
 
-    testWidgets('shows resolveByKey and multi-variant error cases',
-        (WidgetTester tester) async {
+    testWidgets('shows resolveByKey and multi-variant error cases', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(const LocalizationExampleApp());
       await tester.pumpAndSettle();
 
-      final list = find.byType(Scrollable);
+      final list = _primaryScrollable();
 
-      // Scroll to the runtime lookup section (ListView is long; items may be lazy).
       await _scrollUntilVisible(
         tester,
         scrollable: list,
         target: find.text('Runtime key lookup (resolveByKey)'),
       );
 
-      // EN: resolveByKey should return the English title.
       expect(
         find.textContaining("resolveByKey('strings.app_title'):"),
         findsAtLeastNWidgets(1),
       );
 
-      // Scroll to the multi-variant errors section.
       await _scrollUntilVisible(
         tester,
         scrollable: list,
-        target: find.text('Multi-variant errors (context: register/verification)'),
+        target: find.text(
+          'Multi-variant errors (context: register/verification)',
+        ),
       );
 
-      // EN: multi-variant error strings
+      // EN texts
       expect(
         find.textContaining('Wrong Register Code'),
         findsAtLeastNWidgets(1),
@@ -93,37 +110,32 @@ void main() {
       );
 
       // Switch to Indonesian
-      final languageButton = find.descendant(
-        of: find.byType(AppBar),
-        matching: find.byType(PopupMenuButton<Locale>),
-      );
-      await tester.tap(languageButton);
-      await tester.pumpAndSettle();
+      await _switchToIndonesian(tester);
 
-      await tester.tap(find.text('Indonesia'));
-      await tester.pumpAndSettle();
-
-      // Scroll again (content might have shifted).
       await _scrollUntilVisible(
         tester,
         scrollable: list,
         target: find.text('Runtime key lookup (resolveByKey)'),
       );
-
-      // ID: resolveByKey should return the Indonesian title.
       expect(find.textContaining('Aplikasi Demo'), findsAtLeastNWidgets(1));
 
       await _scrollUntilVisible(
         tester,
         scrollable: list,
-        target: find.text('Multi-variant errors (context: register/verification)'),
+        target: find.text(
+          'Multi-variant errors (context: register/verification)',
+        ),
       );
 
-      // ID: multi-variant error strings (register/verification)
-      expect(find.textContaining('Kode registrasi salah'),
-          findsAtLeastNWidgets(1));
-      expect(find.textContaining('Kadarluasa verifikasi OTP'),
-          findsAtLeastNWidgets(1));
+      // ID texts
+      expect(
+        find.textContaining('Kode registrasi salah'),
+        findsAtLeastNWidgets(1),
+      );
+      expect(
+        find.textContaining('Kadarluasa verifikasi OTP'),
+        findsAtLeastNWidgets(1),
+      );
     });
   });
 }

@@ -59,7 +59,8 @@ void main() {
       expect(item.metadata!['deprecated'], equals(false));
     });
 
-    test('ignores wrapper when @value is not a String (treats as nested object)',
+    test(
+        'ignores wrapper when @value is not a String (treats as nested object)',
         () {
       final file = TestHelper.createJsonFile(
         tempDir,
@@ -86,4 +87,3 @@ void main() {
     });
   });
 }
-

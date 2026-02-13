@@ -9,8 +9,8 @@ void main() {
 
     expect(find.byType(MaterialApp), findsOneWidget);
     expect(find.byType(ExampleHomePage), findsOneWidget);
-
-    // Smoke-check: app title exists in the AppBar.
     expect(find.byType(AppBar), findsOneWidget);
+
+    // Keep this as a pure smoke test. Text expectations are covered in main_test.dart.
   });
 }

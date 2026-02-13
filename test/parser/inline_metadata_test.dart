@@ -6,7 +6,9 @@ import 'package:localization_gen/src/parser/json_parser.dart';
 
 void main() {
   group('Inline metadata', () {
-    test('parse() reads inline @description/@example/@placeholders and extra @ fields into LocalizationItem.metadata', () {
+    test(
+        'parse() reads inline @description/@example/@placeholders and extra @ fields into LocalizationItem.metadata',
+        () {
       final dir = Directory.systemTemp.createTempSync('inline_metadata_test_');
       addTearDown(() {
         if (dir.existsSync()) dir.deleteSync(recursive: true);
@@ -48,8 +50,8 @@ void main() {
     });
 
     test('inline metadata wins over sibling @<key> when both exist', () {
-      final dir = Directory.systemTemp
-          .createTempSync('inline_metadata_priority_test_');
+      final dir =
+          Directory.systemTemp.createTempSync('inline_metadata_priority_test_');
       addTearDown(() {
         if (dir.existsSync()) dir.deleteSync(recursive: true);
       });

@@ -88,10 +88,13 @@ void main() {
         final code = writer.generate(locales);
 
         expect(code, contains('String get hello'));
-        expect(code, contains("return 'Hello'"));
+        // New output uses the shared lookup helper, no per-getter switch.
+        expect(code, contains("return _root._t(\"hello\""));
       });
 
-      test('generates switch statement for multiple locales', () {
+      test(
+          'generates translation tables for multiple locales (dictionary-first)',
+          () {
         final locales = [
           LocaleData(
             locale: 'en',
@@ -117,9 +120,13 @@ void main() {
 
         final code = writer.generate(locales);
 
-        expect(code, contains('switch (locale.languageCode)'));
-        expect(code, contains("case 'en':"));
-        expect(code, contains("case 'id':"));
+        expect(code, contains('static const Map<String, String> _t_en'));
+        expect(code, contains('static const Map<String, String> _t_id'));
+        expect(code, contains('"hello": \'Hello\''));
+        expect(code, contains('"hello": \'Halo\''));
+
+        // Ensure we don't emit per-getter switches anymore.
+        expect(code, isNot(contains('switch (locale.languageCode)')));
       });
     });
 
@@ -341,10 +348,23 @@ void main() {
         // Implementation
         expect(code, contains("? key.trim()"));
         expect(code, contains(r": '${namespace.trim()}.${key.trim()}';"));
-        expect(code, contains("const map = <String, String>{"));
-        expect(code, contains("'app.title'"));
-        expect(code, contains('return map[normalizedKey] ?? fallback;'));
+        expect(code,
+            contains('return _activeTranslations[normalizedKey] ?? fallback;'));
+
+        // No per-case const maps anymore.
+        expect(code, isNot(contains('const map = <String, String>{')));
       });
+    });
+
+    // Add an assertion ensuring the top-level dartdoc usage example matches namespaced access
+    test('class dartdoc usage example uses namespaced access', () {
+      final locales = [
+        LocaleData(locale: 'en', items: {
+          'simple.hello': LocalizationItem(key: 'simple.hello', value: 'Hello')
+        })
+      ];
+      final code = writer.generate(locales);
+      expect(code, contains('final text = appLocalizations.simple.hello;'));
     });
   });
 }
