@@ -20,9 +20,8 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      // The generated Dart source includes an escaped apostrophe: It\\'s
-      // and the test string needs to match the full generated output.
-      expect(output, contains("'It\\\\\\\\'s working'"));
+      // The generated Dart source includes an escaped apostrophe: It\'s
+      expect(output, contains("'It\\\\'s working'"));
     });
 
     test('escapes dollar signs correctly', () {
@@ -41,8 +40,8 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      // In encoded output text, this shows up as `\\$`.
-      expect(output, contains(r"'Price: \\$100'"));
+      // In generated Dart source, a literal dollar sign is emitted as `\$`.
+      expect(output, contains(r"'Price: \$100'"));
     });
 
     test('escapes backslashes correctly', () {
@@ -155,7 +154,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains(r"'It\\\\'s \\$100 with C:\\path and emoji 👋'"));
+      expect(output, contains(r"'It\\'s \$100 with C:\\path and emoji 👋'"));
     });
 
     test('preserves special chars in nested structures', () {
@@ -176,8 +175,8 @@ void main() {
       final output = writer.generate(locales);
 
       expect(output, contains("String get special"));
-      // `$` is escaped in the generated output text as `\\$`.
-      expect(output, contains(r"Special: @#\\$%"));
+      // `$` is escaped in the generated Dart source as `\$`.
+      expect(output, contains(r"Special: @#\$%"));
       expect(output, contains(",./<>?"));
     });
 

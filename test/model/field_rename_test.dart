@@ -1,6 +1,7 @@
 /// Tests for FieldRename enum.
 ///
 /// Covers field naming convention conversions.
+library;
 
 import 'package:test/test.dart';
 import 'package:localization_gen/src/model/field_rename.dart';

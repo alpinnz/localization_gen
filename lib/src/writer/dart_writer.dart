@@ -129,7 +129,7 @@ class DartWriter {
     buffer.writeln(
         '  /// - The first locale in the input is used as the fallback locale.');
     buffer.writeln(
-        "  static const String _fallbackLocale = '${fallbackLocaleCode}';");
+        "  static const String _fallbackLocale = '$fallbackLocaleCode';");
 
     // Build special-form tables (plural/gender/context)
     final pluralKeys = baseLocale.items.values
@@ -614,7 +614,7 @@ class DartWriter {
 
       final paramsMap = item.parameters.map((p) {
         final dartName = placeholderMap[p] ?? _renameSegment(p);
-        return "'${p}': $dartName";
+        return "'$p': $dartName";
       }).join(', ');
 
       buffer.writeln(
@@ -642,13 +642,14 @@ class DartWriter {
   String _dartStringLiteral(String text) {
     var encoded = jsonEncode(text);
     // Escape '$' for Dart string literals (avoid accidental interpolation).
-    // Dart expects the literal sequence: \\$ (one backslash before the dollar sign).
-    encoded = encoded.replaceAll(r'$', r'\\$');
+    // Dart expects the literal sequence: \$ (one backslash before the dollar sign).
+    // IMPORTANT: We are generating Dart *source* here. We must emit exactly `\$`.
+    encoded = encoded.replaceAll(r'$', r'\$');
 
     final inner =
-        encoded.substring(1, encoded.length - 1).replaceAll(r'\\\\\"', '"');
+        encoded.substring(1, encoded.length - 1).replaceAll(r'\"', '"');
 
-    final withEscapedSingleQuotes = inner.replaceAll("'", r"\\\\'");
+    final withEscapedSingleQuotes = inner.replaceAll("'", r"\\'");
 
     return "'$withEscapedSingleQuotes'";
   }
@@ -694,7 +695,7 @@ class DartWriter {
     final paramsMapEntries = <String>['\'count\': count.toString()'];
     for (final p in item.parameters.where((p) => p != 'count')) {
       final dartName = placeholderMap[p] ?? _renameSegment(p);
-      paramsMapEntries.add("'${p}': $dartName");
+      paramsMapEntries.add("'$p': $dartName");
     }
 
     buffer.writeln("  String $simpleKey($paramStr) {");
@@ -735,7 +736,7 @@ class DartWriter {
     final paramsMapEntries = <String>[];
     for (final p in item.parameters.where((p) => p != 'gender')) {
       final dartName = placeholderMap[p] ?? _renameSegment(p);
-      paramsMapEntries.add("'${p}': $dartName");
+      paramsMapEntries.add("'$p': $dartName");
     }
 
     buffer.writeln("  String $simpleKey($paramStr) {");
@@ -776,7 +777,7 @@ class DartWriter {
     final paramsMapEntries = <String>[];
     for (final p in item.parameters.where((p) => p != 'context')) {
       final dartName = placeholderMap[p] ?? _renameSegment(p);
-      paramsMapEntries.add("'${p}': $dartName");
+      paramsMapEntries.add("'$p': $dartName");
     }
 
     buffer.writeln("  String $simpleKey($paramStr) {");

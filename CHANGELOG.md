@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2026-02-13
+
+### Changed
+- **Docs**
+  - Standardized README examples to use direct access style: `AppLocalizations.of(context).<namespace>.<key>`.
+
+
+### Added
+- **Consistency guarantees (tests)**
+  - Added strict **JSONC ↔ JSON parity** tests to ensure canonical `.jsonc` specs match the strict `.json` inputs used for generation.
+  - Upgraded generated-value verification to validate **all flattened keys**: runtime values from JSON must match decoded runtime values from generated Dart string literals.
+
+### Fixed
+- **Test robustness**
+  - Improved string-literal decoding in tests to correctly handle Dart escaping for newlines, backslashes, dollar signs, and apostrophes.
+- **Static analysis**
+  - Addressed Dart style hint: enclosed single-statement `if` body in a block in `JsonLocalizationParser`.
+
 ## [2.1.0] - 2026-02-13
 
 ### Added

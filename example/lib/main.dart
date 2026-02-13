@@ -108,13 +108,19 @@ class ExampleHomePage extends StatelessWidget {
             title: 'Placeholders',
             children: [
               Text(
-                AppLocalizations.of(context).placeholders.welcomeUser(name: 'Alice'),
+                AppLocalizations.of(
+                  context,
+                ).placeholders.welcomeUser(name: 'Alice'),
               ),
               Text(
-                AppLocalizations.of(context).placeholders.fullName(firstName: 'Alice', lastName: 'Doe'),
+                AppLocalizations.of(
+                  context,
+                ).placeholders.fullName(firstName: 'Alice', lastName: 'Doe'),
               ),
               Text(
-                AppLocalizations.of(context).placeholders.itemsInCity(count: '12', city: 'Jakarta'),
+                AppLocalizations.of(
+                  context,
+                ).placeholders.itemsInCity(count: '12', city: 'Jakarta'),
               ),
             ],
           ),

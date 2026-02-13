@@ -34,8 +34,8 @@ void main() {
       expect(output, contains("'Special:"));
       // Apostrophe should be escaped as \\' in Dart source.
       expect(output, contains(r"\\'"));
-      // Dollar sign should be escaped as \\$
-      expect(output, contains(r"\\$"));
+      // Dollar sign should be escaped as \$
+      expect(output, contains(r"\$"));
       // Must still contain the double quote character in the resulting literal.
       expect(output, contains('"'));
     });
