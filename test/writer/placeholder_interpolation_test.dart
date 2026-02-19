@@ -29,7 +29,7 @@ void main() {
     expect(
       code,
       contains(
-        "'Your password doesn’t match yet. You still have {attempts} more tries within 15 minutes.'",
+        '"Your password doesn’t match yet. You still have {attempts} more tries within 15 minutes."',
       ),
     );
     expect(

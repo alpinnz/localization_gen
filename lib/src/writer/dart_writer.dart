@@ -127,7 +127,7 @@ class DartWriter {
     buffer.writeln(
         '  /// - Tables are generated once to avoid per-getter locale switching.');
     buffer.writeln(
-        '  /// - The first locale in the input is used as the fallback locale.');
+        '  /// - Missing locale translations return null / empty maps (no fallback).');
     buffer.writeln(
         "  static const String _fallbackLocale = '$fallbackLocaleCode';");
 
@@ -256,52 +256,38 @@ class DartWriter {
     buffer.writeln();
 
     buffer.writeln('  Map<String, String> get _activeTranslations {');
-    buffer.writeln('    final byLang = _translations[locale.languageCode];');
-    buffer.writeln('    if (byLang != null) return byLang;');
-    buffer.writeln(
-        '    return _translations[_fallbackLocale] ?? const <String, String>{};');
+    buffer.writeln('    return _translations[locale.languageCode] ?? const <String, String>{};');
     buffer.writeln('  }');
     buffer.writeln();
 
     if (pluralKeys.isNotEmpty) {
       buffer.writeln('  Map<String, Map<String, String>> get _activePlurals {');
-      buffer.writeln('    final byLang = _plurals[locale.languageCode];');
-      buffer.writeln('    if (byLang != null) return byLang;');
-      buffer.writeln(
-          '    return _plurals[_fallbackLocale] ?? const <String, Map<String, String>>{};');
+      buffer.writeln('    return _plurals[locale.languageCode] ?? const <String, Map<String, String>>{};');
       buffer.writeln('  }');
       buffer.writeln();
     }
 
     if (genderKeys.isNotEmpty) {
       buffer.writeln('  Map<String, Map<String, String>> get _activeGenders {');
-      buffer.writeln('    final byLang = _genders[locale.languageCode];');
-      buffer.writeln('    if (byLang != null) return byLang;');
-      buffer.writeln(
-          '    return _genders[_fallbackLocale] ?? const <String, Map<String, String>>{};');
+      buffer.writeln('    return _genders[locale.languageCode] ?? const <String, Map<String, String>>{};');
       buffer.writeln('  }');
       buffer.writeln();
     }
 
     if (contextKeys.isNotEmpty) {
-      buffer
-          .writeln('  Map<String, Map<String, String>> get _activeContexts {');
-      buffer.writeln('    final byLang = _contexts[locale.languageCode];');
-      buffer.writeln('    if (byLang != null) return byLang;');
-      buffer.writeln(
-          '    return _contexts[_fallbackLocale] ?? const <String, Map<String, String>>{};');
+      buffer.writeln('  Map<String, Map<String, String>> get _activeContexts {');
+      buffer.writeln('    return _contexts[locale.languageCode] ?? const <String, Map<String, String>>{};');
       buffer.writeln('  }');
       buffer.writeln();
     }
 
     // Shared lookup helpers
-    buffer.writeln('  String _t(String key, {String? fallback}) {');
-    buffer.writeln(
-        '    return _activeTranslations[key] ?? fallback ?? _translations[_fallbackLocale]?[key] ?? key;');
+    buffer.writeln('  String? _t(String key) {');
+    buffer.writeln('    return _activeTranslations[key];');
     buffer.writeln('  }');
     buffer.writeln();
 
-    // Runtime resolver (optional namespace + fallback)
+    // Runtime resolver (optional namespace)
     buffer.writeln(
         '  /// Resolves a translation by its **flattened key path** at runtime.');
     buffer.writeln('  ///');
@@ -310,14 +296,13 @@ class DartWriter {
         '  /// - Useful for dynamic lookups (e.g. received keys from backend).');
     buffer.writeln(
         '  /// - Supports an optional [namespace] prefix to reduce repetition.');
-    buffer.writeln(
-        '  /// - Returns [fallback] if the key is missing for the current locale.');
+    buffer.writeln('  /// - Returns null if the key is missing for the current locale.');
     buffer.writeln('  ///');
     buffer.writeln('  /// Usage');
     buffer.writeln('  /// ```dart');
     buffer.writeln("  /// $className.of(context).resolveByKey('app.title');");
     buffer.writeln(
-        "  /// $className.of(context).resolveByKey('title', namespace: 'app', fallback: '...');");
+        "  /// $className.of(context).resolveByKey('title', namespace: 'app');");
     buffer.writeln('  /// ```');
     buffer.writeln('  ///');
     buffer.writeln('  /// Notes');
@@ -326,15 +311,13 @@ class DartWriter {
     buffer.writeln('  String? resolveByKey(');
     buffer.writeln('    String key, {');
     buffer.writeln('    String? namespace,');
-    buffer.writeln('    String? fallback,');
     buffer.writeln('  }) {');
     buffer.writeln(
         '    final normalizedKey = (namespace == null || namespace.trim().isEmpty)');
     buffer.writeln('        ? key.trim()');
     buffer.writeln("        : '\${namespace.trim()}.\${key.trim()}';");
     buffer.writeln();
-    buffer
-        .writeln('    return _activeTranslations[normalizedKey] ?? fallback;');
+    buffer.writeln('    return _activeTranslations[normalizedKey];');
     buffer.writeln('  }');
     buffer.writeln();
 
@@ -353,8 +336,10 @@ class DartWriter {
     buffer.writeln('  }');
 
     buffer.writeln(
-        '  String _tf(String key, Map<String, String> params, {String? fallback}) {');
-    buffer.writeln('    return _format(_t(key, fallback: fallback), params);');
+        '  String? _tf(String key, Map<String, String> params) {');
+    buffer.writeln('    final template = _t(key);');
+    buffer.writeln('    if (template == null) return null;');
+    buffer.writeln('    return _format(template, params);');
     buffer.writeln('  }');
     buffer.writeln();
 
@@ -610,20 +595,21 @@ class DartWriter {
 
       final params =
           signatureParams.map((p) => 'required String $p').join(', ');
-      buffer.writeln("  String $methodName({$params}) {");
+      buffer.writeln("  String? $methodName({$params}) {");
 
       final paramsMap = item.parameters.map((p) {
         final dartName = placeholderMap[p] ?? _renameSegment(p);
         return "'$p': $dartName";
       }).join(', ');
 
+      final target = isNested ? '_root' : 'this';
       buffer.writeln(
-          "    return _root._tf(${jsonEncode(item.key)}, {$paramsMap});");
+          "    return $target._tf(${jsonEncode(item.key)}, {$paramsMap});");
       buffer.writeln("  }");
     } else {
-      buffer.writeln("  String get $methodName {");
-      buffer.writeln(
-          "    return _root._t(${jsonEncode(item.key)}, fallback: ${_dartStringLiteral(item.value)});");
+      buffer.writeln("  String? get $methodName {");
+      final target = isNested ? '_root' : 'this';
+      buffer.writeln("    return $target._t(${jsonEncode(item.key)});");
       buffer.writeln("  }");
     }
 
@@ -633,25 +619,27 @@ class DartWriter {
 
   /// Produces a Dart string literal that is always syntactically valid.
   ///
-  /// This generator uses single-quoted Dart string literals.
+  /// This generator uses double-quoted Dart string literals.
   /// It escapes:
   /// - backslashes
-  /// - control characters (\\r, \\n, \\t)
+  /// - control characters (\r, \n, \t)
   /// - dollar signs (to prevent interpolation)
-  /// - single quotes
+  /// - double quotes
   String _dartStringLiteral(String text) {
+    // jsonEncode gives us a valid JSON string in double quotes with escapes.
+    // Example: Hello -> "Hello"
     var encoded = jsonEncode(text);
+
     // Escape '$' for Dart string literals (avoid accidental interpolation).
-    // Dart expects the literal sequence: \$ (one backslash before the dollar sign).
-    // IMPORTANT: We are generating Dart *source* here. We must emit exactly `\$`.
+    // We are generating Dart *source* here. We must emit exactly `\$`.
     encoded = encoded.replaceAll(r'$', r'\$');
 
-    final inner =
-        encoded.substring(1, encoded.length - 1).replaceAll(r'\"', '"');
+    // Strip surrounding JSON quotes.
+    final inner = encoded.substring(1, encoded.length - 1);
 
-    final withEscapedSingleQuotes = inner.replaceAll("'", r"\\'");
-
-    return "'$withEscapedSingleQuotes'";
+    // Wrap with Dart double quotes. At this point, inner already contains
+    // the needed escapes for backslashes/control chars/double quotes.
+    return '"$inner"';
   }
 
   /// Builds a stable mapping from JSON placeholder token name -> Dart identifier.
@@ -698,11 +686,12 @@ class DartWriter {
       paramsMapEntries.add("'$p': $dartName");
     }
 
-    buffer.writeln("  String $simpleKey($paramStr) {");
+    buffer.writeln("  String? $simpleKey($paramStr) {");
     buffer.writeln(
-        "    final forms = _root._activePlurals[${jsonEncode(item.key)}] ?? const <String, String>{};");
+        "    final forms = _activePlurals[${jsonEncode(item.key)}] ?? const <String, String>{};");
+    buffer.writeln("    final template = _selectPlural(count, forms);");
     buffer.writeln(
-        "    return _root._format(_root._selectPlural(count, forms), {${paramsMapEntries.join(', ')}});");
+        "    return _format(template, {${paramsMapEntries.join(', ')}});");
     buffer.writeln("  }");
     buffer.writeln();
     return buffer.toString();
@@ -739,11 +728,12 @@ class DartWriter {
       paramsMapEntries.add("'$p': $dartName");
     }
 
-    buffer.writeln("  String $simpleKey($paramStr) {");
+    buffer.writeln("  String? $simpleKey($paramStr) {");
     buffer.writeln(
-        "    final forms = _root._activeGenders[${jsonEncode(item.key)}] ?? const <String, String>{};");
+        "    final forms = _activeGenders[${jsonEncode(item.key)}] ?? const <String, String>{};");
+    buffer.writeln("    final template = _selectGender(gender, forms);");
     buffer.writeln(
-        "    return _root._format(_root._selectGender(gender, forms), {${paramsMapEntries.join(', ')}});");
+        "    return _format(template, {${paramsMapEntries.join(', ')}});");
     buffer.writeln("  }");
     buffer.writeln();
     return buffer.toString();
@@ -780,11 +770,12 @@ class DartWriter {
       paramsMapEntries.add("'$p': $dartName");
     }
 
-    buffer.writeln("  String $simpleKey($paramStr) {");
+    buffer.writeln("  String? $simpleKey($paramStr) {");
     buffer.writeln(
-        "    final forms = _root._activeContexts[${jsonEncode(item.key)}] ?? const <String, String>{};");
+        "    final forms = _activeContexts[${jsonEncode(item.key)}] ?? const <String, String>{};");
+    buffer.writeln("    final template = _selectContext(context, forms);");
     buffer.writeln(
-        "    return _root._format(_root._selectContext(context, forms), {${paramsMapEntries.join(', ')}});");
+        "    return _format(template, {${paramsMapEntries.join(', ')}});");
     buffer.writeln("  }");
     buffer.writeln();
     return buffer.toString();

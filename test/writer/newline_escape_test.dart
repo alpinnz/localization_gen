@@ -1,7 +1,6 @@
-import 'package:test/test.dart';
-
 import 'package:localization_gen/src/model/localization_item.dart';
 import 'package:localization_gen/src/writer/dart_writer.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Writer: newline escaping', () {
@@ -53,7 +52,7 @@ void main() {
       final output = writer.generate(locales);
 
       // In generated source it should be escaped as two chars: backslash+n
-      expect(output, contains(r"'Line1\nLine2'"));
+      expect(output, contains('"Line1\\nLine2"'));
     });
   });
 }

@@ -25,7 +25,7 @@ void main() {
 
       final output = writer.generate(locales);
       // The generated Dart source must contain a single-line literal with \n escape.
-      expect(output, contains("'Line1\\nLine2'"));
+      expect(output, contains('"Line1\\nLine2"'));
     });
 
     test(
@@ -48,7 +48,7 @@ void main() {
 
       final output = writer.generate(locales);
       // Value already contains a backslash, so it becomes \\\\n in Dart source.
-      expect(output, contains(r"'Line1\\\\nLine2'"));
+      expect(output, contains(r'"Line1\\\\nLine2"'));
     });
 
     test('example string with security lock message preserves \\n exactly', () {
@@ -73,7 +73,7 @@ void main() {
       expect(
         output,
         contains(
-          r"'Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in.'",
+          r'"Your account is temporarily locked for 15 minutes for security reasons.\\nYou can try again in."',
         ),
       );
     });

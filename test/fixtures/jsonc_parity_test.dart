@@ -127,16 +127,28 @@ int? _indexOfLineCommentOutsideString(String line) {
   return null;
 }
 
-String _repoRootFrom(String startDir) {
-  var dir = Directory(startDir);
+String _repoRootFrom(String startPath) {
+  var current = Directory(startPath);
+
   while (true) {
-    final pubspec = File(p.join(dir.path, 'pubspec.yaml'));
-    if (pubspec.existsSync()) return dir.path;
-    final parent = dir.parent;
-    if (parent.path == dir.path) {
-      throw StateError(
-          'Unable to locate repo root (pubspec.yaml) starting from $startDir');
+    final pubspec = File(p.join(current.path, 'pubspec.yaml'));
+    if (pubspec.existsSync()) {
+      return current.path;
     }
-    dir = parent;
+
+    final parent = current.parent;
+    if (parent.path == current.path) break;
+    current = parent;
   }
+
+  // Fallback: when tests operate in a temp directory, walking upwards won't
+  // reach the repo root. Use the process working directory instead.
+  final cwd = Directory.current;
+  final cwdPubspec = File(p.join(cwd.path, 'pubspec.yaml'));
+  if (cwdPubspec.existsSync()) {
+    return cwd.path;
+  }
+
+  throw StateError(
+      'Unable to locate repo root (pubspec.yaml) starting from $startPath');
 }

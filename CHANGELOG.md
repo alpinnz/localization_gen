@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] - 2026-02-20
+
+### Changed (BREAKING)
+- **Generated API is now nullable**
+  - All simple translation getters now return `String?` instead of `String`.
+  - Parameterized methods now return `String?` (when the underlying template key is missing).
+  - Runtime lookup helpers were updated accordingly (`_t`, `_tf`, `resolveByKey`).
+
+- **Strict mode: no fallback locale (Mode A)**
+  - The generated code no longer falls back to the base locale when the active locale is missing.
+  - Missing locale tables now resolve to empty maps; missing keys resolve to `null`.
+
+- **Removed per-key fallback literals**
+  - The generator no longer emits `fallback:` values inside getters.
+  - This avoids “manipulative”/non-user-provided fallback strings masking missing translations.
+
+### Added
+- **Example assets ↔ generated table parity test**
+  - Added a strict test to validate `example/assets/localizations` values match the generated translation tables _exactly_, including escaping semantics (`\\n`, `\\`, `\$`, quotes).
+
+### Fixed
+- **Correct root vs nested lookups**
+  - Root-level getters now call `this._t(...)` / `this._tf(...)` (nested classes still use `_root`).
+
+### Migration notes
+- Update usages from:
+  - `final s = t.someKey;` → `final s = t.someKey ?? ''` (or handle null in UI)
+- If you relied on locale fallback behavior, you must now ensure:
+  - your app only uses locales present in `supportedLocales`, and
+  - your localization files contain the required keys.
+
 ## [2.2.1] - 2026-02-13
 
 ### Changed

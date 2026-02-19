@@ -1,0 +1,675 @@
+{
+  "@@locale": "en",
+  "@@module": "auth",
+  "login": {
+    "page_title": "Log In to Application",
+    "register_prompt": {
+      "text": "Don't have an account?",
+      "link": "Sign up now"
+    },
+    "google_button": {
+      "label": "Sign in with Google"
+    },
+    "google_popup": {
+      "loading": "Opening Google window…"
+    },
+    "info": {
+      "cancelled": {
+        "title": "Sign in cancelled!",
+        "subtitle": "Login was cancelled. You can sign in again anytime."
+      }
+    },
+    "form": {
+      "email_wa": {
+        "label": "Email or WhatsApp Number",
+        "placeholder": "Enter your email or WhatsApp number",
+        "errors": {
+          "empty": "You haven’t entered your email or WhatsApp number yet. Please complete it to continue logging in.",
+          "format": "The format doesn’t look right yet. Try using a valid email or WhatsApp number that starts with 08 or a country code (+).",
+          "not_found": "We haven't found an account with that information. Please check your email or WhatsApp number again, or register a new account if you don't have one."
+        }
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "••••••••",
+        "errors": {
+          "empty": "Password is missing. Please fill it in to access your account.",
+          "mismatch": "Your password doesn't match. Please check again and try again."
+        }
+      },
+      "email_not_found": {
+        "error": "Account not found, please check your email or number again."
+      },
+      "password_incorrect": {
+        "error": "Your password doesn’t match yet. You still have {attempts} more tries within 15 minutes."
+      },
+      "remember_me": {
+        "label": "Remember me for 30 days"
+      },
+      "submit": {
+        "button": "Log In",
+        "disabled": "Please complete all required fields first."
+      }
+    },
+    "session": {
+      "dialog": {
+        "title": "Session Ended",
+        "button": "OK",
+        "manual_logout": {
+          "description": "Your session has ended. See you later!"
+        },
+        "session_expired": {
+          "title": "Session Ended",
+          "message_72h": "For your security, your session automatically ended after 72 hours. Please sign in again to continue.",
+          "message_30d": "For your security, your session automatically ended after 30 days. Please sign in again to continue."
+        }
+      },
+      "toast": {
+        "title": "Information!",
+        "resumed": "You're still logged in on this device, feel free to continue where you left off."
+      },
+      "active_notice": {
+        "banner": "You’re still logged in on this device, feel free to continue where you left off."
+      },
+      "expired_notice": {
+        "banner": "Your session has ended. Please log in again to keep your data secure."
+      }
+    },
+    "banner": {
+      "error": {
+        "mismatch": "You still have {attempts} chances in the next 15 minutes.",
+        "lockout": "Your account is temporarily locked for 15 minutes for security reasons.\nYou can try again in {mm:ss}."
+      }
+    },
+    "toast": {
+      "success": "Successfully logged in. Welcome.",
+      "error": {
+        "global": {
+          "title": "Failed!",
+          "submit": "Your login attempt was unsuccessful"
+        }
+      }
+    }
+  },
+  "register": {
+    "page_title": "Account Registration",
+    "form": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Example: John Doe"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "example: john@company.com"
+      },
+      "wa": {
+        "label": "WhatsApp Number",
+        "placeholder": "81234567890"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "••••••••",
+        "confirm": {
+          "label": "Confirm Password"
+        }
+      },
+      "checkbox": {
+        "terms": "I have read and agree to the",
+        "privacy_policy": "Privacy Policy",
+        "and": "&",
+        "terms_and_conditions": "Terms & Conditions"
+      },
+      "submit": {
+        "button": "Sign Up"
+      }
+    },
+    "error": {
+      "name": {
+        "required": "Name is required, please fill it in.",
+        "invalid_char": "Character [x] is not allowed. Use letters, spaces, dots (.) or commas (,)."
+      },
+      "email": {
+        "required": "Email is required, please fill it in.",
+        "format": "Please enter a valid email (example: name@domain.com).",
+        "duplicate": "This email is already used. Try another one or log in."
+      },
+      "wa": {
+        "required": "WhatsApp number is required, please fill it in.",
+        "format": "Please enter a valid WhatsApp number (example: 81234567890).",
+        "duplicate": "This WhatsApp number is already used. Try another one or log in."
+      },
+      "password": {
+        "required": "Password is required, please fill it in.",
+        "too_short": "Password must be at least 8 characters.",
+        "weak": "Password is too weak, try adding letters & numbers.",
+        "medium": "Password is fair, make it stronger with uppercase/lowercase or symbols.",
+        "strong": "Password is strong and ready to use.",
+        "common": "Password is too common. Please choose another one.",
+        "guide": "Use ≥8 characters. Must include letters & numbers, symbols optional.",
+        "confirm_required": "Confirm password is required, please fill it in.",
+        "mismatch": "Password and confirmation do not match. Please check again."
+      },
+      "terms": {
+        "required": "You need to agree to the Privacy Policy & Terms of Service."
+      },
+      "global": {
+        "title": "Failed!",
+        "submit": "Some fields are invalid. Please check the highlighted sections."
+      }
+    }
+  },
+  "verification_method": {
+    "page_title": "Verification Method",
+    "section_title": "Choose a Method",
+    "option_email": {
+      "label": "Sign in with Email",
+      "desc": "Sends a registration verification link to your email"
+    },
+    "option_whatsapp": {
+      "label": "Sign in with WhatsApp",
+      "desc": "Sends a registration verification code to your WhatsApp"
+    },
+    "button_continue": "Continue"
+  },
+  "otp_whatsapp": {
+    "message": "{otp_code} is your GroApp account verification code. This code is valid for 5 minutes. Please don’t share it with anyone. If you didn’t request this code, please ignore this message or contact the GroApp support team."
+  },
+  "otp": {
+    "page_title": "OTP Verification",
+    "form": {
+      "label": "OTP Code",
+      "placeholder": "–",
+      "instruction": "Enter the 6-digit OTP sent to your WhatsApp.",
+      "resend": {
+        "button": "Resend Code",
+        "second": "seconds"
+      }
+    },
+    "error": {
+      "invalid": "Invalid OTP. Please try again.",
+      "invalid_with_resend": "Invalid OTP. Check again, or request a new code.",
+      "expired": "OTP has expired. Please request a new one to continue.",
+      "lock": "For security reasons, verification is temporarily locked. Please try again in 15 minutes."
+    },
+    "fallback": {
+      "change_method": "Try via Email",
+      "change_meethod_wa": "Try via WhatsApp",
+      "sent_email": "A verification link has been sent to your Email."
+    },
+    "error_locked": {
+      "banner": {
+        "title": "For security reasons, verification is temporarily locked",
+        "message": "Try again after 15 minutes or change your WhatsApp number."
+      }
+    },
+    "success": {
+      "toast": {
+        "message": "Verification successful. You may continue your activity."
+      }
+    }
+  },
+  "verify": {
+    "error": {
+      "locked": "For your security, verification is temporarily locked. Please try again after 15 minutes.",
+      "limit_reached": "Too many OTP attempts. Please verify via Email to continue.",
+      "limit_reached_title": "Too many OTP attempts",
+      "limit_reached_subtitle": "Please verify via Email to continue"
+    },
+    "success": {
+      "toast": "Registration completed successfully. You can now explore GroApp.",
+      "title": "Verification Successful",
+      "success_title": "Your Registration is Successful",
+      "message": "Your account is now active. We’re glad to support your journey.",
+      "redirect": "You will be redirected automatically in {xx} seconds.",
+      "cta": "Go to Beranda"
+    },
+    "toast": {
+      "resend_success": "New OTP has been sent"
+    }
+  },
+  "verification_issue_wa": {
+    "page_title": "WhatsApp Verification Issue",
+    "lead": "It looks like WhatsApp verification is having an issue. To keep things moving, let’s switch to Email.",
+    "cta_switch_email": "Use Email"
+  },
+  "btn_verifikasi_email": "Verify via Email",
+  "check_email": {
+    "page_title": "Check Your Email",
+    "description": "We’ve sent a verification link to the email address you registered.",
+    "description_1": "We’ve ",
+    "description_2": "sent a verification link to the email address ",
+    "description_3": " you registered.",
+    "help": {
+      "didnt_get_email": "Haven’t received the email? It may take a few minutes for the email to arrive in your inbox.",
+      "check_spam": "Be sure to also check your spam or promotions folder."
+    }
+  },
+  "email": {
+    "verify": {
+      "subject": "Verify Your Email Address",
+      "preheader": "Click the link below to verify your email.",
+      "heading": "Verify Your Email",
+      "body": {
+        "intro": "Hello, we’ve received a request to verify your email address. Click the button below to complete the verification process."
+      },
+      "cta": {
+        "button": "Verify Now"
+      },
+      "footer": {
+        "disclaimer": "If you did not request this verification, please ignore this email."
+      },
+      "success": {
+        "message": "A verification link has been sent. Please check your email.",
+        "title": "Email Verification Successful",
+        "cta": {
+          "home": "Go to Home"
+        }
+      },
+      "invalid_old_link": {
+        "title": "Link No Longer Active",
+        "message": "It looks like you opened an older link. Please use the latest verification link we sent to your email."
+      }
+    }
+  },
+  "verification": {
+    "resend": {
+      "button": {
+        "label": "Resend Link",
+        "success_message": "A new link has been sent."
+      }
+    }
+  },
+  "banner": {
+    "common": {
+      "title": "Additional Verification",
+      "cta": "Verify now"
+    },
+    "wa_first": {
+      "message": "To keep your account secure and ensure uninterrupted access, you’ll be asked to verify your Email in {d} days. You can also complete it now."
+    },
+    "email_first": {
+      "message": "To keep your account secure and ensure uninterrupted access, you’ll be asked to verify your WhatsApp in {d} days. You can also complete it now."
+    }
+  },
+  "hardblock": {
+    "modal": {
+      "title": "Additional Verification Required",
+      "description": "To help keep your account secure, we need to verify your second identity before you continue.",
+      "cta": {
+        "confirm": "Got it"
+      }
+    }
+  },
+  "session_refresh": {
+    "page_title": "Let’s Refresh Your Session",
+    "info": {
+      "title": "Re-verification Required",
+      "verif_2nd_identity" : "After this, we will verify your 2nd identity to ensure your account remains secure and access runs smoothly.",
+      "description30d": "Your login session has been active for 30 days and needs to be re-verified.",
+      "description72h": "Your login session has been active for 72 hours and needs to be re-verified."
+    },
+    "body": {
+      "description": "This verification helps keep your account secure and ensures that only you can access it. Please enter your password to continue."
+    },
+    "form": {
+      "password": {
+        "label": "Password"
+      }
+    },
+    "cta": {
+      "submit": "Continue",
+      "google": "Continue with Google"
+    }
+  },
+  "verifikasi_wa": {
+    "resend": {
+      "button": {
+        "disabled": "Resend Code ({seconds} seconds)",
+        "enabled": "Resend Code"
+      },
+      "success": {
+        "toast_title": "New OTP Sent",
+        "toast_message": "We’ve sent the latest OTP to your WhatsApp."
+      },
+      "limit": {
+        "title": "Resend limit reached.",
+        "message": "You may wait 15 minutes or change your WhatsApp number."
+      }
+    },
+    "change_wa": {
+      "cta": "Change WhatsApp Number"
+    }
+  },
+  "change_wa": {
+    "modal": {
+      "title": "Change WhatsApp Number",
+      "subtitle": "Please enter a new WhatsApp number that has never been used to make the next process smoother."
+    },
+    "field": {
+      "phone": {
+        "label": "New WA Number",
+        "placeholder": "81234567890"
+      }
+    },
+    "cta": {
+      "submit": "Send OTP",
+      "cancel": "Cancel"
+    },
+    "error": {
+      "required": "WhatsApp number is required, please fill it in.",
+      "invalid_format": "Please use a valid WhatsApp number (e.g., 81234567890).",
+      "already_used": "This number is already in use. Try another active number.",
+      "same_as_old": "This number is the same as your previous one. Please use a different number."
+    },
+    "toast": {
+      "success": {
+        "message": "We've sent an OTP to your new number."
+      }
+    }
+  },
+  "resend_email": {
+    "resend": {
+      "button": {
+        "disabled": "Resend Link ({seconds} seconds)",
+        "enabled": "Resend Link"
+      },
+      "success": {
+        "toast_message": "A new verification link has been sent."
+      },
+      "limit": {
+        "title": "Resend limit reached.",
+        "message": "Please wait 15 minutes or update your email address."
+      }
+    },
+    "change_email": {
+      "cta": "Change Email"
+    }
+  },
+  "two_factor_authentication": {
+    "email": {
+      "verify": {
+        "success": {
+          "title": "Email Verification Successful",
+          "message": "Please return to the app or your previous tab to continue your activity. Or, you can go back to the Home page.",
+          "cta": {
+            "home": "Go to Home"
+          }
+        },
+        "invalid_old_link": {
+          "title": "Link No Longer Active",
+          "message_1": "It looks like you opened an older link. Please use the ",
+          "message_highlight": "latest verification link",
+          "message_2": " we sent to your email."
+        },
+        "invalid_old_email": {
+          "title": "Link No Longer Active",
+          "message": "It looks like you opened a link from an old email address. Please check your latest email to continue verification."
+        }
+      }
+    }
+  },
+  "change_email": {
+    "modal": {
+      "title": "Change Email",
+      "subtitle": "Please enter your new email. Make sure it’s not already in use or the same as your previous email."
+    },
+    "field": {
+      "email": {
+        "label": "New Email",
+        "placeholder": "e.g., budi@contoh.com"
+      }
+    },
+    "cta": {
+      "submit": "Send Verification Link",
+      "cancel": "Cancel"
+    },
+    "error": {
+      "email_required": "Please fill in your email.",
+      "email_invalid_format": "Please enter a valid email (e.g., name@domain.com).",
+      "email_already_used": "This email is already in use. Try another one active email.",
+      "email_same_as_previous": "This email is the same as your previous one. Please use a different email."
+    }
+  },
+  "expired": {
+    "page_title": "Expired Link",
+    "message": {
+      "info": "This verification link is no longer valid."
+    },
+    "cta": {
+      "button": "Send New Link"
+    },
+    "toast": {
+      "success": "A new verification link has been sent to your email.",
+      "title": "Registration Expired",
+      "message": "Registration not found or has expired. Please log in or register again.",
+      "button": "Go to Login"
+    }
+  },
+  "verification_issue_email": {
+    "page_title": "Email Verification Issue",
+    "lead": "It looks like email verification is having an issue. To keep things moving, let’s switch to WhatsApp.",
+    "cta_switch_wa": "Use WhatsApp"
+  },
+  "verification_limit_email": {
+    "limit": {
+      "message": "Too much request for verification link. To continue, please verify via WhatsApp.",
+      "message_title": "Too many verification link requests. ",
+      "message_subtitle": "To continue, please verify via WhatsApp"
+    },
+    "button": {
+      "whatsapp": "Use WhatsApp"
+    }
+  },
+  "login_google": {
+    "idconfirm": {
+      "title": "Identity Confirmation",
+      "description": "We found that this Google email is already linked to your existing account. For your security, let’s verify that this is really you.",
+      "cta_confirm": "Confirm With OTP",
+      "cta_cancel": "Cancel",
+      "info_otp": "OTP has been sent to your WhatsApp: {08-****-1234}"
+    },
+    "auth": {
+      "oauth_failed": {
+        "error": {
+          "title": "Failed to Open Google Pop-up",
+          "message": "There was an issue opening the Google login window. Please try again later, or use manual login to continue.",
+          "btnclose": "Close"
+        }
+      }
+    },
+    "register_from_google": {
+      "toast": {
+        "success": {
+          "title": "Success!",
+          "message": "Your account has been created"
+        }
+      }
+    }
+  },
+  "unregistered_google_account_title": "Unregistered Account",
+  "unregistered_google_account_message": "The selected Google account is not registered. You may proceed to create a new account.",
+  "unregistered_google_account_create_account_button": "Create Account",
+  "unregistered_google_account_cancel_button": "Cancel",
+  "google_account_preview_terms_link": "Terms & Conditions",
+  "google_account_preview_privacy_link": "Privacy Policy",
+  "unregistered_google_account": {
+    "page_title": "Unregistered Account",
+    "message": "The selected Google account is not registered. You may proceed to create a new account.",
+    "create_account_button": "Create Account",
+    "cancel_button": "Cancel",
+    "error_modal": {
+      "title": "Registration cannot continue",
+      "subtitle": "Please try again later or use another login method."
+    }
+  },
+  "google_account_preview": {
+    "terms_link": "Terms & Conditions",
+    "privacy_link": "Privacy Policy"
+  },
+  "login_by_google_account": {
+    "page_title": "Google Account Confirmation",
+    "form": {
+      "nama": {
+        "label": "Name",
+        "placeholder": "example: John Doe"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "email@domain.com"
+      },
+      "wa": {
+        "label": "WhatsApp Number",
+        "placeholder": "81234567890"
+      },
+      "tnc": {
+        "checkbox": "I agree to the Terms & Conditions",
+        "link": "Terms & Conditions"
+      },
+      "submit": {
+        "button": "Create Account"
+      }
+    },
+    "error": {
+      "nama": {
+        "required": "Name is required, please fill it in.",
+        "invalid_char": "Character {x} is not allowed. Use letters, spaces, dots (.) or commas (,).",
+        "max": "Name can be up to 50 characters."
+      },
+      "wa": {
+        "required": "WhatsApp number is required, please fill it in.",
+        "format": "Please enter a valid WhatsApp number (example: 81234567890).",
+        "nondigit": "Only digits are allowed. Please check your WhatsApp number.",
+        "duplicate": "This WhatsApp number is already used. Try another one or log in."
+      },
+      "tnc": {
+        "required": "Please agree to the terms before continuing.",
+        "link_failed": "The Terms & Conditions page is currently unavailable. Please try again later."
+      },
+      "email": {
+        "autofill_failed": "We couldn’t load your email. Please refresh the page."
+      }
+    }
+  },
+  "login_by_google": {
+    "banner": {
+      "whatsapp_required": {
+        "message": "Your WhatsApp number is not available in your Google account. Please enter it to continue creating your account."
+      }
+    }
+  },
+  "confirm_logingoogle": {
+    "form": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Example: John Doe"
+      },
+      "email": {
+        "label": "Email"
+      },
+      "wa": {
+        "label": "WhatsApp Number",
+        "placeholder": "81234567890"
+      }
+    },
+    "error": {
+      "name": {
+        "required": "Name is required, please fill it in.",
+        "invalid_char": "Character [x] is not allowed. Use letters, spaces, dots (.) or commas (,)."
+      },
+      "wa": {
+        "required": "WhatsApp number is required, please fill it in.",
+        "format": "Please enter a valid WhatsApp number (example: 81234567890).",
+        "duplicate": "This WhatsApp number is already used. Try another one or log in."
+      }
+    }
+  },
+  "errors": {
+    "invalid_email": "Invalid email address",
+    "weak_password": "Password is too weak",
+    "user_not_found": "User not found"
+  },
+  "logout": {
+    "login_manual": {
+      "session_pre_warning_72h": {
+        "modal": {
+          "title": "Refresh Your Session",
+          "description": "Your session has reached the 72-hour limit. Let's do a quick verification to keep things secure. Please enter your password to continue."
+        },
+        "form": {
+          "password": {
+            "label": "Password",
+            "placeholder": "••••••••"
+          }
+        },
+        "cta": {
+          "submit": "Continue"
+        },
+        "info_hint": {
+            "title": "Tips!",
+            "message": "Enable \"remember me\" when signing in so you don't need to refresh your session too often."
+        }
+      },
+      "session_pre_warning_30d": {
+        "modal": {
+          "title": "Refresh Your Session",
+          "description": "Your session has reached 30 days. Let's do a quick verification to keep things secure. Please enter your password to continue."
+        },
+        "form": {
+          "password": {
+            "label": "Password",
+            "placeholder": "••••••••"
+          }
+        },
+        "cta": {
+          "submit": "Continue"
+        },
+        "info_hint": {
+            "title": "Tips!",
+            "message": "To keep your account secure, we periodically need to reverify your identity."
+        }
+      },
+      "session_pre_warning": {
+        "form": {
+          "password": {
+            "error": {
+              "empty": "Password is required. Please fill it in so you can continue.",
+              "wrong_attempt1": "The password doesn't match yet. Try again — you still have 2 tries.",
+              "wrong_attempt2": "Still not a match. Please check once more — you have 1 try left."
+            }
+          }
+        },
+        "toast": {
+          "error_wrong_password_attempt3": {
+            "title": "Failed!",
+            "message": "For your security, your session has ended and you need to sign in again."
+          },
+          "success_session_renewed": {
+            "title": "Success!",
+            "message": "Your session has been refreshed. You're good to go."
+          }
+        }
+      }
+    },
+    "login_google": {
+      "session_pre_warning": {
+        "modal": {
+          "title": "Refresh Your Session",
+          "description": "Your session has reached the 72-hour limit. Let's do a quick check with Google so everything stays secure without typing your password."
+        },
+        "cta": {
+          "google": "Continue with Google"
+        },
+        "toast": {
+          "cancelled": {
+            "title": "Verification Cancelled",
+            "message": "You can try again anytime."
+          },
+          "success_session_renewed": {
+            "title": "Success!",
+            "message": "Your session has been refreshed. You're good to go."
+          }
+        }
+      }
+    }
+  }
+}

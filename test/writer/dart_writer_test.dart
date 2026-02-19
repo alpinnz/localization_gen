@@ -87,9 +87,9 @@ void main() {
 
         final code = writer.generate(locales);
 
-        expect(code, contains('String get hello'));
-        // New output uses the shared lookup helper, no per-getter switch.
-        expect(code, contains("return _root._t(\"hello\""));
+        expect(code, contains('String? get hello'));
+        // New output uses the shared lookup helper, no per-getter locale switching.
+        expect(code, contains('return this._t("hello"'));
       });
 
       test(
@@ -122,8 +122,8 @@ void main() {
 
         expect(code, contains('static const Map<String, String> _t_en'));
         expect(code, contains('static const Map<String, String> _t_id'));
-        expect(code, contains('"hello": \'Hello\''));
-        expect(code, contains('"hello": \'Halo\''));
+        expect(code, contains('"hello": "Hello"'));
+        expect(code, contains('"hello": "Halo"'));
 
         // Ensure we don't emit per-getter switches anymore.
         expect(code, isNot(contains('switch (locale.languageCode)')));
@@ -310,7 +310,7 @@ void main() {
     });
 
     group('Runtime key resolver', () {
-      test('generates resolveByKey with namespace and fallback', () {
+      test('generates resolveByKey with namespace', () {
         final writer = DartWriter(className: 'TestLocalizations');
         final locales = [
           LocaleData(
@@ -337,7 +337,7 @@ void main() {
 
         expect(code, contains('String? resolveByKey('));
         expect(code, contains('String? namespace'));
-        expect(code, contains('String? fallback'));
+        expect(code, isNot(contains('String? fallback')));
 
         // Preferred direct-call usage style in docs (must match exactly)
         expect(
@@ -349,7 +349,7 @@ void main() {
         expect(code, contains("? key.trim()"));
         expect(code, contains(r": '${namespace.trim()}.${key.trim()}';"));
         expect(code,
-            contains('return _activeTranslations[normalizedKey] ?? fallback;'));
+            contains('return _activeTranslations[normalizedKey];'));
 
         // No per-case const maps anymore.
         expect(code, isNot(contains('const map = <String, String>{')));

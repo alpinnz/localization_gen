@@ -68,7 +68,7 @@ void main() {
           reason: 'Missing key in generated translation table: $key',
         );
 
-        final decoded = _decodeSingleQuotedDartStringLiteral(generatedLiteral!);
+        final decoded = _decodeDartStringLiteral(generatedLiteral!);
         expect(
           decoded,
           equals(expectedValue),
@@ -82,16 +82,16 @@ void main() {
   });
 }
 
-/// Extracts key -> single-quoted Dart string literal from the generated `_t_xx` table.
+/// Extracts key -> Dart string literal from the generated `_t_xx` table.
 ///
 /// We intentionally don't lock the entire generated file; we only parse the table
 /// entries so tests remain stable across unrelated formatting changes.
 Map<String, String> _extractGeneratedTranslationTable(String code) {
   // Example line:
-  //   "symbols.currency_and_amount": 'Total: \$12.50 / Rp 10.000',
+  //   "symbols.currency_and_amount": "Total: \$12.50 / Rp 10.000",
   // The literal can contain escaped quotes/backslashes.
   final entryPattern = RegExp(
-    r'''\s*("(?:\\.|[^"\\])+")\s*:\s*(\'(?:\\.|[^\'])*\')\s*,''',
+    r'''\s*("(?:\\.|[^"\\])+")\s*:\s*((?:'(?:\\.|[^'])*')|(?:"(?:\\.|[^"])*"))\s*,''',
     multiLine: true,
   );
 
@@ -104,16 +104,21 @@ Map<String, String> _extractGeneratedTranslationTable(String code) {
   return out;
 }
 
-/// Decodes a *single-quoted* Dart string literal produced by the generator.
+/// Decodes a *Dart string literal* produced by the generator.
 ///
 /// Supports the escape sequences we emit:
-/// - \\n, \\r, \\t
+/// - \n, \r, \t
 /// - \\\\ (backslash)
-/// - \\\' (single quote)
-/// - \\$ (dollar, to avoid interpolation)
-String _decodeSingleQuotedDartStringLiteral(String literal) {
-  if (!literal.startsWith("'") || !literal.endsWith("'")) {
-    throw ArgumentError('Not a single-quoted literal: $literal');
+/// - \\\$ (dollar, to avoid interpolation)
+/// - \\\" or \\\' depending on quote type
+String _decodeDartStringLiteral(String literal) {
+  if (literal.length < 2) {
+    throw ArgumentError('Not a string literal: $literal');
+  }
+
+  final quote = literal[0];
+  if ((quote != '\'' && quote != '"') || !literal.endsWith(quote)) {
+    throw ArgumentError('Not a quoted literal: $literal');
   }
 
   final s = literal.substring(1, literal.length - 1);
@@ -126,43 +131,50 @@ String _decodeSingleQuotedDartStringLiteral(String literal) {
       continue;
     }
 
-    // Special-case: \\' is a common representation we see in our captured
-    // literals (because backslashes are already escaped in the source). It
-    // should decode to a single apostrophe.
-    if (i + 2 < s.length && s[i + 1] == '\\' && s[i + 2] == "'") {
-      buf.write("'");
-      i += 2;
-      continue;
-    }
-
     if (i == s.length - 1) {
       buf.write('\\');
       break;
     }
 
-    final next = s[++i];
-    switch (next) {
-      case 'n':
-        buf.write('\n');
-        break;
-      case 'r':
-        buf.write('\r');
-        break;
-      case 't':
-        buf.write('\t');
-        break;
-      case "'":
-        buf.write("'");
-        break;
-      case r'$':
-        buf.write(r'$');
-        break;
-      case '\\':
-        buf.write('\\');
-        break;
-      default:
-        buf.write(next);
+    final next = s[i + 1];
+
+    // Handle common escapes.
+    if (next == 'n') {
+      buf.write('\n');
+      i++;
+      continue;
     }
+    if (next == 'r') {
+      buf.write('\r');
+      i++;
+      continue;
+    }
+    if (next == 't') {
+      buf.write('\t');
+      i++;
+      continue;
+    }
+    if (next == '\\') {
+      buf.write('\\');
+      i++;
+      continue;
+    }
+    if (next == r'$') {
+      buf.write(r'$');
+      i++;
+      continue;
+    }
+
+    // Quote escaping depends on the chosen quote.
+    if (next == quote) {
+      buf.write(quote);
+      i++;
+      continue;
+    }
+
+    // Unknown escape: keep as-is (best effort).
+    buf.write(next);
+    i++;
   }
 
   return buf.toString();

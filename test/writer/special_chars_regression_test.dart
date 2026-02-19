@@ -30,14 +30,12 @@ void main() {
 
       final output = writer.generate(locales);
 
-      // Must be a single-quoted Dart literal (in the translations table and/or fallback).
-      expect(output, contains("'Special:"));
-      // Apostrophe should be escaped as \\' in Dart source.
-      expect(output, contains(r"\\'"));
+      // Must be a double-quoted Dart literal (in the translations table and/or fallback).
+      expect(output, contains('"Special:'));
       // Dollar sign should be escaped as \$
       expect(output, contains(r"\$"));
-      // Must still contain the double quote character in the resulting literal.
-      expect(output, contains('"'));
+      // Double quote should be escaped as \" in the generated Dart source.
+      expect(output, contains(r'\"'));
     });
   });
 }

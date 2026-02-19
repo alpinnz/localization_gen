@@ -5,6 +5,7 @@ import 'package:localization_gen/src/model/localization_item.dart';
 void main() {
   group('DartWriter Symbol Escaping', () {
     test('escapes single quotes correctly', () {
+      // With double-quoted output, apostrophes don't need escaping.
       final writer = DartWriter(className: 'TestLocalizations');
       final locales = [
         LocaleData(
@@ -20,8 +21,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      // The generated Dart source includes an escaped apostrophe: It\'s
-      expect(output, contains("'It\\\\'s working'"));
+      expect(output, contains('"It\'s working"'));
     });
 
     test('escapes dollar signs correctly', () {
@@ -41,7 +41,7 @@ void main() {
 
       final output = writer.generate(locales);
       // In generated Dart source, a literal dollar sign is emitted as `\$`.
-      expect(output, contains(r"'Price: \$100'"));
+      expect(output, contains(r'"Price: \$100"'));
     });
 
     test('escapes backslashes correctly', () {
@@ -60,7 +60,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("'Path: C:\\\\Users\\\\test'"));
+      expect(output, contains('"Path: C:\\\\Users\\\\test"'));
     });
 
     test('preserves emojis', () {
@@ -79,7 +79,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("'Hello! 👋 🎉 ❤️'"));
+      expect(output, contains('"Hello! 👋 🎉 ❤️"'));
     });
 
     test('preserves special symbols', () {
@@ -98,7 +98,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("'© ® ™ € £ ¥ § ¶'"));
+      expect(output, contains('"© ® ™ € £ ¥ § ¶"'));
     });
 
     test('preserves unicode characters', () {
@@ -132,10 +132,10 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("'你好世界'"));
-      expect(output, contains("'こんにちは'"));
-      expect(output, contains("'안녕하세요'"));
-      expect(output, contains("'مرحبا'"));
+      expect(output, contains('"你好世界"'));
+      expect(output, contains('"こんにちは"'));
+      expect(output, contains('"안녕하세요"'));
+      expect(output, contains('"مرحبا"'));
     });
 
     test('handles complex mixed content', () {
@@ -154,7 +154,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains(r"'It\\'s \$100 with C:\\path and emoji 👋'"));
+      expect(output, contains("\"It's \\\$100 with C:\\\\path and emoji 👋\""));
     });
 
     test('preserves special chars in nested structures', () {
@@ -196,7 +196,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("'2 + 2 = 4, 10 × 5 = 50, π ≈ 3.14, ∞'"));
+      expect(output, contains('"2 + 2 = 4, 10 × 5 = 50, π ≈ 3.14, ∞"'));
     });
 
     test('preserves arrows and geometric symbols', () {
@@ -215,7 +215,7 @@ void main() {
       ];
 
       final output = writer.generate(locales);
-      expect(output, contains("'← → ↑ ↓ ↔ ↕ ⇐ ⇒'"));
+      expect(output, contains('"← → ↑ ↓ ↔ ↕ ⇐ ⇒"'));
     });
   });
 }
