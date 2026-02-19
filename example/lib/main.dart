@@ -55,7 +55,7 @@ class ExampleHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(AppLocalizations.of(context).strings.appTitle),
+        title: Text(AppLocalizations.of(context).strings.appTitle ?? ''),
         actions: [
           PopupMenuButton<Locale>(
             icon: const Icon(Icons.language),
@@ -109,18 +109,21 @@ class ExampleHomePage extends StatelessWidget {
             children: [
               Text(
                 AppLocalizations.of(
-                  context,
-                ).placeholders.welcomeUser(name: 'Alice'),
+                      context,
+                    ).placeholders.welcomeUser(name: 'Alice') ??
+                    '',
               ),
               Text(
                 AppLocalizations.of(
-                  context,
-                ).placeholders.fullName(firstName: 'Alice', lastName: 'Doe'),
+                      context,
+                    ).placeholders.fullName(firstName: 'Alice', lastName: 'Doe') ??
+                    '',
               ),
               Text(
                 AppLocalizations.of(
-                  context,
-                ).placeholders.itemsInCity(count: '12', city: 'Jakarta'),
+                      context,
+                    ).placeholders.itemsInCity(count: '12', city: 'Jakarta') ??
+                    '',
               ),
             ],
           ),
@@ -128,7 +131,7 @@ class ExampleHomePage extends StatelessWidget {
             title: 'Formatting',
             children: [
               Text('multiline:'),
-              Text(AppLocalizations.of(context).formatting.multiline),
+              Text(AppLocalizations.of(context).formatting.multiline ?? ''),
               Text('quotes: ${AppLocalizations.of(context).formatting.quotes}'),
               Text(
                 'unicode: ${AppLocalizations.of(context).formatting.unicode}',
@@ -165,16 +168,16 @@ class ExampleHomePage extends StatelessWidget {
               ),
               Text('arrow: ${AppLocalizations.of(context).symbols.arrowLike}'),
               Text('pipe: ${AppLocalizations.of(context).symbols.pipeLike}'),
-              Text(AppLocalizations.of(context).symbols.bulletListLike),
+              Text(AppLocalizations.of(context).symbols.bulletListLike ?? ''),
               Text('url: ${AppLocalizations.of(context).symbols.urlQueryLike}'),
             ],
           ),
           _Section(
             title: 'Literals (not placeholders)',
             children: [
-              Text(AppLocalizations.of(context).literals.doubleCurly),
-              Text(AppLocalizations.of(context).literals.squareBrackets),
-              Text(AppLocalizations.of(context).literals.literalBraces),
+              Text(AppLocalizations.of(context).literals.doubleCurly ?? ''),
+              Text(AppLocalizations.of(context).literals.squareBrackets ?? ''),
+              Text(AppLocalizations.of(context).literals.literalBraces ?? ''),
             ],
           ),
           _Section(
@@ -195,13 +198,13 @@ class ExampleHomePage extends StatelessWidget {
             title: 'Runtime key lookup (resolveByKey)',
             children: [
               Text(
-                "resolveByKey('strings.app_title'): ${AppLocalizations.of(context).resolveByKey('strings.app_title', fallback: '<missing>')}",
+                "resolveByKey('strings.app_title'): ${AppLocalizations.of(context).resolveByKey('strings.app_title') ?? '<missing>'}",
               ),
               Text(
-                "resolveByKey('app_title', namespace: 'strings'): ${AppLocalizations.of(context).resolveByKey('app_title', namespace: 'strings', fallback: '<missing>')}",
+                "resolveByKey('app_title', namespace: 'strings'): ${AppLocalizations.of(context).resolveByKey('app_title', namespace: 'strings') ?? '<missing>'}",
               ),
               Text(
-                "resolveByKey('missing.key', fallback): ${AppLocalizations.of(context).resolveByKey('missing.key', fallback: '<missing>')}",
+                "resolveByKey('missing.key'): ${AppLocalizations.of(context).resolveByKey('missing.key') ?? '<missing>'}",
               ),
             ],
           ),
@@ -209,16 +212,16 @@ class ExampleHomePage extends StatelessWidget {
             title: 'Multi-variant errors (context: register/verification)',
             children: [
               Text(
-                "invalid_code_errors(register): ${AppLocalizations.of(context).structured.invalidCodeErrors(context: 'register')}",
+                "invalid_code_errors(register): ${AppLocalizations.of(context).structured.invalidCodeErrors(context: 'register') ?? '<missing>'}",
               ),
               Text(
-                "invalid_code_errors(verification): ${AppLocalizations.of(context).structured.invalidCodeErrors(context: 'verification')}",
+                "invalid_code_errors(verification): ${AppLocalizations.of(context).structured.invalidCodeErrors(context: 'verification') ?? '<missing>'}",
               ),
               Text(
-                "action_label(primary): ${AppLocalizations.of(context).structured.actionLabel(context: 'primary')}",
+                "action_label(primary): ${AppLocalizations.of(context).structured.actionLabel(context: 'primary') ?? '<missing>'}",
               ),
               Text(
-                "action_label(secondary): ${AppLocalizations.of(context).structured.actionLabel(context: 'secondary')}",
+                "action_label(secondary): ${AppLocalizations.of(context).structured.actionLabel(context: 'secondary') ?? '<missing>'}",
               ),
             ],
           ),

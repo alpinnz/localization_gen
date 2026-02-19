@@ -4,8 +4,11 @@ description: Canonical Flutter example for localization_gen
 
 version: 1.0.0+1
 
+homepage: https://github.com/alpinnz/localization_gen
+repository: https://github.com/alpinnz/localization_gen
+
 environment:
-  sdk: ^3.10.3
+  sdk: '>=3.10.3 <4.0.0'
 
 dependencies:
   flutter:
@@ -13,8 +16,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  localization_gen:
-    path: ../
+  localization_gen: ^2.3.1
 
 dev_dependencies:
   flutter_test:
