@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.1] - 2026-03-17
+
+### Fixed
+- **Respect `class_name` in nested namespace output**
+  - Nested namespace helper classes now correctly type their `_root` field as the configured root localization class (e.g. `CoreLocalizations`) instead of a hard-coded `AppLocalizations`.
+  - Prevents invalid-type cascades like `Type 'AppLocalizations' not found` when projects customize `class_name`.
+  - Added a regression test to ensure generated output contains no stale `AppLocalizations` references when `class_name` is overridden.
+
 ## [2.3.1] - 2026-02-20
 
 ### Changed (BREAKING)

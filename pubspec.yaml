@@ -1,6 +1,6 @@
 name: localization_gen
 description: Type-safe Flutter localization generator from JSON/JSONC, with nested keys, placeholders, and plural/gender/context variants.
-version: 2.3.1
+version: 2.4.1
 homepage: https://github.com/alpinnz/localization_gen
 repository: https://github.com/alpinnz/localization_gen
 issue_tracker: https://github.com/alpinnz/localization_gen/issues
