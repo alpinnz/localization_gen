@@ -37,7 +37,7 @@ void main() {
         final code = writer.generate(locales);
 
         expect(code, contains('class TestLocalizations'));
-        expect(code, contains('String get hello'));
+        expect(code, contains('String? get hello'));
         expect(code, contains('Hello'));
       });
 
@@ -147,7 +147,7 @@ void main() {
 
         final code = writer.generate(locales);
 
-        expect(code, contains('String greeting({'));
+        expect(code, contains('String? greeting({'));
         expect(code, contains('required String name'));
       });
 
@@ -167,7 +167,7 @@ void main() {
 
         final code = writer.generate(locales);
 
-        expect(code, contains('String message({'));
+        expect(code, contains('String? message({'));
         expect(code, contains('required String user'));
         expect(code, contains('required String count'));
       });
@@ -192,6 +192,10 @@ void main() {
 
         expect(code, contains('class _Auth'));
         expect(code, contains('_Auth get auth'));
+
+        // Root type for nested namespaces must match the configured className.
+        expect(code, contains('final TestLocalizations _root;'));
+        expect(code, isNot(contains('AppLocalizations')));
       });
 
       test('generates deep nesting', () {
@@ -346,7 +350,7 @@ void main() {
         );
 
         // Implementation
-        expect(code, contains("? key.trim()"));
+        expect(code, contains('? key.trim()'));
         expect(code, contains(r": '${namespace.trim()}.${key.trim()}';"));
         expect(code,
             contains('return _activeTranslations[normalizedKey];'));

@@ -492,7 +492,7 @@ class DartWriter {
         buffer.writeln("class $className {");
         buffer.writeln("  $className(this._root);");
         buffer.writeln();
-        buffer.writeln("  final AppLocalizations _root;");
+        buffer.writeln("  final ${this.className} _root;");
         buffer.writeln("  Locale get locale => _root.locale;");
         buffer.writeln();
 
