@@ -1,68 +1,45 @@
 # AGENTS.md (localization_gen)
 
-## 60-second orientation
+## Big picture (what this repo does)
 - This repo is a **Dart/Flutter localization code generator**.
-- Main data flow: **`pubspec.yaml` config → parse modular `.json` locale files → validate consistency → generate a single `*.gen.dart` file**.
-- Canonical examples/spec live as **JSONC fixtures** in `assets/localizations/*.jsonc` (comments allowed), but the generator **reads `.json` only**.
+- Main data flow: **`pubspec.yaml` config → parse modular `*.json` locale files → validate consistency → generate one `*.gen.dart` file**.
+  - Orchestrator: `lib/src/generator/localization_generator.dart` (`LocalizationGenerator.generate()`).
 
-## Key entry points (where to start reading)
-- CLI entry: `bin/localization_gen.dart` → `CommandRouter.run(args)`
-- Command routing: `lib/src/command/command_router.dart` (commands: `generate|init|validate|clean|coverage`)
-- Orchestration: `lib/src/generator/localization_generator.dart` → `LocalizationGenerator.generate()`
-- Parsing/validation: `lib/src/parser/json_parser.dart` → `parseDirectory()` / `_validateLocaleConsistency()`
-- Codegen: `lib/src/writer/dart_writer.dart` → `DartWriter.generate(locales)`
-- Watch mode implementation: `lib/src/watcher/file_watcher.dart` → `FileWatcher.start()`
+## Key entry points (read these first)
+- CLI entry: `bin/localization_gen.dart` → `CommandRouter.run(args)` in `lib/src/command/command_router.dart`.
+- Parser/validation semantics: `lib/src/parser/json_parser.dart`.
+- Generated Dart output + escaping policy: `lib/src/writer/dart_writer.dart`.
 
-## Architecture & invariants (project-specific)
-- **Modular-only inputs**: each `.json` file must include `@@locale` and `@@module`.
-  - Enforced in `JsonLocalizationParser._parseModularFiles()` (throws if `@@module` missing).
-  - Files are merged by locale: `app_auth_en.json + app_home_en.json → LocaleData('en')`.
-- **Flattening rule**: nested JSON objects become dot-keys.
-  - Implemented by `JsonLocalizationParser._flattenJson()`.
-  - Special keys are skipped: anything starting with `@@` or `@`.
-- **Inline-only per-key metadata** (no “sibling metadata blocks”):
-  - For string values with metadata, wrap as an object and store the translation in `@value`.
-  - Parsed in `JsonLocalizationParser._readInlineKeyMetadata()`.
-  - Example shape (from `assets/localizations/README.md`):
-    - `{"welcome_user": {"@value": "Welcome, {name}.", "@description": "..."}}`
-- **Structured translations** are signaled by wrapper keys:
-  - `@plural`, `@gender`, `@context` (handled inside `_flattenJson`).
+## Project-specific invariants (easy to break by accident)
+- **Modular-only inputs**: every locale file must include `@@locale` and `@@module` (see `assets/README.md`).
+- **Flattening rule**: nested JSON objects become dot-keys (e.g. `{ "auth": {"login": "Login"}} → "auth.login"`).
+  - Implemented in `JsonLocalizationParser._flattenJson()`.
+- **Special keys are skipped while flattening**: any key starting with `@@` or `@`.
+- **Inline-only per-key metadata**: no sibling `@<key>` blocks.
+  - If a string needs metadata, wrap it and store the translation in `@value` (see `assets/localizations/README.md`).
+- **Structured translations** are signaled by wrapper keys: `@plural`, `@gender`, `@context` (handled inside `_flattenJson`).
 - **Cross-locale strictness**: when multiple locales exist, keys + placeholder params must match.
-  - Implemented by `JsonLocalizationParser._validateLocaleConsistency()`.
-  - Placeholder extraction uses `{name}` syntax via `_extractParameters()`.
-
-## Generated code shape (useful when editing writer)
-- `DartWriter` generates a **dictionary-first** implementation:
-  - `static const Map<String,String> _t_<locale> = {"a.b": "..."}`
-  - plus `_p_`, `_g_`, `_c_` tables for plural/gender/context.
-- Locale switching is done by selecting the appropriate table (see comments near `_fallbackLocale` in `lib/src/writer/dart_writer.dart`).
+  - Placeholder extraction uses `{name}` syntax (see `_extractParameters()` in `json_parser.dart`).
 
 ## Canonical fixtures vs real inputs
-- Canonical spec: `assets/localizations/app_common_{en,id}.jsonc` (commented, developer-readable).
-- Real generator inputs: consuming apps provide strict `.json` (see `example/assets/localizations/`).
-- Fixture docs:
-  - `assets/localizations/README.md` (case index + metadata rules)
-  - `assets/README.md`
+- Canonical spec/examples are **JSONC fixtures** (comments allowed): `assets/localizations/app_common_{en,id}.jsonc`.
+- The generator consumes **strict `.json` only**; see real inputs under `example/assets/localizations/`.
 
-## Workflows (commands that matter in this repo)
-- Package tests (pure Dart):
-  - `dart test` (suite entry: `test/all_test.dart`)
-- Flutter-driven tests (recommended by `test/README.md`):
-  - `flutter test` (useful for watcher/platform behavior)
-- Convenience targets: `Makefile`
-  - `make check` (analyze + format-check + test)
-  - `make test-file FILE=test/parser/json_parser_test.dart`
-  - `make generate` / `make validate`
-  - `make test-examples` (runs `flutter test` in `example/`)
+## Generated code shape (writer mental model)
+- `DartWriter` is **dictionary-first** per locale:
+  - `static const Map<String, String> _t_<locale> = {"a.b": "..."}`
+  - plus plural/gender/context tables (naming in `dart_writer.dart`).
+- API note (breaking in 2.3.1): generated getters/methods return **`String?`**; missing keys/locale resolve to `null` (see `CHANGELOG.md`).
 
-## “Where do I add/change behavior?”
-- Add a new translation feature (parser semantics): start in `lib/src/parser/json_parser.dart`, then update writer in `lib/src/writer/dart_writer.dart`, then add focused tests under the mirrored folder in `test/`.
-- Add a new CLI flag/subcommand: add a command under `lib/src/command/` and register it in `CommandRouter._commands`.
-- Update config options: `lib/src/config/config_reader.dart` + `test/config/config_reader_test.dart`.
+## Workflows (fast feedback)
+- Tests mirror `lib/src/*` → `test/*` (see `test/README.md`).
+- Common repo commands (see `Makefile`): `make check`, `make generate`, `make validate`, `make test-examples`.
+- Direct equivalents:
+  - `dart test` (pure Dart)
+  - `flutter test` (recommended here; watcher/platform behavior)
 
-## Tests that encode the contracts
-- Parser semantics (metadata, wrappers, validation): `test/parser/` (notably `inline_metadata_test.dart`, `validation_test.dart`).
-- Generator end-to-end & locale consistency: `test/generator/` (e.g. `value_consistency_test.dart`, `placeholder_interpolation_test.dart`).
-- Writer escaping/newline/symbol edge cases: `test/writer/` (e.g. `newline_escape_test.dart`, `symbol_escape_test.dart`).
-- JSONC parity/fixtures: `test/fixtures/jsonc_parity_test.dart`.
+## Where to change behavior (and where contracts live)
+- Config parsing/defaults: `lib/src/config/config_reader.dart` (+ `test/config/config_reader_test.dart`).
+- Parsing/validation rules: `lib/src/parser/json_parser.dart` (+ `test/parser/*`, especially `inline_metadata_test.dart`, `validation_test.dart`).
+- Escaping/output/API: `lib/src/writer/dart_writer.dart` (+ `test/writer/*`, e.g. `newline_escape_test.dart`, `symbol_escape_test.dart`).
 

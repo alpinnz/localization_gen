@@ -315,7 +315,7 @@ class DartWriter {
     buffer.writeln(
         '    final normalizedKey = (namespace == null || namespace.trim().isEmpty)');
     buffer.writeln('        ? key.trim()');
-    buffer.writeln("        : '\${namespace.trim()}.\${key.trim()}';");
+    buffer.writeln(r"        : '${namespace.trim()}.${key.trim()}';");
     buffer.writeln();
     buffer.writeln('    return _activeTranslations[normalizedKey];');
     buffer.writeln('  }');
@@ -595,21 +595,30 @@ class DartWriter {
 
       final params =
           signatureParams.map((p) => 'required String $p').join(', ');
-      buffer.writeln("  String? $methodName({$params}) {");
+      buffer.writeln("  String $methodName({$params}) {");
 
       final paramsMap = item.parameters.map((p) {
         final dartName = placeholderMap[p] ?? _renameSegment(p);
         return "'$p': $dartName";
       }).join(', ');
 
-      final target = isNested ? '_root' : 'this';
-      buffer.writeln(
-          "    return $target._tf(${jsonEncode(item.key)}, {$paramsMap});");
+      if (isNested) {
+        buffer.writeln(
+            "    return _root._tf(${jsonEncode(item.key)}, {$paramsMap}) ?? '';");
+      } else {
+        buffer.writeln(
+            "    return this._tf(${jsonEncode(item.key)}, {$paramsMap}) ?? '';");
+      }
       buffer.writeln("  }");
     } else {
-      buffer.writeln("  String? get $methodName {");
-      final target = isNested ? '_root' : 'this';
-      buffer.writeln("    return $target._t(${jsonEncode(item.key)});");
+      buffer.writeln("  String get $methodName {");
+      if (isNested) {
+        buffer.writeln(
+            "    return _root._t(${jsonEncode(item.key)}) ?? '';");
+      } else {
+        buffer.writeln(
+            "    return this._t(${jsonEncode(item.key)}) ?? '';");
+      }
       buffer.writeln("  }");
     }
 
