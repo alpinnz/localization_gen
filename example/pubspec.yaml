@@ -27,7 +27,7 @@ dev_dependencies:
 localization_gen:
   input_dir: assets/localizations
   output_dir: lib/assets
-  class_name: AppLocalizations
+  class_name: CoreLocalizations
 
   # Naming
   field_rename: camel

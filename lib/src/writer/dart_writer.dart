@@ -595,7 +595,7 @@ class DartWriter {
 
       final params =
           signatureParams.map((p) => 'required String $p').join(', ');
-      buffer.writeln("  String $methodName({$params}) {");
+      buffer.writeln("  String? $methodName({$params}) {");
 
       final paramsMap = item.parameters.map((p) {
         final dartName = placeholderMap[p] ?? _renameSegment(p);
@@ -604,20 +604,18 @@ class DartWriter {
 
       if (isNested) {
         buffer.writeln(
-            "    return _root._tf(${jsonEncode(item.key)}, {$paramsMap}) ?? '';");
+            "    return _root._tf(${jsonEncode(item.key)}, {$paramsMap});");
       } else {
         buffer.writeln(
-            "    return this._tf(${jsonEncode(item.key)}, {$paramsMap}) ?? '';");
+            "    return this._tf(${jsonEncode(item.key)}, {$paramsMap});");
       }
       buffer.writeln("  }");
     } else {
-      buffer.writeln("  String get $methodName {");
+      buffer.writeln("  String? get $methodName {");
       if (isNested) {
-        buffer.writeln(
-            "    return _root._t(${jsonEncode(item.key)}) ?? '';");
+        buffer.writeln("    return _root._t(${jsonEncode(item.key)});");
       } else {
-        buffer.writeln(
-            "    return this._t(${jsonEncode(item.key)}) ?? '';");
+        buffer.writeln("    return this._t(${jsonEncode(item.key)});");
       }
       buffer.writeln("  }");
     }

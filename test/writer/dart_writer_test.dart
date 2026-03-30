@@ -262,7 +262,7 @@ void main() {
         final code = writer.generate(locales);
 
         // Should still generate the API.
-        expect(code, contains('String welcomeUser({required String name})'));
+        expect(code, contains('String? welcomeUser({required String name})'));
 
         // But should not embed metadata text into dartdoc yet.
         expect(code, isNot(contains('Greets a user by name.')));
@@ -289,7 +289,7 @@ void main() {
 
         final code = writer.generate(locales);
 
-        expect(code, contains('String get firstName'));
+        expect(code, contains('String? get firstName'));
       });
 
       test('applies fieldRename to nested keys (camelCase)', () {
@@ -309,7 +309,7 @@ void main() {
         final code = writer.generate(locales);
 
         expect(code, contains('get userProfile'));
-        expect(code, contains('String get firstName'));
+        expect(code, contains('String? get firstName'));
       });
     });
 
@@ -351,7 +351,7 @@ void main() {
 
         // Implementation
         expect(code, contains('? key.trim()'));
-        expect(code, contains(r": '${namespace.trim()}.${key.trim()}';"));
+        expect(code, contains(": '\${namespace.trim()}.\${key.trim()}';"));
         expect(code,
             contains('return _activeTranslations[normalizedKey];'));
 

@@ -174,7 +174,7 @@ void main() {
 
       final output = writer.generate(locales);
 
-      expect(output, contains("String get special"));
+      expect(output, contains("String? get special"));
       // `$` is escaped in the generated Dart source as `\$`.
       expect(output, contains(r"Special: @#\$%"));
       expect(output, contains(",./<>?"));
